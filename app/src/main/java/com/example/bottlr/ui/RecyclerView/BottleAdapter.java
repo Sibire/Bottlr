@@ -16,16 +16,17 @@ import java.util.List;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     private List<Bottle> bottles;
+    private OnBottleListener onBottleListener;
 
-    // Constructor to initialize the bottles list
-    public BottleAdapter(List<Bottle> bottles) {
+    public BottleAdapter(List<Bottle> bottles, OnBottleListener onBottleListener) {
         this.bottles = bottles;
+        this.onBottleListener = onBottleListener;
     }
 
     @Override
     public BottleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bottlelabel, parent, false);
-        return new BottleViewHolder(view);
+        return new BottleViewHolder(view, onBottleListener);
     }
 
     @Override
@@ -34,15 +35,14 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         holder.textViewBottleName.setText(bottle.getName());
         holder.textViewDistillery.setText(bottle.getDistillery());
 
-        // Check if the photo URI is not null and not a placeholder string
         if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
             Uri imageUri = Uri.parse(bottle.getPhotoUri().toString());
             Glide.with(holder.itemView.getContext())
                     .load(imageUri)
-                    .error(R.drawable.nodrinkimg) // Set a default image in case of error
+                    .error(R.drawable.nodrinkimg)
                     .into(holder.imageViewBottle);
         } else {
-            holder.imageViewBottle.setImageResource(R.drawable.ic_launcher_background); // Default image
+            holder.imageViewBottle.setImageResource(R.drawable.ic_launcher_background);
         }
     }
 
@@ -51,19 +51,27 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         return bottles.size();
     }
 
-    public static class BottleViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageViewBottle;
-        public TextView textViewBottleName, textViewDistillery;
+    public static class BottleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ImageView imageViewBottle;
+        TextView textViewBottleName, textViewDistillery;
+        OnBottleListener onBottleListener;
 
-        public BottleViewHolder(View itemView) {
+        public BottleViewHolder(View itemView, OnBottleListener onBottleListener) {
             super(itemView);
             imageViewBottle = itemView.findViewById(R.id.imageViewBottle);
             textViewBottleName = itemView.findViewById(R.id.textViewBottleName);
             textViewDistillery = itemView.findViewById(R.id.textViewDistillery);
+            this.onBottleListener = onBottleListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            onBottleListener.onBottleClick(getAdapterPosition());
         }
     }
 
-    public void setBottles(List<Bottle> newBottles) {
-        this.bottles = newBottles;
+    public interface OnBottleListener {
+        void onBottleClick(int position);
     }
 }
