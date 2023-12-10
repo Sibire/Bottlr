@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -33,7 +32,7 @@ public class AddABottle extends AppCompatActivity {
 
     private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField;
     private Button addPhotoButton, saveButton;
-    private Uri photoUri; // For storing the photo's Uri
+    private Uri photoUri; // For storing the local photo's Uri
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +47,18 @@ public class AddABottle extends AppCompatActivity {
         tastingNotesField = findViewById(R.id.tastingNotesField);
 
         addPhotoButton = findViewById(R.id.addPhotoButton);
-        addPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermissions()) {
-                    chooseImageSource();
-                } else {
-                    requestPermissions();
-                }
+        addPhotoButton.setOnClickListener(view -> {
+            if (checkPermissions()) {
+                chooseImageSource();
+            } else {
+                requestPermissions();
             }
         });
 
         saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveEntryToFile();
-                finish(); // Closes this activity and returns to the previous one
-            }
+        saveButton.setOnClickListener(v -> {
+            saveEntryToFile();
+            finish(); // Closes this activity and returns to the previous one
         });
     }
 
@@ -75,7 +68,7 @@ public class AddABottle extends AppCompatActivity {
     }
 
     private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
     }
 
     @Override
@@ -96,18 +89,15 @@ public class AddABottle extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
 
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (options[which].equals("Take Photo")) {
-                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
-                } else if (options[which].equals("Choose from Gallery")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , GALLERY_REQUEST_CODE);
-                } else if (options[which].equals("Cancel")) {
-                    dialog.dismiss();
-                }
+        builder.setItems(options, (dialog, which) -> {
+            if ("Take Photo".equals(options[which])) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
+            } else if ("Choose from Gallery".equals(options[which])) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
+            } else if ("Cancel".equals(options[which])) {
+                dialog.dismiss();
             }
         });
 
@@ -122,15 +112,42 @@ public class AddABottle extends AppCompatActivity {
             ImageView imagePreview = findViewById(R.id.imagePreview);
 
             if (requestCode == CAMERA_REQUEST_CODE) {
-                Bundle bundle = data.getExtras();
-                Bitmap finalPhoto = (Bitmap) bundle.get("data");
-                imagePreview.setImageBitmap(finalPhoto);
-                // Save this photo or display it in an ImageView
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                photoUri = saveImageToLocal(imageBitmap);
+                imagePreview.setImageBitmap(imageBitmap);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
-                Uri selectedImage = data.getData();
-                imagePreview.setImageURI(selectedImage);
-                photoUri = selectedImage;
+                Uri originalUri = data.getData();
+                if (originalUri != null) {
+                    photoUri = saveImageToLocal(originalUri);
+                    imagePreview.setImageURI(photoUri);
+                }
             }
+        }
+    }
+
+    private Uri saveImageToLocal(Bitmap bitmap) {
+        try {
+            String fileName = "bottle_" + System.currentTimeMillis() + ".png";
+            FileOutputStream fos = openFileOutput(fileName, MODE_PRIVATE);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+            return Uri.fromFile(getFileStreamPath(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error saving image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    private Uri saveImageToLocal(Uri imageUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            return saveImageToLocal(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error saving image", Toast.LENGTH_SHORT).show();
+            return null;
         }
     }
 

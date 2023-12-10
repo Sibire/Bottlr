@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
-import com.example.bottlr.Bottle; // Ensure this is the correct path to your Bottle class
+import com.example.bottlr.Bottle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,11 +39,13 @@ public class GalleryFragment extends Fragment {
 
         return root;
     }
+
     @Override
     public void onResume() {
         super.onResume();
         reloadBottles();
     }
+
     private void reloadBottles() {
         List<Bottle> bottles = loadBottles();
         if (adapter != null) {
@@ -51,6 +53,7 @@ public class GalleryFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+
     private List<Bottle> loadBottles() {
         List<Bottle> bottles = new ArrayList<>();
         File directory = getContext().getFilesDir();
@@ -74,10 +77,11 @@ public class GalleryFragment extends Fragment {
             String type = safeSplit(br.readLine());
             String abv = safeSplit(br.readLine());
             String age = safeSplit(br.readLine());
+            String notes = safeSplit(br.readLine()); // Added for tasting notes
             String photoUriString = safeSplit(br.readLine());
             URI uri = URI.create(photoUriString.equals("No photo") ? null : photoUriString);
 
-            return new Bottle(name, distillery, type, abv, age, uri);
+            return new Bottle(name, distillery, type, abv, age, uri, notes); // Updated constructor call
         } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions appropriately

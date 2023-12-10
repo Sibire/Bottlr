@@ -8,24 +8,39 @@ public class Bottle {
     private String type;
     private String abv;
     private String age;
-    private String notes; // Optional, if you want to include it
     private URI photoUri;
+    private String notes;
 
-    // Constructor
-    public Bottle(String name, String distiller, String type, String abv, String age, URI photoUri) {
+    // Updated constructor
+    public Bottle(String name, String distillery, String type, String abv, String age, URI photoUri, String notes) {
         this.name = name;
-        this.distillery = distiller;
+        this.distillery = distillery;
         this.type = type;
         this.abv = abv;
         this.age = age;
         this.photoUri = photoUri;
+        this.notes = notes;
     }
 
-    // Getters
+    // Getters and Setters
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
     public String getDistillery() { return distillery; }
+    public void setDistillery(String distillery) { this.distillery = distillery; }
+
     public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
     public String getAbv() { return abv; }
+    public void setAbv(String abv) { this.abv = abv; }
+
     public String getAge() { return age; }
+    public void setAge(String age) { this.age = age; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
+
     public URI getPhotoUri() { return photoUri; }
+    public void setPhotoUri(URI photoUri) { this.photoUri = photoUri; }
 }
