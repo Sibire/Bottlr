@@ -51,4 +51,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             // Initialize other views
         }
     }
+    public void setBottles(List<Bottle> newBottles) {
+        this.bottles = newBottles;
+    }
 }

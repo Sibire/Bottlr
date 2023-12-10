@@ -39,7 +39,18 @@ public class GalleryFragment extends Fragment {
 
         return root;
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadBottles();
+    }
+    private void reloadBottles() {
+        List<Bottle> bottles = loadBottles();
+        if (adapter != null) {
+            adapter.setBottles(bottles);
+            adapter.notifyDataSetChanged();
+        }
+    }
     private List<Bottle> loadBottles() {
         List<Bottle> bottles = new ArrayList<>();
         File directory = getContext().getFilesDir();
@@ -58,19 +69,25 @@ public class GalleryFragment extends Fragment {
 
     private Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String name = br.readLine().split(": ")[1];
-            String distiller = br.readLine().split(": ")[1];
-            String type = br.readLine().split(": ")[1];
-            String abv = br.readLine().split(": ")[1];
-            String age = br.readLine().split(": ")[1];
-            String photoUriString = br.readLine().split(": ")[1];
+            String name = safeSplit(br.readLine());
+            String distillery = safeSplit(br.readLine());
+            String type = safeSplit(br.readLine());
+            String abv = safeSplit(br.readLine());
+            String age = safeSplit(br.readLine());
+            String photoUriString = safeSplit(br.readLine());
             URI uri = URI.create(photoUriString.equals("No photo") ? null : photoUriString);
 
-            return new Bottle(name, distiller, type, abv, age, uri);
+            return new Bottle(name, distillery, type, abv, age, uri);
         } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions appropriately
         }
         return null;
     }
+
+    private String safeSplit(String line) {
+        String[] parts = line.split(": ");
+        return parts.length > 1 ? parts[1] : "";
+    }
+
 }
