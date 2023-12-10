@@ -2,6 +2,7 @@ package com.example.bottlr;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,7 +33,8 @@ public class AddABottle extends AppCompatActivity {
 
     private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField;
     private Button addPhotoButton, saveButton;
-    private Uri photoUri; // For storing the local photo's Uri
+    private Uri photoUri; // For storing the photo's Uri
+    private Uri cameraImageUri; // For storing the camera image Uri
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +93,7 @@ public class AddABottle extends AppCompatActivity {
 
         builder.setItems(options, (dialog, which) -> {
             if ("Take Photo".equals(options[which])) {
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePicture, CAMERA_REQUEST_CODE);
+                launchCameraIntent();
             } else if ("Choose from Gallery".equals(options[which])) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
@@ -104,24 +105,34 @@ public class AddABottle extends AppCompatActivity {
         builder.show();
     }
 
+    private void launchCameraIntent() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+        cameraImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK) {
             ImageView imagePreview = findViewById(R.id.imagePreview);
 
-            if (requestCode == CAMERA_REQUEST_CODE) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                photoUri = saveImageToLocal(imageBitmap);
-                imagePreview.setImageBitmap(imageBitmap);
-            } else if (requestCode == GALLERY_REQUEST_CODE) {
-                Uri originalUri = data.getData();
-                if (originalUri != null) {
-                    photoUri = saveImageToLocal(originalUri);
+            if (requestCode == GALLERY_REQUEST_CODE) {
+                Uri imageUri = data.getData();
+                if (imageUri != null) {
+                    photoUri = saveImageToLocal(imageUri); // Save gallery image
                     imagePreview.setImageURI(photoUri);
                 }
+            } else if (requestCode == CAMERA_REQUEST_CODE) {
+                // Use the cameraImageUri directly
+                photoUri = cameraImageUri;
+                imagePreview.setImageURI(cameraImageUri);
             }
         }
     }
@@ -152,14 +163,29 @@ public class AddABottle extends AppCompatActivity {
     }
 
     private void saveEntryToFile() {
+        String name = bottleNameField.getText().toString();
+        String distillery = distillerField.getText().toString();
+
+        // Check if essential fields are empty
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+            return; // Do not proceed with saving
+        }
+
+        String type = spiritTypeField.getText().toString();
+        String abv = abvField.getText().toString();
+        String age = ageField.getText().toString();
+        String notes = tastingNotesField.getText().toString();
+        String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+
         String filename = "bottle_" + System.currentTimeMillis() + ".txt";
-        String fileContents = "Name: " + bottleNameField.getText().toString() + "\n" +
-                "Distiller: " + distillerField.getText().toString() + "\n" +
-                "Type: " + spiritTypeField.getText().toString() + "\n" +
-                "ABV: " + abvField.getText().toString() + "\n" +
-                "Age: " + ageField.getText().toString() + "\n" +
-                "Notes: " + tastingNotesField.getText().toString() + "\n" +
-                "Photo: " + (photoUri != null ? photoUri.toString() : "No photo");
+        String fileContents = "Name: " + name + "\n" +
+                "Distiller: " + distillery + "\n" +
+                "Type: " + type + "\n" +
+                "ABV: " + abv + "\n" +
+                "Age: " + age + "\n" +
+                "Notes: " + notes + "\n" +
+                "Photo: " + photoPath;
 
         try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
             fos.write(fileContents.getBytes());

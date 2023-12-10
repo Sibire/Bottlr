@@ -77,14 +77,19 @@ public class GalleryFragment extends Fragment {
             String type = safeSplit(br.readLine());
             String abv = safeSplit(br.readLine());
             String age = safeSplit(br.readLine());
-            String notes = safeSplit(br.readLine()); // Added for tasting notes
+            String notes = safeSplit(br.readLine());
             String photoUriString = safeSplit(br.readLine());
-            URI uri = URI.create(photoUriString.equals("No photo") ? null : photoUriString);
 
-            return new Bottle(name, distillery, type, abv, age, uri, notes); // Updated constructor call
+            // Check if essential fields are not empty
+            if (name.isEmpty()) {
+                return null; // Skip this entry as it's incomplete
+                // Total hack job but we'll see
+            }
+
+            URI uri = URI.create(photoUriString.equals("No photo") ? null : photoUriString);
+            return new Bottle(name, distillery, type, abv, age, uri, notes);
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle exceptions appropriately
         }
         return null;
     }
