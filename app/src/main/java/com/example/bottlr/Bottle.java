@@ -1,6 +1,6 @@
 package com.example.bottlr;
 
-import java.net.URI;
+import android.net.Uri;
 
 public class Bottle {
     private String name;
@@ -8,11 +8,11 @@ public class Bottle {
     private String type;
     private String abv;
     private String age;
-    private URI photoUri;
+    private Uri photoUri;
     private String notes;
 
     // Updated constructor
-    public Bottle(String name, String distillery, String type, String abv, String age, URI photoUri, String notes) {
+    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes) {
         this.name = name;
         this.distillery = distillery;
         this.type = type;
@@ -41,6 +41,6 @@ public class Bottle {
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
 
-    public URI getPhotoUri() { return photoUri; }
-    public void setPhotoUri(URI photoUri) { this.photoUri = photoUri; }
+    public Uri getPhotoUri() { return photoUri; }
+    public void setPhotoUri(Uri photoUri) { this.photoUri = photoUri; }
 }

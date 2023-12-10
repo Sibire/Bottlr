@@ -1,5 +1,6 @@
 package com.example.bottlr.ui.gallery;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
@@ -17,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,13 @@ public class GalleryFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        // Adding the divider line
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         List<Bottle> bottles = loadBottles();
         adapter = new BottleAdapter(bottles);
@@ -72,31 +79,35 @@ public class GalleryFragment extends Fragment {
 
     private Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String name = safeSplit(br.readLine());
-            String distillery = safeSplit(br.readLine());
-            String type = safeSplit(br.readLine());
-            String abv = safeSplit(br.readLine());
-            String age = safeSplit(br.readLine());
-            String notes = safeSplit(br.readLine());
-            String photoUriString = safeSplit(br.readLine());
+            String name = readValue(br);
+            String distillery = readValue(br);
+            String type = readValue(br);
+            String abv = readValue(br);
+            String age = readValue(br);
+            String notes = readValue(br);
+            String photoUriString = readValue(br);
 
-            // Check if essential fields are not empty
+            // Validation: Check if any essential field is empty or invalid
             if (name.isEmpty()) {
-                return null; // Skip this entry as it's incomplete
-                // Total hack job but we'll see
+                return null; // Skip this bottle as it's incomplete or invalid
             }
 
-            URI uri = URI.create(photoUriString.equals("No photo") ? null : photoUriString);
-            return new Bottle(name, distillery, type, abv, age, uri, notes);
+            Uri photoUri = photoUriString.equals("No photo") ? null : Uri.parse(photoUriString);
+            return new Bottle(name, distillery, type, abv, age, photoUri, notes);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
-    private String safeSplit(String line) {
-        String[] parts = line.split(": ");
-        return parts.length > 1 ? parts[1] : "";
+    private String readValue(BufferedReader br) throws IOException {
+        String line = br.readLine();
+        if (line != null && line.contains(": ")) {
+            String[] parts = line.split(": ", 2);
+            if (parts.length > 1) {
+                return parts[1];
+            }
+        }
+        return "";
     }
-
 }
