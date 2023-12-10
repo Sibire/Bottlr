@@ -10,4 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    // Bottle add window
+    <string name="title_activity_add_a_bottle">Add A Bottle</string>
 </resources>

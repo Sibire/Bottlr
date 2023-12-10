@@ -1,0 +1,69 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/bottleNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bottle Name"/>
+
+    <EditText
+        android:id="@+id/distillerField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Distiller"/>
+
+    <EditText
+        android:id="@+id/spiritTypeField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Spirit Type"/>
+
+    <EditText
+        android:id="@+id/ageField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Age (Years)"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/abvField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ABV (%)"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/tastingNotesField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tasting Notes"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:minLines="3"/>
+
+    <Button
+        android:id="@+id/addPhotoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Bottle Photo"/>
+
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"/>
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Bottle"/>
+
+</LinearLayout>

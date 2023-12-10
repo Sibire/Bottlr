@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkPermissionsAndOpenCamera();
+                Intent intent = new Intent(MainActivity.this, AddABottle.class);
+                startActivity(intent);
             }
         });
 
