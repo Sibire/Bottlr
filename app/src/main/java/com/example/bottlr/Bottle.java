@@ -1,8 +1,10 @@
 package com.example.bottlr;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Bottle {
+public class Bottle implements Parcelable {
     private String name;
     private String distillery;
     private String type;
@@ -43,4 +45,42 @@ public class Bottle {
 
     public Uri getPhotoUri() { return photoUri; }
     public void setPhotoUri(Uri photoUri) { this.photoUri = photoUri; }
+
+    protected Bottle(Parcel in) {
+        name = in.readString();
+        distillery = in.readString();
+        type = in.readString();
+        abv = in.readString();
+        age = in.readString();
+        photoUri = in.readParcelable(Uri.class.getClassLoader());
+        notes = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(distillery);
+        dest.writeString(type);
+        dest.writeString(abv);
+        dest.writeString(age);
+        dest.writeParcelable(photoUri, flags);
+        dest.writeString(notes);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Bottle> CREATOR = new Parcelable.Creator<Bottle>() {
+        @Override
+        public Bottle createFromParcel(Parcel in) {
+            return new Bottle(in);
+        }
+
+        @Override
+        public Bottle[] newArray(int size) {
+            return new Bottle[size];
+        }
+    };
 }

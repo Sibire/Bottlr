@@ -51,6 +51,18 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         return bottles.size();
     }
 
+    // Added methods
+    public void setBottles(List<Bottle> bottles) {
+        this.bottles = bottles;
+    }
+
+    public Bottle getBottle(int position) {
+        if (position >= 0 && position < bottles.size()) {
+            return bottles.get(position);
+        }
+        return null;
+    }
+
     public static class BottleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageViewBottle;
         TextView textViewBottleName, textViewDistillery;

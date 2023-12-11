@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
 
     private RecyclerView recyclerView;
     private BottleAdapter adapter;
@@ -35,13 +35,12 @@ public class GalleryFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        // Adding the divider line
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         List<Bottle> bottles = loadBottles();
-        adapter = new BottleAdapter(bottles);
+        adapter = new BottleAdapter(bottles, this);
         recyclerView.setAdapter(adapter);
 
         return root;
@@ -87,11 +86,9 @@ public class GalleryFragment extends Fragment {
             String notes = readValue(br);
             String photoUriString = readValue(br);
 
-            // Validation: Check if any essential field is empty or invalid
             if (name.isEmpty()) {
-                return null; // Skip this bottle as it's incomplete or invalid
+                return null;
             }
-
             Uri photoUri = photoUriString.equals("No photo") ? null : Uri.parse(photoUriString);
             return new Bottle(name, distillery, type, abv, age, photoUri, notes);
         } catch (IOException e) {
@@ -104,10 +101,24 @@ public class GalleryFragment extends Fragment {
         String line = br.readLine();
         if (line != null && line.contains(": ")) {
             String[] parts = line.split(": ", 2);
-            if (parts.length > 1) {
-                return parts[1];
-            }
+            return parts.length > 1 ? parts[1] : "";
         }
         return "";
+    }
+
+    @Override
+    public void onBottleClick(int position) {
+        Bottle selectedBottle = adapter.getBottle(position);
+        if (selectedBottle != null) {
+            DetailView bottleDetail = new DetailView();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("selectedBottle", selectedBottle);
+            bottleDetail.setArguments(bundle);
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, bottleDetail)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
