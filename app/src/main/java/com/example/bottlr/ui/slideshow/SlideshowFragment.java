@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bottlr.databinding.FragmentSlideshowBinding;
 
+// This class does nothing yet, and is still as delivered from the template
+
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;

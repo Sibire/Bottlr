@@ -22,7 +22,7 @@ public class DetailView extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.detailviewlayout, container, false);
 
-        // Initialize the views (similar to how you did in HomeFragment)
+        // Initializing bottle views using cannibalized code from HomeFragment
         TextView tvBottleName = root.findViewById(R.id.tvBottleName);
         TextView tvDistillery = root.findViewById(R.id.tvDistillery);
         TextView tvBottleDetails = root.findViewById(R.id.tvBottleDetails);
@@ -33,18 +33,19 @@ public class DetailView extends Fragment {
         if (bundle != null) {
             Bottle selectedBottle = bundle.getParcelable("selectedBottle");
             if (selectedBottle != null) {
-                // Set text views similar to how you did in HomeFragment
+
+                // More HomeFragment cannibalized code
                 tvBottleName.setText(selectedBottle.getName());
                 tvDistillery.setText(selectedBottle.getDistillery());
                 String details = selectedBottle.getType() + ", " + selectedBottle.getAge() + " Year, " + selectedBottle.getAbv() + "% ABV";
                 tvBottleDetails.setText(details);
                 tvNotes.setText(selectedBottle.getNotes());
 
-                // Use Glide to load the bottle image
+                // Loading images using the Glide Library
                 if (selectedBottle.getPhotoUri() != null && !selectedBottle.getPhotoUri().toString().equals("No photo")) {
                     Glide.with(this)
                             .load(selectedBottle.getPhotoUri())
-                            .error(R.drawable.nodrinkimg) // Use a default image in case of an error
+                            .error(R.drawable.nodrinkimg) // Default image in case something goes wrong
                             .into(imageViewBottle);
                 } else {
                     imageViewBottle.setImageResource(R.drawable.nodrinkimg);

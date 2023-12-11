@@ -69,6 +69,9 @@ public class HomeFragment extends Fragment {
         File directory = getContext().getFilesDir();
         File[] files = directory.listFiles((dir, name) -> name.startsWith("bottle_") && name.endsWith(".txt"));
 
+        // Sort out deprecation issues
+        // Low priority issue
+
         Bottle mostRecentBottle = null;
         long lastModifiedTime = Long.MIN_VALUE;
 
@@ -87,6 +90,7 @@ public class HomeFragment extends Fragment {
         return mostRecentBottle;
     }
 
+    // Parsing bottle
     private Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String name = readValueSafe(br);
@@ -105,7 +109,9 @@ public class HomeFragment extends Fragment {
             return null;
         }
     }
-
+    // Safe value read.
+    // Can probably sync this with the updated method in DetailView but make sure
+    // The app has basic functionality, first. Don't break it until you can afford it.
     private String readValueSafe(BufferedReader br) throws IOException {
         String line = br.readLine();
         return (line != null && line.contains(": ")) ? line.split(": ", 2)[1] : "";

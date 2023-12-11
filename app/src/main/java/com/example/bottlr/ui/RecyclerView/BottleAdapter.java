@@ -14,6 +14,8 @@ import com.example.bottlr.R;
 
 import java.util.List;
 
+// Bottle adapter code for the recycler
+
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     private List<Bottle> bottles;
     private OnBottleListener onBottleListener;
@@ -21,6 +23,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public BottleAdapter(List<Bottle> bottles, OnBottleListener onBottleListener) {
         this.bottles = bottles;
         this.onBottleListener = onBottleListener;
+        // For handling taps on bottles
     }
 
     @Override
@@ -39,19 +42,21 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             Uri imageUri = Uri.parse(bottle.getPhotoUri().toString());
             Glide.with(holder.itemView.getContext())
                     .load(imageUri)
-                    .error(R.drawable.nodrinkimg)
+                    .error(R.drawable.nodrinkimg) // Using default image for none uploaded
                     .into(holder.imageViewBottle);
         } else {
             holder.imageViewBottle.setImageResource(R.drawable.ic_launcher_background);
         }
     }
 
+    // Counting bottles
     @Override
     public int getItemCount() {
         return bottles.size();
     }
 
-    // Added methods
+    // Added more bottle methods
+    // Double-check these later
     public void setBottles(List<Bottle> bottles) {
         this.bottles = bottles;
     }
@@ -77,12 +82,14 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             itemView.setOnClickListener(this);
         }
 
+        // Code for handling taps
         @Override
         public void onClick(View view) {
             onBottleListener.onBottleClick(getAdapterPosition());
         }
     }
 
+    // Code for handling taps
     public interface OnBottleListener {
         void onBottleClick(int position);
     }

@@ -2,7 +2,6 @@ package com.example.bottlr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
 
 import com.google.android.material.navigation.NavigationView;
@@ -16,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bottlr.databinding.ActivityMainBinding;
 
-// Import statements...
-
 public class MainActivity extends AppCompatActivity {
 
+    // This code is just about entirely stock from the app template provided by Android Studio
+    // Don't screw with it unless you absolutely need to
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 

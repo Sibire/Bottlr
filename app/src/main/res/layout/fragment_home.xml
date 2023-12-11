@@ -44,7 +44,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider after tvDistillery -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -61,7 +60,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider after tvBottleDetails -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -77,7 +75,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Divider after imageViewBottle -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

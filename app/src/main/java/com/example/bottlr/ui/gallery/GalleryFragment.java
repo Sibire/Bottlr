@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
-
     private RecyclerView recyclerView;
     private BottleAdapter adapter;
 
@@ -35,10 +34,12 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        // Line divider to keep things nice and neat
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        // Bottle listing
         List<Bottle> bottles = loadBottles();
         adapter = new BottleAdapter(bottles, this);
         recyclerView.setAdapter(adapter);
@@ -47,11 +48,13 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     }
 
     @Override
+    // Reloads gallery after adding a bottle or any other return to the window.
     public void onResume() {
         super.onResume();
         reloadBottles();
     }
 
+    // Reload bottle method
     private void reloadBottles() {
         List<Bottle> bottles = loadBottles();
         if (adapter != null) {
@@ -60,6 +63,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         }
     }
 
+    // Initial bottle load
     private List<Bottle> loadBottles() {
         List<Bottle> bottles = new ArrayList<>();
         File directory = getContext().getFilesDir();
@@ -69,6 +73,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
             if (file.isFile() && file.getName().startsWith("bottle_")) {
                 Bottle bottle = parseBottle(file);
                 if (bottle != null) {
+                    // Make sure the bottle actually exists
                     bottles.add(bottle);
                 }
             }
@@ -76,6 +81,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         return bottles;
     }
 
+    // Code for parsing bottle details from save files
     private Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String name = readValue(br);
@@ -88,15 +94,25 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
 
             if (name.isEmpty()) {
                 return null;
+                // Make sure the bottle is a valid entry, this is a double-check alongside a similar
+                // Save block to handle a problem with double-saving an empty bottle
+                // Probably because there's both a bitmap and URI image method
+                // Keep it in as a safeguard, but check if those two really are the culprits
+                // Once the app is actually functional
             }
+            // Code for handling bottles with no image
             Uri photoUri = photoUriString.equals("No photo") ? null : Uri.parse(photoUriString);
             return new Bottle(name, distillery, type, abv, age, photoUri, notes);
-        } catch (IOException e) {
+        }
+        // Exception handling
+        catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    // Code for safely splitting lines and reading values without crashing
+    // or throwing some other error like initially faced with gallery implementation
     private String readValue(BufferedReader br) throws IOException {
         String line = br.readLine();
         if (line != null && line.contains(": ")) {
@@ -106,6 +122,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         return "";
     }
 
+    // Bottle Selection Code
     @Override
     public void onBottleClick(int position) {
         Bottle selectedBottle = adapter.getBottle(position);

@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Bottle implements Parcelable {
+
+    // Fields initialization
     private String name;
     private String distillery;
     private String type;
@@ -13,7 +15,7 @@ public class Bottle implements Parcelable {
     private Uri photoUri;
     private String notes;
 
-    // Updated constructor
+    // Bottle constructor
     public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes) {
         this.name = name;
         this.distillery = distillery;
@@ -24,7 +26,9 @@ public class Bottle implements Parcelable {
         this.notes = notes;
     }
 
-    // Getters and Setters
+    // Bottle getters and setters
+    // Not all of these are used *yet* but as there's going to be an edit function
+    // I wanted to cover all of my bases
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -46,6 +50,7 @@ public class Bottle implements Parcelable {
     public Uri getPhotoUri() { return photoUri; }
     public void setPhotoUri(Uri photoUri) { this.photoUri = photoUri; }
 
+    // Creating a bottle from parcel data
     protected Bottle(Parcel in) {
         name = in.readString();
         distillery = in.readString();
@@ -56,6 +61,7 @@ public class Bottle implements Parcelable {
         notes = in.readString();
     }
 
+    // Writing to parcel
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
@@ -67,11 +73,13 @@ public class Bottle implements Parcelable {
         dest.writeString(notes);
     }
 
+    // Needed to get parcelable to work
     @Override
     public int describeContents() {
         return 0;
     }
 
+    // Creating a bottle from parcel data and storing it to the bottle array
     public static final Parcelable.Creator<Bottle> CREATOR = new Parcelable.Creator<Bottle>() {
         @Override
         public Bottle createFromParcel(Parcel in) {
