@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bottlr.databinding.ActivityMainBinding;
 
+// TODO: Get the detail view to close properly when backing out of it
+
 public class MainActivity extends AppCompatActivity {
 
     // This code is just about entirely stock from the app template provided by Android Studio
