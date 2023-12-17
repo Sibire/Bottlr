@@ -3,7 +3,6 @@ package com.example.bottlr.ui.home;
 //region Imports
 import static com.example.bottlr.MainActivity.parseBottle;
 import static com.example.bottlr.MainActivity.queryBuilder;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
