@@ -1,11 +1,13 @@
 package com.example.bottlr.ui.home;
 
 //region Imports
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -36,7 +38,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize the views
+        // Initialize views
         tvBottleName = root.findViewById(R.id.tvBottleName);
         tvDistillery = root.findViewById(R.id.tvDistillery);
         tvBottleDetails = root.findViewById(R.id.tvBottleDetails);
@@ -45,7 +47,28 @@ public class HomeFragment extends Fragment {
         tvRating = root.findViewById(R.id.tvRating);
         tvKeywords = root.findViewById(R.id.tvKeywords);
 
+        // Shopping button initialization
+        ImageButton buyButton = root.findViewById(R.id.buyButton);
+
+        // Call update
         updateRecentBottleView();
+
+        //region Shopping Query
+
+        // Buy button listener
+        buyButton.setOnClickListener(v -> {
+            Bottle recentBottle = getMostRecentBottle();
+            if (recentBottle != null) {
+                String query = QueryBuilder(recentBottle);
+                String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(query);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+
+
+        //endregion
 
         return root;
     }
@@ -169,6 +192,34 @@ public class HomeFragment extends Fragment {
         String line = br.readLine();
         return (line != null && line.contains(": ")) ? line.split(": ", 2)[1] : "";
     }
+    //endregion
+
+    //region Query Builder
+
+    // Search query string builder
+    private String QueryBuilder(Bottle toBuy) {
+        StringBuilder queryBuilder = new StringBuilder();
+
+        // Append other fields only if they are not empty
+        if (toBuy.getDistillery() != null && !toBuy.getDistillery().isEmpty()) {
+            queryBuilder.append(" ").append(toBuy.getDistillery()).append(" ");
+        }
+
+        // Always include name
+        queryBuilder.append(toBuy.getName());
+
+        if (toBuy.getAge() != null && !toBuy.getAge().isEmpty()) {
+            queryBuilder.append(" ").append(toBuy.getAge()).append(" Year");
+        }
+        if (toBuy.getRegion() != null && !toBuy.getRegion().isEmpty()) {
+            queryBuilder.append(" ").append(toBuy.getRegion());
+        }
+        if (toBuy.getType() != null && !toBuy.getType().isEmpty()) {
+            queryBuilder.append(" ").append(toBuy.getType());
+        }
+        return queryBuilder.toString();
+    }
+
     //endregion
 
 }
