@@ -40,8 +40,7 @@ public class AddABottle extends AppCompatActivity {
     // Field initialization
     private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField, regionField, keywordsField, ratingField;
 
-    // Buttons
-    private Button addPhotoButton, saveButton, cancelButton;
+    private Button cancelButton;
 
     // Gallery storage URI
     private Uri photoUri;
@@ -67,7 +66,8 @@ public class AddABottle extends AppCompatActivity {
         regionField = findViewById(R.id.regionField);
         keywordsField = findViewById(R.id.keywordsField);
         ratingField = findViewById(R.id.ratingField);
-        addPhotoButton = findViewById(R.id.addPhotoButton);
+        // Buttons
+        Button addPhotoButton = findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(view -> {
             if (checkPermissions()) {
                 chooseImageSource();
@@ -76,7 +76,7 @@ public class AddABottle extends AppCompatActivity {
             }
         });
 
-        saveButton = findViewById(R.id.saveButton);
+        Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v -> {
             saveEntryToFile();
             finish(); // Close add bottle and return to prior window. Works with OnResume refresh code.
@@ -235,7 +235,7 @@ public class AddABottle extends AppCompatActivity {
             keywordsBuilder.append(keyword.trim());
         }
 
-        String filename = "bottle_" + System.currentTimeMillis() + ".txt";
+        String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
         String fileContents = "Name: " + name + "\n" +
                 "Distiller: " + distillery + "\n" +
                 "Type: " + type + "\n" +

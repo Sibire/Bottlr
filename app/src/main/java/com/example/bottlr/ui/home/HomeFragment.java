@@ -13,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
@@ -47,6 +50,9 @@ public class HomeFragment extends Fragment {
         // Shopping button initialization
         ImageButton buyButton = root.findViewById(R.id.buyButton);
 
+        // Delete button initialization
+        ImageButton deleteButton = root.findViewById(R.id.deleteButton);
+
         // Call update
         updateRecentBottleView();
 
@@ -61,6 +67,14 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
+            }
+        });
+
+        // Delete button listener
+        deleteButton.setOnClickListener(v -> {
+            Bottle recentBottle = getMostRecentBottle();
+            if (recentBottle != null) {
+                showDeleteConfirm(recentBottle);
             }
         });
 
@@ -139,5 +153,33 @@ public class HomeFragment extends Fragment {
         return mostRecentBottle;
     }
     //endregion
+
+    //Delete Confirmation Dialog
+    private void showDeleteConfirm(final Bottle bottle) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete Bottle")
+                .setMessage("Are you sure you want to delete this bottle?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteBottle(bottle))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    //Delete Bottle
+    private void deleteBottle(Bottle bottle) {
+        String axedBottle = bottle.getName();
+        String filename = "bottle_" + bottle.getName() + ".txt";
+        File file = new File(getContext().getFilesDir(), filename);
+        if (file.exists()) {
+            file.delete();
+            Toast.makeText(getContext(), axedBottle + " Deleted.", Toast.LENGTH_SHORT).show();
+            updateRecentBottleView();
+            // Delete and Refresh
+        }
+        // Error Handling
+        else {
+            Toast.makeText(getContext(), "Error deleting bottle.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }

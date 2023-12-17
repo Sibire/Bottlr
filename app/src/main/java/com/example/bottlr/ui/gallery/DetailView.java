@@ -2,6 +2,8 @@ package com.example.bottlr.ui.gallery;
 
 //region Imports
 import static com.example.bottlr.MainActivity.queryBuilder;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,16 +13,23 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.Bottle;
+import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
+
+import java.io.File;
 //endregion
 
 public class DetailView extends Fragment {
 
+    //region On Create Code
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -28,6 +37,9 @@ public class DetailView extends Fragment {
 
         // Shopping button initialization
         ImageButton buyButton = root.findViewById(R.id.buyButton);
+
+        // Delete button initialization
+        ImageButton deleteButton = root.findViewById(R.id.deleteButton);
 
         //region Load Bottle Details
 
@@ -39,6 +51,8 @@ public class DetailView extends Fragment {
         ImageView imageViewBottle = root.findViewById(R.id.imageViewBottle);
         TextView tvNotes = root.findViewById(R.id.tvNotes);
         TextView tvKeywords = root.findViewById(R.id.tvKeywords);
+
+        // Main bottle load code
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -67,6 +81,21 @@ public class DetailView extends Fragment {
                 }
             }
 
+            // End main bottle load code
+
+
+            //region Delete Button
+
+            // Delete button listener
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDeleteConfirm(selectedBottle);
+                }
+            });
+
+            //endregion
+
             //region Shopping Query
 
             // Buy button listener
@@ -84,11 +113,45 @@ public class DetailView extends Fragment {
             });
 
             //endregion
-
         }
-
-        //endregion
-
         return root;
     }
+
+    //endregion
+
+    //region Deletion Handling
+
+    // Confirmation Popup
+    private void showDeleteConfirm(final Bottle bottle) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete Bottle")
+                .setMessage("Are you sure you want to delete this bottle?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    deleteBottle(bottle);
+                    // Refresh
+                    getActivity().getSupportFragmentManager().popBackStack();
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    // Deletion Code
+    private void deleteBottle(Bottle bottle) {
+        String axedBottle = bottle.getName();
+        String filename = "bottle_" + bottle.getName() + ".txt";
+        File file = new File(getContext().getFilesDir(), filename);
+        if (file.exists()) {
+            file.delete();
+            Toast.makeText(getContext(), axedBottle + " Deleted.", Toast.LENGTH_SHORT).show();
+            // Delete and Refresh, refresh handled by Gallery code.
+        }
+        // Error Handling
+        else {
+            Toast.makeText(getContext(), "Error deleting bottle.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //endregion
+
 }
