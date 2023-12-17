@@ -1,17 +1,12 @@
 package com.example.bottlr;
 
 //region Imports
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
-
-import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.navigation.NavController;
@@ -23,11 +18,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.bottlr.databinding.ActivityMainBinding;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -210,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
             // It's probably fine to use time for the cache file name, but keep this in mind
             // In case it causes issues later down the line
             String fileName = "cached_bottle_image_" + System.currentTimeMillis() + ".png";
-            File cacheFile = new File(context.getCacheDir(), fileName);
-            try (OutputStream outputStream = new FileOutputStream(cacheFile))
+            File cacheFile = new File(context.getFilesDir(), fileName);
+            try (OutputStream outputStream = Files.newOutputStream(cacheFile.toPath()))
             {
                 byte[] buffer = new byte[4096]; // Adjust buffer size if needed
                 int bytesRead;

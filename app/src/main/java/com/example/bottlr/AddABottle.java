@@ -32,7 +32,6 @@ public class AddABottle extends AppCompatActivity {
 
     //region Permissions
     // Relevant permissions code
-    private static final int PERMISSIONS_REQUEST_CODE = 200;
     private static final int CAMERA_REQUEST_CODE = 201;
     private static final int GALLERY_REQUEST_CODE = 202;
     //endregion
@@ -69,10 +68,10 @@ public class AddABottle extends AppCompatActivity {
         // Photo Button
         Button addPhotoButton = findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(view -> {
-            if (checkPermissions()) {
+            if (checkCameraPermission()) {
                 chooseImageSource();
             } else {
-                requestPermissions();
+                requestCameraPermission();
             }
         });
 
@@ -100,25 +99,22 @@ public class AddABottle extends AppCompatActivity {
 
     //region Permissions Code
     // Permission checking
-    private boolean checkPermissions() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
-    // Requesting permissions where needed
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
     }
 
-    // Notifying user that permissions are required to use features
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+        if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 chooseImageSource();
             } else {
-                Toast.makeText(this, "Camera and Gallery permissions are required to use this feature.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -130,10 +126,8 @@ public class AddABottle extends AppCompatActivity {
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
     private void chooseImageSource() {
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
-
         builder.setItems(options, (dialog, which) -> {
             if ("Take Photo".equals(options[which])) {
                 launchCameraIntent();
@@ -144,7 +138,6 @@ public class AddABottle extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        // Build the option popup
         builder.show();
     }
     //endregion
@@ -168,50 +161,15 @@ public class AddABottle extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        ImageView imagePreview = findViewById(R.id.imagePreview);
         if (resultCode == RESULT_OK) {
-            ImageView imagePreview = findViewById(R.id.imagePreview);
-
             if (requestCode == GALLERY_REQUEST_CODE) {
-                Uri imageUri = data.getData();
-                if (imageUri != null) {
-                    photoUri = saveImageToLocal(imageUri); // Save image to user's gallery as a backup for loss of app memory
-                    imagePreview.setImageURI(photoUri);
-                }
+                photoUri = data.getData();
+                imagePreview.setImageURI(photoUri);
             } else if (requestCode == CAMERA_REQUEST_CODE) {
-                // Use the cameraImageUri directly
                 photoUri = cameraImageUri;
                 imagePreview.setImageURI(cameraImageUri);
             }
-        }
-    }
-    //endregion
-
-    //region Image Saving
-
-    // Image save code using Bitmap
-    private Uri saveImageToLocal(Bitmap bitmap) {
-        try {
-            String fileName = "bottle_" + System.currentTimeMillis() + ".png";
-            FileOutputStream fos = openFileOutput(fileName, MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.close();
-            return Uri.fromFile(getFileStreamPath(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error saving image", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-    }
-    // Image save code using URI
-    private Uri saveImageToLocal(Uri imageUri) {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-            return saveImageToLocal(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error saving image", Toast.LENGTH_SHORT).show();
-            return null;
         }
     }
     //endregion
@@ -257,7 +215,7 @@ public class AddABottle extends AppCompatActivity {
                 "Age: " + age + "\n" +
                 "Notes: " + notes + "\n" +
                 "Region: " + region + "\n" +
-                "Keywords: " + keywordsBuilder.toString() + "\n" +
+                "Keywords: " + keywordsBuilder + "\n" +
                 "Rating: " + rating + "\n" +
                 "Photo: " + photoPath;
 
