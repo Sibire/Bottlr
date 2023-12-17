@@ -1,5 +1,6 @@
 package com.example.bottlr.ui.RecyclerView;
 
+//region Imports
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,12 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
-
 import java.util.List;
+//endregion
 
 // Bottle adapter code for the recycler
 
@@ -45,7 +45,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
                     .error(R.drawable.nodrinkimg) // Using default image for none uploaded
                     .into(holder.imageViewBottle);
         } else {
-            holder.imageViewBottle.setImageResource(R.drawable.ic_launcher_background);
+            holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
         }
     }
 
@@ -93,4 +93,5 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public interface OnBottleListener {
         void onBottleClick(int position);
     }
+
 }

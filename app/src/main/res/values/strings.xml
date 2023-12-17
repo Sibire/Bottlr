@@ -7,10 +7,14 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Add A Bottle</string>
+    <string name="menu_home">Last Bottle</string>
     <string name="menu_gallery">Liquor Cabinet</string>
     <string name="menu_slideshow">Slideshow</string>
 
     // Bottle add window
     <string name="title_activity_add_a_bottle">Add A Bottle</string>
+
+    // Back, Buy, Edit, Delete, Share
+
+
 </resources>

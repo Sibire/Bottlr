@@ -1,5 +1,6 @@
 package com.example.bottlr;
 
+//region Imports
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -13,29 +14,43 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+//endregion
 
 @SuppressWarnings("deprecation")
 // Ignore deprecation issues
 public class AddABottle extends AppCompatActivity {
 
+    //region Permissions
     // Relevant permissions code
     private static final int PERMISSIONS_REQUEST_CODE = 200;
     private static final int CAMERA_REQUEST_CODE = 201;
     private static final int GALLERY_REQUEST_CODE = 202;
+    //endregion
 
+    //region Fields
     // Field initialization
-    private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField;
-    private Button addPhotoButton, saveButton;
-    private Uri photoUri; // Gallery storage URI
-    private Uri cameraImageUri; // Camera storage URI
+    private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField, regionField, keywordsField, ratingField;
+
+    // Buttons
+    private Button addPhotoButton, saveButton, cancelButton;
+
+    // Gallery storage URI
+    private Uri photoUri;
+
+    // Camera storage URI
+    private Uri cameraImageUri;
+    //endregion
+
+    //region OnCreate
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +64,9 @@ public class AddABottle extends AppCompatActivity {
         abvField = findViewById(R.id.abvField);
         ageField = findViewById(R.id.ageField);
         tastingNotesField = findViewById(R.id.tastingNotesField);
-
+        regionField = findViewById(R.id.regionField);
+        keywordsField = findViewById(R.id.keywordsField);
+        ratingField = findViewById(R.id.ratingField);
         addPhotoButton = findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(view -> {
             if (checkPermissions()) {
@@ -65,7 +82,9 @@ public class AddABottle extends AppCompatActivity {
             finish(); // Close add bottle and return to prior window. Works with OnResume refresh code.
         });
     }
+    //endregion
 
+    //region Permissions Code
     // Permission checking
     private boolean checkPermissions() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
@@ -89,6 +108,9 @@ public class AddABottle extends AppCompatActivity {
             }
         }
     }
+    //endregion
+
+    //region Choosing Image
 
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
@@ -111,6 +133,9 @@ public class AddABottle extends AppCompatActivity {
         // Build the option popup
         builder.show();
     }
+    //endregion
+
+    //region Camera Code
 
     // Launching the camera using the code originally implemented in main
     // Make sure to erase all permission and camera code from main and move it here
@@ -146,6 +171,9 @@ public class AddABottle extends AppCompatActivity {
             }
         }
     }
+    //endregion
+
+    //region Image Saving
 
     // Image save code using Bitmap
     private Uri saveImageToLocal(Bitmap bitmap) {
@@ -172,16 +200,14 @@ public class AddABottle extends AppCompatActivity {
             return null;
         }
     }
+    //endregion
 
-    // NOTES ABOUT SAVING IMAGES
-    // Test around more and see if both of these are required
-    // Adding both seemed to fix a crash issue I was getting, but I'm not sure it's necessary
-    // Add some breakpoints and see if there's ever a use for the bitmap one
+    //region Bottle Saving
 
     // Saves bottle to a file
     private void saveEntryToFile() {
+
         String name = bottleNameField.getText().toString();
-        String distillery = distillerField.getText().toString();
 
         // Check if the bottle has a name
         if (name.isEmpty()) {
@@ -189,11 +215,25 @@ public class AddABottle extends AppCompatActivity {
             return; // Do not proceed with saving if there's no name
         }
 
+        String distillery = distillerField.getText().toString();
         String type = spiritTypeField.getText().toString();
         String abv = abvField.getText().toString();
         String age = ageField.getText().toString();
         String notes = tastingNotesField.getText().toString();
         String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+        String region = regionField.getText().toString();
+        String rating = ratingField.getText().toString();
+
+        Set<String> keywords = new HashSet<>(Arrays.asList(keywordsField.getText().toString().split(",")));
+
+        // Keyword String Constructor
+        StringBuilder keywordsBuilder = new StringBuilder();
+        for (String keyword : keywords) {
+            if (keywordsBuilder.length() > 0) {
+                keywordsBuilder.append(", ");
+            }
+            keywordsBuilder.append(keyword.trim());
+        }
 
         String filename = "bottle_" + System.currentTimeMillis() + ".txt";
         String fileContents = "Name: " + name + "\n" +
@@ -202,16 +242,23 @@ public class AddABottle extends AppCompatActivity {
                 "ABV: " + abv + "\n" +
                 "Age: " + age + "\n" +
                 "Notes: " + notes + "\n" +
+                "Region: " + region + "\n" +
+                "Keywords: " + keywordsBuilder.toString() + "\n" +
+                "Rating: " + rating + "\n" +
                 "Photo: " + photoPath;
 
         try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
             fos.write(fileContents.getBytes());
             Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
         }
+
             // Exception handling
             catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
         }
+
     }
+    //endregion
+
 }

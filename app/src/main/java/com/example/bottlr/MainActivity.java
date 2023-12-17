@@ -1,19 +1,18 @@
 package com.example.bottlr;
 
+//region Imports
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.bottlr.databinding.ActivityMainBinding;
+//endregion
 
 // TODO: Get the detail view to close properly when backing out of it
 
@@ -49,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             boolean handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
             if (handled) {
-                // Clear back stack only when necessary
-                if (menuItem.getItemId() != R.id.nav_gallery) { // Assuming you don't want to clear for gallery
+                // Clears back stack
+                if (menuItem.getItemId() != R.id.nav_gallery) { // Don't clear the gallery
                     while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                         getSupportFragmentManager().popBackStackImmediate();
                     }
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
