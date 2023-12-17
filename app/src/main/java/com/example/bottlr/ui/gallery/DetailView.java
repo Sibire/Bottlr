@@ -24,6 +24,8 @@ import com.example.bottlr.R;
 import java.io.File;
 //endregion
 
+// TODO: Get this to auto-refresh after an edit, without breaking everything.
+
 public class DetailView extends Fragment {
 
     //region On Create Code
