@@ -1,5 +1,6 @@
 package com.example.bottlr.ui.gallery;
 
+//region Imports
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,17 +16,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.Bottle;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+//endregion
 
 public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
+
+    //region Initialization
+
     private RecyclerView recyclerView;
     private BottleAdapter adapter;
+
+    //endregion
+
+    //region On Create Code
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -46,13 +58,20 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
 
         return root;
     }
+    //endregion
+
+    //region On Resume Reload
 
     @Override
-    // Reloads gallery after adding a bottle or any other return to the window.
     public void onResume() {
         super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Liquor Cabinet");
         reloadBottles();
     }
+
+    //endregion
+
+    //region Bottle Loading
 
     // Reload bottle method
     private void reloadBottles() {
@@ -80,17 +99,16 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         }
         return bottles;
     }
+    //endregion
+
+    //region Parse Bottle from Save
 
     // Code for parsing bottle details from save files
+
     private Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String name = readValue(br);
-            String distillery = readValue(br);
-            String type = readValue(br);
-            String abv = readValue(br);
-            String age = readValue(br);
-            String notes = readValue(br);
-            String photoUriString = readValue(br);
+
+            String name = readValueSafe(br);
 
             if (name.isEmpty()) {
                 return null;
@@ -100,29 +118,43 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
                 // Keep it in as a safeguard, but check if those two really are the culprits
                 // Once the app is actually functional
             }
-            // Code for handling bottles with no image
-            Uri photoUri = photoUriString.equals("No photo") ? null : Uri.parse(photoUriString);
-            return new Bottle(name, distillery, type, abv, age, photoUri, notes);
-        }
-        // Exception handling
-        catch (IOException e) {
+
+            // Else continue
+
+            String distillery = readValueSafe(br);
+            String type = readValueSafe(br);
+            String abv = readValueSafe(br);
+            String age = readValueSafe(br);
+            String notes = readValueSafe(br);
+            String region = readValueSafe(br);
+            Set<String> keywords = new HashSet<>(Arrays.asList(readValueSafe(br).split(",")));
+            String rating = readValueSafe(br);
+            String photoUriString = readValueSafe(br);
+            Uri photoUri = (!photoUriString.equals("No photo") && !photoUriString.isEmpty()) ? Uri.parse(photoUriString) : null;
+
+            // Return bottle
+            return new Bottle(name, distillery, type, abv, age, photoUri, notes, region, keywords, rating);
+
+            // Exception handling
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+    //endregion
 
-    // Code for safely splitting lines and reading values without crashing
-    // or throwing some other error like initially faced with gallery implementation
-    private String readValue(BufferedReader br) throws IOException {
+    //region Safe Read
+
+    // Safe value read.
+    private String readValueSafe(BufferedReader br) throws IOException {
         String line = br.readLine();
-        if (line != null && line.contains(": ")) {
-            String[] parts = line.split(": ", 2);
-            return parts.length > 1 ? parts[1] : "";
-        }
-        return "";
+        return (line != null && line.contains(": ")) ? line.split(": ", 2)[1] : "";
     }
+    //endregion
 
-    // Bottle Selection Code
+    //region Bottle Select Code
+
+    // Bottle Selection
     @Override
     public void onBottleClick(int position) {
         Bottle selectedBottle = adapter.getBottle(position);
@@ -132,10 +164,12 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
             bundle.putParcelable("selectedBottle", selectedBottle);
             bottleDetail.setArguments(bundle);
 
-            requireActivity().getSupportFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, bottleDetail)
-                    .addToBackStack(null)
+                    .addToBackStack(null)  // Adds transaction to back stack
                     .commit();
         }
     }
+    //endregion
+
 }
