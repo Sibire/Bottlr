@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.AddABottle;
+import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
 import java.io.File;
@@ -57,6 +58,9 @@ public class HomeFragment extends Fragment {
         // Edit button initialization
         ImageButton editButton = root.findViewById(R.id.editButton);
 
+        // Share button initialization
+        ImageButton shareButton = root.findViewById(R.id.shareButton);
+
         // Call update
         updateRecentBottleView();
 
@@ -90,6 +94,21 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), AddABottle.class);
                 intent.putExtra("bottle", getMostRecentBottle());
                 startActivity(intent);
+            }
+        });
+
+        // Share button listener
+        // Janky as hell because I think I broke some import cleanliness
+        // But if I import MainActivity directly it seems to work
+
+        shareButton.setOnClickListener(view -> {
+            if (getActivity() instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                // Replacing bundle with getMostRecentBottle for HomeFragment use
+                Bottle bottleToShare = getMostRecentBottle();
+                if (bottleToShare != null) {
+                    mainActivity.shareBottleInfo(bottleToShare);
+                }
             }
         });
 

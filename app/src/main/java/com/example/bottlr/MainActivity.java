@@ -3,6 +3,7 @@ package com.example.bottlr;
 //region Imports
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.view.Menu;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,8 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.bottlr.databinding.ActivityMainBinding;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -172,6 +179,134 @@ public class MainActivity extends AppCompatActivity {
         }
         return queryBuilder.toString();
     }
+
+    //endregion
+
+    //region Share Functionalities
+
+    // Handle all share functionalities here
+
+    //region shareBottleInfo
+
+    // Shares bottle information
+    public void shareBottleInfo(Bottle bottle) {
+        if (bottle != null) {
+            String shareText = createShareText(bottle);
+            Uri imageUri = (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo"))
+                    ? cacheImage(bottle.getPhotoUri(), this)
+                    : null;
+            shareBottleContent(shareText, imageUri, this);
+        }
+    }
+
+    //endregion
+
+    //region cacheImage
+
+    // Saves the bottle image to the cache for use in sharing bottle details.
+    private static Uri cacheImage(Uri imageUri, Context context) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            // It's probably fine to use time for the cache file name, but keep this in mind
+            // In case it causes issues later down the line
+            String fileName = "cached_bottle_image_" + System.currentTimeMillis() + ".png";
+            File cacheFile = new File(context.getCacheDir(), fileName);
+            try (OutputStream outputStream = new FileOutputStream(cacheFile))
+            {
+                byte[] buffer = new byte[4096]; // Adjust buffer size if needed
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            return FileProvider.getUriForFile(context, "com.example.bottlr.fileprovider", cacheFile);
+        }
+        // Error handling
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //endregion
+
+    //region shareBottleContent
+
+    // For sharing Bottle details
+    private static void shareBottleContent(String text, @Nullable Uri imageUri, Context context) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+        shareIntent.setType("text/plain");
+
+        if (imageUri != null) {
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.setType("image/*");
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Share Bottle Info"));
+    }
+
+    //endregion
+
+    //region Bottle ShareText Builder
+
+    // Constructs a share post using pertinent bottle details, if available.
+    private static String createShareText(Bottle bottle) {
+        StringBuilder shareText = new StringBuilder("Here's what I'm drinking:\n\n");
+
+        // Always include the bottle name, since it's always there
+        shareText.append(bottle.getName());
+        // Include the distillery statement if one exists
+        if (bottle.getDistillery() != null && !bottle.getDistillery().isEmpty()) {
+            shareText.append(", by ").append(bottle.getDistillery());
+        }
+        shareText.append("\n");
+
+        // Check for Age, Region, and Type fields
+        boolean hasAge = bottle.getAge() != null && !bottle.getAge().isEmpty();
+        boolean hasRegion = bottle.getRegion() != null && !bottle.getRegion().isEmpty();
+        boolean hasType = bottle.getType() != null && !bottle.getType().isEmpty();
+
+        if (hasAge || hasRegion || hasType) {
+            // Get to work constructing the post with available data
+            if (hasAge) {
+                // Add age statement, if applicable
+                shareText.append(bottle.getAge()).append("-Year ");
+            }
+            if (hasRegion) {
+                // Add region, if applicable
+                shareText.append(bottle.getRegion()).append(" ");
+            }
+            if (hasType) {
+                // Add type, if applicable
+                shareText.append(bottle.getType());
+            }
+            shareText.append("\n");
+        }
+
+        // Adding notes, if applicable
+        if (bottle.getNotes() != null && !bottle.getNotes().isEmpty()) {
+            shareText.append("\nMy Thoughts:\n").append(bottle.getNotes());
+        }
+
+        // Finalize string. Should look like this:
+        //
+        // Here's what I'm drinking:
+        //
+        // The Peat Seat, by Speynnigan's Wake
+        // 5-Year Speyside Scotch
+        //
+        // My Thoughts:
+        // Peaty, smoky, nice notes of caramel.
+        //
+        // Any missing details should be omitted in formatting.
+
+        return shareText.toString();
+    }
+
+    //endregion
 
     //endregion
 

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.AddABottle;
 import com.example.bottlr.Bottle;
+import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import java.io.File;
 //endregion
@@ -39,6 +40,9 @@ public class DetailView extends Fragment {
 
         // Edit button initialization
         ImageButton editButton = root.findViewById(R.id.editButton);
+
+        // Share button initialization
+        ImageButton shareButton = root.findViewById(R.id.shareButton);
 
         //region Load Bottle Details
 
@@ -86,12 +90,7 @@ public class DetailView extends Fragment {
             //region Delete Button
 
             // Delete button listener
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showDeleteConfirm(selectedBottle);
-                }
-            });
+            deleteButton.setOnClickListener(view -> showDeleteConfirm(selectedBottle));
 
             //endregion
 
@@ -127,6 +126,25 @@ public class DetailView extends Fragment {
             });
 
             //endregion
+
+            //region Share Button
+
+            // Share button listener
+            // Janky as hell because I think I broke some import cleanliness
+            // But if I import MainActivity directly it seems to work
+
+            shareButton.setOnClickListener(view -> {
+                if (getActivity() instanceof MainActivity) {
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    Bottle bottleToShare = bundle.getParcelable("selectedBottle");
+                    if (bottleToShare != null) {
+                        mainActivity.shareBottleInfo(bottleToShare);
+                    }
+                }
+            });
+
+            //endregion
+
         }
         return root;
     }
