@@ -1,13 +1,13 @@
 package com.example.bottlr.ui.gallery;
 
 //region Imports
+import static com.example.bottlr.MainActivity.queryBuilder;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,19 +70,16 @@ public class DetailView extends Fragment {
             //region Shopping Query
 
             // Buy button listener
-            buyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (selectedBottle != null) {
-                        // Creates a search query from pertinent bottle details
-                        String buyQuery = QueryBuilder(selectedBottle);
-                        String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(buyQuery); // Shopping focused query
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(url));
+            buyButton.setOnClickListener(view -> {
+                if (selectedBottle != null) {
+                    // Creates a search query from pertinent bottle details
+                    String buyQuery = queryBuilder(selectedBottle);
+                    String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(buyQuery); // Shopping focused query
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
 
-                        // Searches using query
-                        startActivity(intent);
-                    }
+                    // Searches using query
+                    startActivity(intent);
                 }
             });
 
@@ -94,33 +91,4 @@ public class DetailView extends Fragment {
 
         return root;
     }
-
-    //region Query Builder
-
-    // Search query string builder
-    private String QueryBuilder(Bottle toBuy) {
-        StringBuilder queryBuilder = new StringBuilder();
-
-        // Append other fields only if they are not empty
-        if (toBuy.getDistillery() != null && !toBuy.getDistillery().isEmpty()) {
-            queryBuilder.append(" ").append(toBuy.getDistillery()).append(" ");
-        }
-
-        // Always include name
-        queryBuilder.append(toBuy.getName());
-
-        if (toBuy.getAge() != null && !toBuy.getAge().isEmpty()) {
-            queryBuilder.append(" ").append(toBuy.getAge()).append(" Year");
-        }
-        if (toBuy.getRegion() != null && !toBuy.getRegion().isEmpty()) {
-            queryBuilder.append(" ").append(toBuy.getRegion());
-        }
-        if (toBuy.getType() != null && !toBuy.getType().isEmpty()) {
-            queryBuilder.append(" ").append(toBuy.getType());
-        }
-        return queryBuilder.toString();
-    }
-
-    //endregion
-
 }
