@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,8 +41,6 @@ public class AddABottle extends AppCompatActivity {
     // Field initialization
     private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField, regionField, keywordsField, ratingField;
 
-    private Button cancelButton;
-
     // Gallery storage URI
     private Uri photoUri;
 
@@ -66,7 +65,8 @@ public class AddABottle extends AppCompatActivity {
         regionField = findViewById(R.id.regionField);
         keywordsField = findViewById(R.id.keywordsField);
         ratingField = findViewById(R.id.ratingField);
-        // Buttons
+
+        // Photo Button
         Button addPhotoButton = findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(view -> {
             if (checkPermissions()) {
@@ -76,12 +76,26 @@ public class AddABottle extends AppCompatActivity {
             }
         });
 
+        // Save Button
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v -> {
             saveEntryToFile();
             finish(); // Close add bottle and return to prior window. Works with OnResume refresh code.
         });
+
+        // Check for existing data (Critical for Edit function)
+        // Adjust header text if editing
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        Bottle bottleToEdit = null;
+        if (getIntent().hasExtra("bottle")) {
+            bottleToEdit = getIntent().getParcelableExtra("bottle");
+            toolbar.setTitle("Edit Bottle");
+            popFields(bottleToEdit);
+        } else {
+            toolbar.setTitle("Add A Bottle");
+        }
     }
+
     //endregion
 
     //region Permissions Code
@@ -259,6 +273,35 @@ public class AddABottle extends AppCompatActivity {
         }
 
     }
+    //endregion
+
+    //region Field Population
+
+    // Populates fields with existing data if used as an edit class
+
+    private void popFields(Bottle bottle) {
+        if (bottle != null) {
+
+            // Imports any existing data, but marks empty fields.
+
+            bottleNameField.setText(bottle.getName() != null && !bottle.getName().isEmpty() ? bottle.getName() : "No Name Saved");
+            distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "No Distiller Saved");
+            spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "No Type Saved");
+            abvField.setText(bottle.getAbv() != null && !bottle.getAbv().isEmpty() ? bottle.getAbv() : "No ABV (%) Saved");
+            ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "No Age (Years) Saved");
+            tastingNotesField.setText(bottle.getNotes() != null && !bottle.getNotes().isEmpty() ? bottle.getNotes() : "No Notes Saved");
+            regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
+            keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
+            ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
+
+            if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
+                photoUri = Uri.parse(bottle.getPhotoUri().toString());
+                ImageView imagePreview = findViewById(R.id.imagePreview);
+                imagePreview.setImageURI(photoUri);
+            }
+        }
+    }
+
     //endregion
 
 }

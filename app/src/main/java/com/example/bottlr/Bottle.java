@@ -4,6 +4,9 @@ package com.example.bottlr;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 //endregion
 
@@ -88,7 +91,9 @@ public class Bottle implements Parcelable {
     //endregion
 
     //region Create Bottle from Parcel Data
+
     // Creating a bottle from parcel data
+
     protected Bottle(Parcel in) {
         name = in.readString();
         distillery = in.readString();
@@ -97,6 +102,9 @@ public class Bottle implements Parcelable {
         age = in.readString();
         photoUri = in.readParcelable(Uri.class.getClassLoader());
         notes = in.readString();
+        region = in.readString();
+        rating = in.readString();
+        keywords = new HashSet<>(Arrays.asList(in.readString().split(",")));
     }
     //endregion
 
@@ -109,7 +117,9 @@ public class Bottle implements Parcelable {
     //endregion
 
     //region Write to Parcel
+
     // Writing to parcel
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
@@ -119,6 +129,9 @@ public class Bottle implements Parcelable {
         dest.writeString(age);
         dest.writeParcelable(photoUri, flags);
         dest.writeString(notes);
+        dest.writeString(region);
+        dest.writeString(rating);
+        dest.writeString(String.join(",", keywords));
     }
     //endregion
 

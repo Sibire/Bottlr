@@ -22,6 +22,7 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <EditText
         android:id="@+id/bottleNameField"
         android:layout_width="match_parent"

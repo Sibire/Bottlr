@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
+import com.example.bottlr.AddABottle;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
 import java.io.File;
@@ -53,6 +54,9 @@ public class HomeFragment extends Fragment {
         // Delete button initialization
         ImageButton deleteButton = root.findViewById(R.id.deleteButton);
 
+        // Edit button initialization
+        ImageButton editButton = root.findViewById(R.id.editButton);
+
         // Call update
         updateRecentBottleView();
 
@@ -78,6 +82,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Edit button listener
+
+        editButton.setOnClickListener(view -> {
+            if (getMostRecentBottle() != null) {
+                // Call AddABottle to reuse existing assets
+                Intent intent = new Intent(getContext(), AddABottle.class);
+                intent.putExtra("bottle", getMostRecentBottle());
+                startActivity(intent);
+            }
+        });
 
         //endregion
 
@@ -96,6 +110,8 @@ public class HomeFragment extends Fragment {
     //endregion
 
     //region Update Recent
+
+    //Updates recent bottle for OnResume call
 
     private void updateRecentBottleView() {
         Bottle recentBottle = getMostRecentBottle();
