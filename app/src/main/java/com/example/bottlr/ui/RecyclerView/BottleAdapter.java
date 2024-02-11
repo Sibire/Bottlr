@@ -1,6 +1,5 @@
 package com.example.bottlr.ui.RecyclerView;
 
-//region Imports
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,21 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
-
 import java.util.ArrayList;
 import java.util.List;
-//endregion
-
-// Bottle adapter code for the recycler
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     private List<Bottle> bottles;
+    private final List<Bottle> allBottles;
     private OnBottleListener onBottleListener;
 
     public BottleAdapter(List<Bottle> bottles, OnBottleListener onBottleListener) {
-        this.bottles = bottles;
+        this.bottles = new ArrayList<>(bottles);
+        this.allBottles = new ArrayList<>(bottles); // Initialize with a copy of the bottles
         this.onBottleListener = onBottleListener;
-        // For handling taps on bottles
     }
 
     @Override
@@ -39,35 +37,52 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         Bottle bottle = bottles.get(position);
         holder.textViewBottleName.setText(bottle.getName());
         holder.textViewDistillery.setText(bottle.getDistillery());
+        // Any other fields as necessary in the future
 
         if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
-            Uri imageUri = Uri.parse(bottle.getPhotoUri().toString());
             Glide.with(holder.itemView.getContext())
-                    .load(imageUri)
-                    .error(R.drawable.nodrinkimg) // Using default image for none uploaded
+                    .load(Uri.parse(bottle.getPhotoUri().toString()))
+                    .error(R.drawable.nodrinkimg)
                     .into(holder.imageViewBottle);
         } else {
             holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
         }
     }
 
-    // Counting bottles
     @Override
     public int getItemCount() {
         return bottles.size();
     }
 
-    // Added more bottle methods
-    // Double-check these later
     public void setBottles(List<Bottle> bottles) {
-        this.bottles = bottles;
+        this.bottles = new ArrayList<>(bottles);
+        this.allBottles.clear();
+        this.allBottles.addAll(bottles);
+        notifyDataSetChanged();
     }
 
     public Bottle getBottle(int position) {
         if (position >= 0 && position < bottles.size()) {
             return bottles.get(position);
         }
-        return null;
+        return null; // Null if ouut of bounds
+    }
+
+    public void filter(String name, String distillery, String type, String abv, String age, String notes, String region, String rating, Set<String> keywords) {
+        List<Bottle> filteredBottles = allBottles.stream()
+                .filter(bottle -> bottle.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery.toLowerCase()))
+                .filter(bottle -> bottle.getType().toLowerCase().contains(type.toLowerCase()))
+                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv.toLowerCase()))
+                .filter(bottle -> bottle.getAge().toLowerCase().contains(age.toLowerCase()))
+                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes.toLowerCase()))
+                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region.toLowerCase()))
+                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating.toLowerCase()))
+                .filter(bottle -> keywords.isEmpty() || bottle.getKeywords().stream().anyMatch(k -> keywords.contains(k.toLowerCase())))
+                .collect(Collectors.toList());
+
+        this.bottles = filteredBottles;
+        notifyDataSetChanged();
     }
 
     public static class BottleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -84,31 +99,13 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             itemView.setOnClickListener(this);
         }
 
-        // Code for handling taps
         @Override
         public void onClick(View view) {
             onBottleListener.onBottleClick(getAdapterPosition());
         }
     }
 
-    // Code for handling taps
     public interface OnBottleListener {
         void onBottleClick(int position);
     }
-
-    // Search code
-    // Since it looks like I should be able to keep that in this recycler, given they both handle bottle listings
-
-    public void filter(String query) {
-        List<Bottle> filteredBottles = new ArrayList<>();
-        for (Bottle bottle : bottles) { // Use existing bottles list
-            if (bottle.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredBottles.add(bottle);
-            }
-        }
-        bottles = filteredBottles; // Update the bottles list used by the adapter
-        notifyDataSetChanged();
-    }
-
-
 }

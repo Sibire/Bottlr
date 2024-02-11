@@ -4,57 +4,101 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
+import android.widget.Button;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 public class SearchFragment extends Fragment {
 
-    private BottleAdapter adapter;
-    private List<Bottle> allBottles; // Using existing list of all bottles
+    private EditText nameField, distilleryField, typeField, abvField, ageField, notesField, regionField, ratingField, keywordsField;
+    private Button searchButton;
+    private RecyclerView searchResultsRecyclerView;
+    private BottleAdapter searchResultsAdapter; // Assuming you have a BottleAdapter class similar to your BottleAdapter for gallery
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        SearchView searchView = view.findViewById(R.id.search_view);
-        RecyclerView recyclerView = view.findViewById(R.id.search_recycler_view);
+        nameField = view.findViewById(R.id.search_name);
+        distilleryField = view.findViewById(R.id.search_distillery);
+        typeField = view.findViewById(R.id.search_type);
+        abvField = view.findViewById(R.id.search_abv);
+        ageField = view.findViewById(R.id.search_age);
+        notesField = view.findViewById(R.id.search_notes);
+        regionField = view.findViewById(R.id.search_region);
+        ratingField = view.findViewById(R.id.search_rating);
+        keywordsField = view.findViewById(R.id.search_keywords);
+        searchButton = view.findViewById(R.id.search_button);
+        searchResultsRecyclerView = view.findViewById(R.id.search_results_recyclerview); // Assuming this ID exists in your layout
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        allBottles = loadBottles();
-        adapter = new BottleAdapter(allBottles, position -> {
-            // Handle click event
-        });
+        // Initialize your adapter and set it to the RecyclerView
+        searchResultsAdapter = new BottleAdapter(new ArrayList<>(), this::onBottleSelected); // Implement onBottleSelected according to your needs
+        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
 
-        recyclerView.setAdapter(adapter);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false; // No action on submit
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
-                return true;
-            }
-        });
-
+        searchButton.setOnClickListener(v -> performSearch());
         return view;
     }
 
-    private List<Bottle> loadBottles() {
+    private void performSearch() {
+        // Get search criteria from user input
+        String name = nameField.getText().toString().toLowerCase();
+        String distillery = distilleryField.getText().toString().toLowerCase();
+        String type = typeField.getText().toString().toLowerCase();
+        String abv = abvField.getText().toString().toLowerCase();
+        String age = ageField.getText().toString().toLowerCase();
+        String notes = notesField.getText().toString().toLowerCase();
+        String region = regionField.getText().toString().toLowerCase();
+        String rating = ratingField.getText().toString().toLowerCase();
+        String keywordsInput = keywordsField.getText().toString().toLowerCase();
+
+        Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
+
+        // Assuming getBottles() retrieves your full list of Bottle objects
+        List<Bottle> allBottles = getBottles();
+
+        // Filter the list based on search criteria
+        List<Bottle> filteredList = allBottles.stream()
+                .filter(bottle -> bottle.getName().toLowerCase().contains(name))
+                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery))
+                .filter(bottle -> bottle.getType().toLowerCase().contains(type))
+                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv))
+                .filter(bottle -> bottle.getAge().toLowerCase().contains(age))
+                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes))
+                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region))
+                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating))
+                .filter(bottle -> bottle.getKeywords().stream().anyMatch(keyword -> searchKeywords.contains(keyword.toLowerCase())))
+                .collect(Collectors.toList());
+
+        // Here, update your RecyclerView or UI component to display the filteredList
+        updateSearchResults(filteredList);
+    }
+
+    private void updateSearchResults(List<Bottle> filteredList) {
+        searchResultsAdapter.setBottles(filteredList);
+        searchResultsAdapter.notifyDataSetChanged();
+    }
+
+    private List<Bottle> getBottles() {
+        // Implement this method to return your actual list of bottles
         return new ArrayList<>();
+    }
+
+    // Example method to handle bottle selection from the search results
+    private void onBottleSelected(int position) {
+        // Handle the bottle selection
     }
 }
