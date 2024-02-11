@@ -9,6 +9,7 @@ import android.view.Menu;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        com.example.bottlr.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -51,24 +52,36 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+        // Setup the AppBarConfiguration with the top-level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_search)
                 .setOpenableLayout(drawer)
                 .build();
+
+        // Setup Navigation Controller
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
+        // Custom navigation item selection handling
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            boolean handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
-            if (handled) {
-                // Clears back stack
-                if (menuItem.getItemId() != R.id.nav_gallery) { // Don't clear the gallery
-                    while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                        getSupportFragmentManager().popBackStackImmediate();
-                    }
-                }
-                drawer.closeDrawers();
+            boolean handled = false;
+
+            // Handle your custom navigation case
+            if (menuItem.getItemId() == R.id.nav_search) {
+                // Navigate to the SearchFragment
+                navController.navigate(R.id.nav_search);
+                handled = true;
+            } else {
+                // Let NavigationUI handle the navigation for other menu items
+                handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
             }
+
+            // Close the navigation drawer if an item is selected
+            if (handled) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+
             return handled;
         });
     }
@@ -82,13 +95,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }

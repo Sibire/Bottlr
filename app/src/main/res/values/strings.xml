@@ -13,6 +13,7 @@
 
     // Bottle add window
     <string name="title_activity_add_a_bottle">Add A Bottle</string>
+    <string name="menu_search" />
 
     // Back, Buy, Edit, Delete, Share
 

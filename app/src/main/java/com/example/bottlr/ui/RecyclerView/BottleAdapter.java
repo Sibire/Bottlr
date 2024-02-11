@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
+
+import java.util.ArrayList;
 import java.util.List;
 //endregion
 
@@ -93,5 +95,20 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public interface OnBottleListener {
         void onBottleClick(int position);
     }
+
+    // Search code
+    // Since it looks like I should be able to keep that in this recycler, given they both handle bottle listings
+
+    public void filter(String query) {
+        List<Bottle> filteredBottles = new ArrayList<>();
+        for (Bottle bottle : bottles) { // Use existing bottles list
+            if (bottle.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredBottles.add(bottle);
+            }
+        }
+        bottles = filteredBottles; // Update the bottles list used by the adapter
+        notifyDataSetChanged();
+    }
+
 
 }
