@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+
+import com.example.bottlr.ui.gallery.DetailView;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -41,6 +46,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Back Stack Debugging Testing
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+    @Override
+    public void onBackStackChanged() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d("BackStack", "There are " + backStackEntryCount + " fragments in the back stack.");
+        if (backStackEntryCount > 0) {
+            FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(backStackEntryCount - 1);
+            String str = backEntry.getName();
+            Log.d("BackStack", "Current fragment: " + str);
+        }
+    }
+});
+// End logcat code
+
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -63,19 +83,16 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // Custom navigation item selection handling
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             boolean handled = false;
 
-            // Handle your custom navigation case
-            if (menuItem.getItemId() == R.id.nav_search) {
-                // Navigate to the SearchFragment
-                navController.navigate(R.id.nav_search);
-                handled = true;
-            } else {
+                // Clear the back stack
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                    fragmentManager.popBackStack();
+                }
                 // Let NavigationUI handle the navigation for other menu items
                 handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
-            }
 
             // Close the navigation drawer if an item is selected
             if (handled) {
@@ -93,10 +110,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Clear the back stack
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        // Handle item selection
+        int id = item.getItemId();
+        return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(this, R.id.nav_host_fragment_content_main))
+                || super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+
+    //region Back Press Handling
 
     @Override
     public void onBackPressed() {
@@ -104,9 +135,26 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            // Pop all instances of DetailView from the back stack until a fragment that is not a DetailView is found
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            boolean didPop = false;
+            while (fragmentManager.getBackStackEntryCount() > 0) {
+                FragmentManager.BackStackEntry backEntry = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1);
+                if ("DetailView".equals(backEntry.getName())) {
+                    fragmentManager.popBackStackImmediate();
+                    didPop = true;
+                } else {
+                    break;
+                }
+            }
+            // If no DetailView was found in the back stack, handle back press in the usual way
+            if (!didPop) {
+                super.onBackPressed();
+            }
         }
     }
+
+//endregion
 
     //region App-Wide Methods
 

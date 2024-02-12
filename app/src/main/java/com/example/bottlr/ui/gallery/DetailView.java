@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -146,6 +148,17 @@ public class DetailView extends Fragment {
             //endregion
 
         }
+
+//        // Handle back button press in this fragment as opposed to mainactivity
+//        // See if thus fixes the issue
+//        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                // Pop this fragment from the back stack
+//                getParentFragmentManager().popBackStack();
+//            }
+//        });
+
         return root;
     }
 
