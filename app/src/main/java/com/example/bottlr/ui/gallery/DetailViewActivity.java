@@ -15,10 +15,14 @@ import java.io.File;
 
 public class DetailViewActivity extends AppCompatActivity {
 
+    // view Initialization
+    private TextView bottleName, bottleDistillery, bottleDetails, bottleNotes, bottleRating, bottleKeywords;
     private ImageView bottleImage;
-    private TextView bottleName;
-    private TextView bottleDescription;
-    private ImageButton deleteButton;
+
+    // Delete button initialization
+    ImageButton deleteButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +34,15 @@ public class DetailViewActivity extends AppCompatActivity {
         setContentView(R.layout.detail_view_activity);
 
         // Find the views
-        ImageView bottleImage = findViewById(R.id.imageViewBottle);
-        bottleImage.setScaleType(ImageView.ScaleType.CENTER_CROP); // Set the scale type of the ImageView so it displays properly
-        TextView bottleName = findViewById(R.id.tvBottleName);
-        TextView bottleDistillery = findViewById(R.id.tvDistillery);
-        TextView bottleRating = findViewById(R.id.tvRating);
-        TextView bottleDetails = findViewById(R.id.tvBottleDetails);
-        TextView bottleNotes = findViewById(R.id.tvNotes);
-        TextView bottleKeywords = findViewById(R.id.tvKeywords);
-        ImageButton deleteButton = findViewById(R.id.deleteButton);
+        bottleImage = findViewById(R.id.detailImageView);
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        bottleName = findViewById(R.id.tvBottleName);
+        bottleDistillery = findViewById(R.id.tvDistillery);
+        bottleRating = findViewById(R.id.tvRating);
+        bottleDetails = findViewById(R.id.tvBottleDetails);
+        bottleNotes = findViewById(R.id.tvNotes);
+        bottleKeywords = findViewById(R.id.tvKeywords);
+        deleteButton = findViewById(R.id.deleteButton);
 
         // Get the bottle from the intent
         Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
@@ -46,10 +50,12 @@ public class DetailViewActivity extends AppCompatActivity {
         // Set the bottle details to the views
 
         // Glide
-        Glide.with(this)
-                .load(bottle.getPhotoUri())
-                .placeholder(R.drawable.nodrinkimg)
-                .into(bottleImage);
+        if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
+            Glide.with(this) // Use 'getContext()' if 'this' is not appropriate
+                    .load(bottle.getPhotoUri())
+                    .error(R.drawable.nodrinkimg) // Default image in case of error
+                    .into(bottleImage);
+        }
         // Image not working debugging code
         Log.d("DetailViewActivity", "Image URI: " + bottle.getPhotoUri());
         // Other fields
