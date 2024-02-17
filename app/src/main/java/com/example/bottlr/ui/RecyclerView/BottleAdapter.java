@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bottlr.Bottle;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     private List<Bottle> bottles;
     private final List<Bottle> allBottles;
-    private OnBottleListener onBottleListener;
+    private final OnBottleListener onBottleListener;
 
     public BottleAdapter(List<Bottle> bottles, OnBottleListener onBottleListener) {
         this.bottles = new ArrayList<>(bottles);
@@ -26,6 +28,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         this.onBottleListener = onBottleListener;
     }
 
+    @NonNull
     @Override
     public BottleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bottlelabel, parent, false);
@@ -66,23 +69,6 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             return bottles.get(position);
         }
         return null; // Null if out of bounds
-    }
-
-    public void filter(String name, String distillery, String type, String abv, String age, String notes, String region, String rating, Set<String> keywords) {
-        List<Bottle> filteredBottles = allBottles.stream()
-                .filter(bottle -> bottle.getName().toLowerCase().contains(name.toLowerCase()))
-                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery.toLowerCase()))
-                .filter(bottle -> bottle.getType().toLowerCase().contains(type.toLowerCase()))
-                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv.toLowerCase()))
-                .filter(bottle -> bottle.getAge().toLowerCase().contains(age.toLowerCase()))
-                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes.toLowerCase()))
-                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region.toLowerCase()))
-                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating.toLowerCase()))
-                .filter(bottle -> keywords.isEmpty() || bottle.getKeywords().stream().anyMatch(k -> keywords.contains(k.toLowerCase())))
-                .collect(Collectors.toList());
-
-        this.bottles = filteredBottles;
-        notifyDataSetChanged();
     }
 
     public static class BottleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

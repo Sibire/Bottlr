@@ -23,7 +23,7 @@ public class Bottle implements Parcelable {
     private String notes;
     private String region;
     private Set<String> keywords;
-    private String rating;
+    private final String rating;
 
     //endregion
 

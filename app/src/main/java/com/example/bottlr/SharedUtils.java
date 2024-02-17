@@ -131,23 +131,20 @@ public class SharedUtils {
     // Saves the bottle image to the cache for use in sharing bottle details.
     public static Uri cacheImage(Uri imageUri, Context context) {
         try {
-            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-            // It's probably fine to use time for the cache file name, but keep this in mind
-            // In case it causes issues later down the line
-            String fileName = "cached_bottle_image_" + System.currentTimeMillis() + ".png";
-            File cacheFile = new File(context.getFilesDir(), fileName);
-            try (OutputStream outputStream = Files.newOutputStream(cacheFile.toPath()))
-            {
-                byte[] buffer = new byte[4096]; // Adjust buffer size if needed
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
+            // Changed to use try-with-resources to automatically close the InputStream
+            try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
+                String fileName = "cached_bottle_image_" + System.currentTimeMillis() + ".png";
+                File cacheFile = new File(context.getFilesDir(), fileName);
+                try (OutputStream outputStream = Files.newOutputStream(cacheFile.toPath())) {
+                    byte[] buffer = new byte[4096]; // Adjust this buffer size if needed
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
                 }
+                return FileProvider.getUriForFile(context, "com.example.bottlr.fileprovider", cacheFile);
             }
-            return FileProvider.getUriForFile(context, "com.example.bottlr.fileprovider", cacheFile);
-        }
-        // Error handling
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
