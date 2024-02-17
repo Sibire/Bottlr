@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,7 +19,6 @@ import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,14 +85,14 @@ public class SearchFragment extends Fragment {
 
         // Filter the list based on search criteria
         List<Bottle> filteredList = allBottles.stream()
-                .filter(bottle -> bottle.getName().toLowerCase().contains(name))
-                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery))
-                .filter(bottle -> bottle.getType().toLowerCase().contains(type))
-                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv))
-                .filter(bottle -> bottle.getAge().toLowerCase().contains(age))
-                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes))
-                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region))
-                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating))
+                .filter(bottle -> bottle.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery.toLowerCase()))
+                .filter(bottle -> bottle.getType().toLowerCase().contains(type.toLowerCase()))
+                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv.toLowerCase()))
+                .filter(bottle -> bottle.getAge().toLowerCase().contains(age.toLowerCase()))
+                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes.toLowerCase()))
+                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region.toLowerCase()))
+                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating.toLowerCase()))
                 .filter(bottle -> bottle.getKeywords().stream().anyMatch(keyword -> searchKeywords.contains(keyword.toLowerCase())))
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
