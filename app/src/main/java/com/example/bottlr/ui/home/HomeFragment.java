@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
         tvDistillery = root.findViewById(R.id.tvDistillery);
         tvBottleDetails = root.findViewById(R.id.tvBottleDetails);
         imageViewBottle = root.findViewById(R.id.imageViewBottle);
+        imageViewBottle.setScaleType(ImageView.ScaleType.CENTER_CROP); // Set the scale type of the ImageView so it displays properly
         tvNotes = root.findViewById(R.id.tvNotes);
         tvRating = root.findViewById(R.id.tvRating);
         tvKeywords = root.findViewById(R.id.tvKeywords);

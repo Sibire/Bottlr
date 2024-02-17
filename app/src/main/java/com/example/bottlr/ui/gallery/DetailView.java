@@ -1,5 +1,12 @@
 package com.example.bottlr.ui.gallery;
 
+// THIS FRAGMENT IS CURRENTLY DEPRECATED
+// AT SOME POINT I MAY BRING IT BACK
+// WE'RE SAYING FUCK IT WE BALL TO USING AN ACTIVITY
+
+// IF I HAVE TO KEEP DEBUGGING THIS I'M DROPPING OUT AND BECOMING A WELDER
+
+
 //region Imports
 import static com.example.bottlr.MainActivity.queryBuilder;
 import android.content.Intent;
@@ -30,7 +37,7 @@ public class DetailView extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.detailviewlayout, container, false);
+        View root = inflater.inflate(R.layout.detail_view_activity, container, false);
 
         // Shopping button initialization
         ImageButton buyButton = root.findViewById(R.id.buyButton);

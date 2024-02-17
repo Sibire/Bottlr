@@ -44,7 +44,7 @@
             android:label="@string/title_activity_add_a_bottle"
             android:theme="@style/Theme.Bottlr.NoActionBar">
         </activity>
-
+        <activity android:name=".ui.gallery.DetailViewActivity" />
     </application>
 
 </manifest>

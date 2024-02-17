@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,8 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -164,13 +169,36 @@ public class AddABottle extends AppCompatActivity {
         ImageView imagePreview = findViewById(R.id.imagePreview);
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST_CODE) {
-                photoUri = data.getData();
-                imagePreview.setImageURI(photoUri);
+                Uri selectedImageUri = data.getData();
+                try {
+                    // Copy the image and get the URI of the copied image
+                    photoUri = copyImageToAppDir(selectedImageUri);
+                    imagePreview.setImageURI(photoUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to copy image", Toast.LENGTH_SHORT).show();
+                }
             } else if (requestCode == CAMERA_REQUEST_CODE) {
                 photoUri = cameraImageUri;
                 imagePreview.setImageURI(cameraImageUri);
             }
         }
+    }
+
+    // Copies uploaded files into the app directory so they're not subject to the same URI issues they were before.
+    // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
+    private Uri copyImageToAppDir(Uri imageUri) throws IOException {
+        InputStream is = getContentResolver().openInputStream(imageUri);
+        String filename = "bottle_" + bottleNameField.getText().toString() + ".jpg";
+        FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = is.read(buffer)) != -1) {
+            fos.write(buffer, 0, bytesRead);
+        }
+        is.close();
+        fos.close();
+        return Uri.fromFile(new File(getFilesDir(), filename));
     }
     //endregion
 
@@ -181,6 +209,7 @@ public class AddABottle extends AppCompatActivity {
 
         String name = bottleNameField.getText().toString();
 
+        // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
         // Check if the bottle has a name
         if (name.isEmpty()) {
             Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
@@ -193,6 +222,7 @@ public class AddABottle extends AppCompatActivity {
         String age = ageField.getText().toString();
         String notes = tastingNotesField.getText().toString();
         String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+        Log.d("AddABottle", "Image URI: " + photoUri);
         String region = regionField.getText().toString();
         String rating = ratingField.getText().toString();
 

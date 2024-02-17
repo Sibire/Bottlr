@@ -2,6 +2,8 @@ package com.example.bottlr.ui.gallery;
 
 //region Imports
 import static com.example.bottlr.MainActivity.parseBottle;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,15 +103,9 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     public void onBottleClick(int position) {
         Bottle selectedBottle = adapter.getBottle(position);
         if (selectedBottle != null) {
-            DetailView bottleDetail = new DetailView();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("selectedBottle", selectedBottle);
-            bottleDetail.setArguments(bundle);
-
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, bottleDetail)
-                    .addToBackStack(null)  // Adds transaction to back stack
-                    .commit();
+            Intent intent = new Intent(getActivity(), DetailViewActivity.class);
+            intent.putExtra("selectedBottle", selectedBottle);
+            startActivity(intent);
         }
     }
     //endregion
