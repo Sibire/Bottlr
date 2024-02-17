@@ -85,15 +85,15 @@ public class SearchFragment extends Fragment {
 
         // Filter the list based on search criteria
         List<Bottle> filteredList = allBottles.stream()
-                .filter(bottle -> bottle.getName().toLowerCase().contains(name.toLowerCase()))
-                .filter(bottle -> bottle.getDistillery().toLowerCase().contains(distillery.toLowerCase()))
-                .filter(bottle -> bottle.getType().toLowerCase().contains(type.toLowerCase()))
-                .filter(bottle -> bottle.getAbv().toLowerCase().contains(abv.toLowerCase()))
-                .filter(bottle -> bottle.getAge().toLowerCase().contains(age.toLowerCase()))
-                .filter(bottle -> bottle.getNotes().toLowerCase().contains(notes.toLowerCase()))
-                .filter(bottle -> bottle.getRegion().toLowerCase().contains(region.toLowerCase()))
-                .filter(bottle -> bottle.getRating().toLowerCase().contains(rating.toLowerCase()))
-                .filter(bottle -> bottle.getKeywords().stream().anyMatch(keyword -> searchKeywords.contains(keyword.toLowerCase())))
+                .filter(bottle -> bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase()))
+                .filter(bottle -> bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase()))
+                .filter(bottle -> bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase()))
+                .filter(bottle -> bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase()))
+                .filter(bottle -> bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase()))
+                .filter(bottle -> bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase()))
+                .filter(bottle -> bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase()))
+                .filter(bottle -> bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase()))
+                .filter(bottle -> bottle.getKeywords() != null && bottle.getKeywords().stream().anyMatch(keyword -> searchKeywords.contains(keyword.trim().toLowerCase())))
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
         updateSearchResults(filteredList);
