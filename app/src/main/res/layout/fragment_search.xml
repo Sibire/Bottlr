@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/search_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name" />
+
+        <EditText
+            android:id="@+id/search_distillery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Distillery" />
+
+        <EditText
+            android:id="@+id/search_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type" />
+
+        <EditText
+            android:id="@+id/search_abv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ABV" />
+
+        <EditText
+            android:id="@+id/search_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Age"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/search_region"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Region" />
+
+        <EditText
+            android:id="@+id/search_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rating"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/search_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notes"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/search_keywords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Keywords (comma-separated)"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:layout_gravity="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_results_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>

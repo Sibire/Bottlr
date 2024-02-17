@@ -1,17 +1,14 @@
 package com.example.bottlr;
 
-//region Imports
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
@@ -21,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,10 +25,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-//endregion
 
-@SuppressWarnings("deprecation")
-// Ignore deprecation issues
 public class AddABottle extends AppCompatActivity {
 
     //region Permissions
@@ -90,9 +83,8 @@ public class AddABottle extends AppCompatActivity {
         // Check for existing data (Critical for Edit function)
         // Adjust header text if editing
         Toolbar toolbar = findViewById(R.id.toolbar);
-        Bottle bottleToEdit = null;
         if (getIntent().hasExtra("bottle")) {
-            bottleToEdit = getIntent().getParcelableExtra("bottle");
+            Bottle bottleToEdit = getIntent().getParcelableExtra("bottle");
             toolbar.setTitle("Edit Bottle");
             popFields(bottleToEdit);
         } else {
@@ -134,12 +126,12 @@ public class AddABottle extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
         builder.setItems(options, (dialog, which) -> {
-            if ("Take Photo".equals(options[which])) {
+            if (options[which].equals("Take Photo")) {
                 launchCameraIntent();
-            } else if ("Choose From Gallery".equals(options[which])) {
+            } else if (options[which].equals("Choose From Gallery")) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
-            } else if ("Cancel".equals(options[which])) {
+            } else if (options[which].equals("Cancel")) {
                 dialog.dismiss();
             }
         });

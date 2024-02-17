@@ -1,11 +1,9 @@
 package com.example.bottlr.ui.home;
 
-//region Imports
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirm;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,9 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
@@ -26,7 +22,6 @@ import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
 import java.io.File;
-//endregion
 
 public class HomeFragment extends Fragment {
 

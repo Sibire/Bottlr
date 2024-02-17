@@ -21,7 +21,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.bottlr.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -44,7 +44,9 @@
             android:label="@string/title_activity_add_a_bottle"
             android:theme="@style/Theme.Bottlr.NoActionBar">
         </activity>
+
         <activity android:name=".ui.gallery.DetailViewActivity" />
+
     </application>
 
 </manifest>

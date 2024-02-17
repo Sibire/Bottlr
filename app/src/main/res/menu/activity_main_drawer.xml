@@ -16,5 +16,9 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/baseline_architecture_24"
             android:title="Work In Progress" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/baseline_search_24"
+            android:title="Search" />
     </group>
 </menu>
