@@ -1,7 +1,7 @@
 package com.example.bottlr.ui.gallery;
 
 //region Imports
-import static com.example.bottlr.MainActivity.parseBottle;
+import static com.example.bottlr.SharedUtils.parseBottle;
 
 import android.content.Intent;
 import android.os.Bundle;

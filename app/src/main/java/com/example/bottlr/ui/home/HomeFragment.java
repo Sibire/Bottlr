@@ -1,8 +1,11 @@
 package com.example.bottlr.ui.home;
 
 //region Imports
-import static com.example.bottlr.MainActivity.parseBottle;
-import static com.example.bottlr.MainActivity.queryBuilder;
+import static com.example.bottlr.SharedUtils.parseBottle;
+import static com.example.bottlr.SharedUtils.queryBuilder;
+import static com.example.bottlr.SharedUtils.shareBottleInfo;
+import static com.example.bottlr.SharedUtils.showDeleteConfirm;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,7 +84,7 @@ public class HomeFragment extends Fragment {
         deleteButton.setOnClickListener(v -> {
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null) {
-                showDeleteConfirm(recentBottle);
+                showDeleteConfirm(recentBottle, getContext());
             }
         });
 
@@ -101,10 +104,9 @@ public class HomeFragment extends Fragment {
 
         shareButton.setOnClickListener(view -> {
             if (getActivity() instanceof MainActivity) {
-                MainActivity mainActivity = (MainActivity) getActivity();
                 Bottle bottleToShare = getMostRecentBottle();
                 if (bottleToShare != null) {
-                    mainActivity.shareBottleInfo(bottleToShare);
+                    shareBottleInfo(bottleToShare, getContext());
                 }
             }
         });
@@ -185,33 +187,4 @@ public class HomeFragment extends Fragment {
         return mostRecentBottle;
     }
     //endregion
-
-    //Delete Confirmation Dialog
-    private void showDeleteConfirm(final Bottle bottle) {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Delete Bottle")
-                .setMessage("Are you sure you want to delete this bottle?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteBottle(bottle))
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    //Delete Bottle
-    private void deleteBottle(Bottle bottle) {
-        String axedBottle = bottle.getName();
-        String filename = "bottle_" + bottle.getName() + ".txt";
-        File file = new File(getContext().getFilesDir(), filename);
-        if (file.exists()) {
-            file.delete();
-            Toast.makeText(getContext(), axedBottle + " Deleted.", Toast.LENGTH_SHORT).show();
-            updateRecentBottleView();
-            // Delete and Refresh
-        }
-        // Error Handling
-        else {
-            Toast.makeText(getContext(), "Error deleting bottle.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 }
