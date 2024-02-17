@@ -145,7 +145,7 @@ public class DetailView extends Fragment {
                     MainActivity mainActivity = (MainActivity) getActivity();
                     Bottle bottleToShare = bundle.getParcelable("selectedBottle");
                     if (bottleToShare != null) {
-                        mainActivity.shareBottleInfo(bottleToShare);
+                        shBottleInfo(bottleToShare);
                     }
                 }
             });

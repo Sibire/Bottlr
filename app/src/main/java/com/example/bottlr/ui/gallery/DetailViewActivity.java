@@ -1,5 +1,12 @@
 package com.example.bottlr.ui.gallery;
 
+import static com.example.bottlr.MainActivity.cacheImage;
+import static com.example.bottlr.MainActivity.createShareText;
+import static com.example.bottlr.MainActivity.queryBuilder;
+import static com.example.bottlr.MainActivity.shareBottleContent;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -9,7 +16,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
+import com.example.bottlr.AddABottle;
 import com.example.bottlr.Bottle;
+import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import java.io.File;
 
@@ -19,8 +28,13 @@ public class DetailViewActivity extends AppCompatActivity {
     private TextView bottleName, bottleDistillery, bottleDetails, bottleNotes, bottleRating, bottleKeywords;
     private ImageView bottleImage;
 
-    // Delete button initialization
+    // Button initialization
+
+    ImageButton backButton;
     ImageButton deleteButton;
+    ImageButton shareButton;
+    ImageButton buyButton;
+    ImageButton editButton;
 
 
 
@@ -43,6 +57,9 @@ public class DetailViewActivity extends AppCompatActivity {
         bottleNotes = findViewById(R.id.tvNotes);
         bottleKeywords = findViewById(R.id.tvKeywords);
         deleteButton = findViewById(R.id.deleteButton);
+        shareButton = findViewById(R.id.shareButton);
+        buyButton = findViewById(R.id.buyButton);
+        editButton = findViewById(R.id.editButton);
 
         // Get the bottle from the intent
         Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
@@ -69,8 +86,28 @@ public class DetailViewActivity extends AppCompatActivity {
         String keywords = "Keywords:\n" + String.join(", ", bottle.getKeywords());
         bottleKeywords.setText(keywords);
 
-        // Set the delete button click listener
+        // Delete button listener
         deleteButton.setOnClickListener(v -> showDeleteConfirm(bottle));
+
+        // Buy button listener
+        buyButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(bottle))));
+            startActivity(intent);
+        });
+
+        // Share button listener
+        shareButton.setOnClickListener(view -> {
+                    MainActivity.shareBottleInfo(bottle);
+                });
+
+        // Edit button listener
+        editButton.setOnClickListener(view -> {
+                // Call AddABottle to reuse existing assets
+            Intent intent = new Intent(DetailViewActivity.this, AddABottle.class); // Adjust to use in an Activity
+            intent.putExtra("bottle", bottle);
+            startActivity(intent);
+        });
     }
 
     //region Deletion Handling

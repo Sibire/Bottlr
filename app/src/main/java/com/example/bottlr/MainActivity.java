@@ -1,11 +1,11 @@
 package com.example.bottlr;
 
 //region Imports
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
+
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
     //region Share Functionalities
 
+    // Had to take this out of Mainactivity due to issues with needing static vs non-static fields
     // Handle all share functionalities here
 
     //region shareBottleInfo
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     //region cacheImage
 
     // Saves the bottle image to the cache for use in sharing bottle details.
-    private static Uri cacheImage(Uri imageUri, Context context) {
+    public static Uri cacheImage(Uri imageUri, MainActivity context) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
             // It's probably fine to use time for the cache file name, but keep this in mind
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     //region shareBottleContent
 
     // For sharing Bottle details
-    private static void shareBottleContent(String text, @Nullable Uri imageUri, Context context) {
+    public static void shareBottleContent(String text, @Nullable Uri imageUri, MainActivity context) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, text);
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
     //region Bottle ShareText Builder
 
     // Constructs a share post using pertinent bottle details, if available.
-    private static String createShareText(Bottle bottle) {
+    public static String createShareText(Bottle bottle) {
         StringBuilder shareText = new StringBuilder("Here's what I'm drinking:\n\n");
 
         // Always include the bottle name, since it's always there

@@ -97,13 +97,11 @@ public class HomeFragment extends Fragment {
         });
 
         // Share button listener
-        // Janky as hell because I think I broke some import cleanliness
-        // But if I import MainActivity directly it seems to work
+
 
         shareButton.setOnClickListener(view -> {
             if (getActivity() instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) getActivity();
-                // Replacing bundle with getMostRecentBottle for HomeFragment use
                 Bottle bottleToShare = getMostRecentBottle();
                 if (bottleToShare != null) {
                     mainActivity.shareBottleInfo(bottleToShare);
