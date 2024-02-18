@@ -16,6 +16,13 @@ import com.example.bottlr.AddABottle;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
 
+// TODO: I just did some testing on a physical device. While the app functions as intended at the moment in the emulator,
+//  using it on a physical device causes two distinct and functionality disabling bugs:
+//  When a user loads the detail view, or views the recent bottle from the home page,
+//  the text fields of the bottle details are not being populated.
+//  Additionally, if no image has been saved, the default image will display for the gallery and search result preview,
+//  but not in the homefragment or detailviewactivity
+
 public class DetailViewActivity extends AppCompatActivity {
 
     // Button initialization
