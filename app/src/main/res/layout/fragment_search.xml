@@ -64,7 +64,7 @@
             android:id="@+id/search_keywords"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Keywords (comma-separated)"
+            android:hint="Keyword Search Disabled"
             android:inputType="text" />
 
         <Button

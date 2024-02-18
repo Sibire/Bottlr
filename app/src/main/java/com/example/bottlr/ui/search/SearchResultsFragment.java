@@ -16,30 +16,40 @@ import com.example.bottlr.R;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class SearchResultsFragment extends Fragment implements BottleAdapter.OnBottleListener {
+// TODO: This would almost certainly look better as a full-screen activity instead of a fragment below the query
 
-    private BottleAdapter adapter;
+public class SearchResultsFragment extends Fragment {
+    private BottleAdapter searchResultsAdapter;
 
+    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_search_results, container, false);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        RecyclerView searchResultsRecyclerView = view.findViewById(R.id.search_results_recyclerview);
+        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        searchResultsAdapter = new BottleAdapter(new ArrayList<>(), this::onBottleClick);
+        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
 
-        List<Bottle> bottles = loadResultBottles();
-        adapter = new BottleAdapter(bottles, this);
-        recyclerView.setAdapter(adapter);
+        // Divider for clarity
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        searchResultsRecyclerView.addItemDecoration(itemDecoration);
 
-        return root;
+        // Get the filteredList from the arguments
+        List<Bottle> filteredList = (List<Bottle>) getArguments().getSerializable("filteredList");
+
+        // Update the searchResultsAdapter with the filteredList
+        updateSearchResults(filteredList);
+
+        return view;
+    }
+
+    private void updateSearchResults(List<Bottle> filteredList) {
+        searchResultsAdapter.setBottles(filteredList);
+        searchResultsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -51,9 +61,9 @@ public class SearchResultsFragment extends Fragment implements BottleAdapter.OnB
 
     private void reloadBottles() {
         List<Bottle> bottles = loadResultBottles();
-        if (adapter != null) {
-            adapter.setBottles(bottles);
-            adapter.notifyDataSetChanged();
+        if (searchResultsAdapter != null) {
+            searchResultsAdapter.setBottles(bottles);
+            searchResultsAdapter.notifyDataSetChanged();
         }
     }
 
@@ -63,7 +73,7 @@ public class SearchResultsFragment extends Fragment implements BottleAdapter.OnB
     }
 
     public void onBottleClick(int position) {
-        Bottle selectedBottle = adapter.getBottle(position);
+        Bottle selectedBottle = searchResultsAdapter.getBottle(position);
         if (selectedBottle != null) {
             Intent intent = new Intent(getActivity(), DetailViewActivity.class);
             intent.putExtra("selectedBottle", selectedBottle);

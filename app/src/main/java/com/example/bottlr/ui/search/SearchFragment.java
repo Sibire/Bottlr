@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -85,18 +87,28 @@ public class SearchFragment extends Fragment {
 
         // Filter the list based on search criteria
         List<Bottle> filteredList = allBottles.stream()
-                .filter(bottle -> bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase()))
-                .filter(bottle -> bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase()))
-                .filter(bottle -> bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase()))
-                .filter(bottle -> bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase()))
-                .filter(bottle -> bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase()))
-                .filter(bottle -> bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase()))
-                .filter(bottle -> bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase()))
-                .filter(bottle -> bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase()))
-                .filter(bottle -> bottle.getKeywords() != null && bottle.getKeywords().stream().anyMatch(keyword -> searchKeywords.contains(keyword.trim().toLowerCase())))
+                .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
+                // IF I search for the name only, it displays. Issue must be with one of these fields causing a false exclusion
+                .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
+                .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
+                .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
+                .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
+                .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
+                .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
+                .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
+
+                // Those all seem to work, problem seems to be keyword searching
+                // TODO: Fix and re-enable keyword searching
+                //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase()))))
+
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
-        updateSearchResults(filteredList);
+        // Check if the filtered list is empty and display a toast message if it is
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(), "No results found", Toast.LENGTH_SHORT).show();
+        }
+        // Keep this outside any if/else so that it clears the search results if there are none
+            updateSearchResults(filteredList);
     }
 
     private void updateSearchResults(List<Bottle> filteredList) {
@@ -108,7 +120,7 @@ public class SearchFragment extends Fragment {
     private List<Bottle> getBottlesToSearch() {
         List<Bottle> bottles = new ArrayList<>();
         File directory = getContext().getFilesDir();
-        File[] files = ((File) directory).listFiles();
+        File[] files = directory.listFiles();
 
         for (File file : files) {
             if (file.isFile() && file.getName().startsWith("bottle_")) {
