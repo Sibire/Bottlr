@@ -33,8 +33,6 @@ public class DetailViewActivity extends AppCompatActivity {
     ImageButton buyButton;
     ImageButton editButton;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

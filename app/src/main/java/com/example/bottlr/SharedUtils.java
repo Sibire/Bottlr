@@ -113,7 +113,6 @@ public class SharedUtils {
     //region shareBottleInfo
 
     // Shares bottle information
-    // Shares bottle information
     public static void shareBottleInfo(Bottle bottle, Context context) {
         if (bottle != null) {
             String shareText = createShareText(bottle);
@@ -236,7 +235,6 @@ public class SharedUtils {
 
     //region Deletion Handling
 
-    // Confirmation Popup
     // Confirmation Popup
     public static void showDeleteConfirm(final Bottle bottle, Context context) {
         new AlertDialog.Builder(context)

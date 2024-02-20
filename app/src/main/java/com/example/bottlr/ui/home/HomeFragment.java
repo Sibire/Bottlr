@@ -22,6 +22,7 @@ import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
 import java.io.File;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -117,7 +118,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Last bottle");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Last bottle");
         updateRecentBottleView();
     }
     //endregion
@@ -158,7 +159,7 @@ public class HomeFragment extends Fragment {
 
     //region Get Most Recent
     private Bottle getMostRecentBottle() {
-        File directory = getContext().getFilesDir();
+        File directory = requireContext().getFilesDir();
         File[] files = directory.listFiles((dir, name) -> name.startsWith("bottle_") && name.endsWith(".txt"));
 
         // Sort out deprecation issues
@@ -167,7 +168,7 @@ public class HomeFragment extends Fragment {
         Bottle mostRecentBottle = null;
         long lastModifiedTime = Long.MIN_VALUE;
 
-        if (files != null && files.length > 0) {
+        if (files != null) {
             for (File file : files) {
                 if (file.lastModified() > lastModifiedTime) {
                     Bottle bottle = parseBottle(file);

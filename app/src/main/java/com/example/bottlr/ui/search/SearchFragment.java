@@ -24,7 +24,6 @@ import com.example.bottlr.ui.gallery.DetailViewActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 // TODO: Re-Import when keyword searches are working.
@@ -92,7 +91,6 @@ public class SearchFragment extends Fragment {
         // Filter the list based on search criteria
         List<Bottle> filteredList = allBottles.stream()
                 .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
-                // IF I search for the name only, it displays. Issue must be with one of these fields causing a false exclusion
                 .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
                 .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
                 .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
