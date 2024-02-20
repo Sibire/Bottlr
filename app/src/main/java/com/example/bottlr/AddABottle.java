@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -38,6 +39,8 @@ public class AddABottle extends AppCompatActivity {
     // Field initialization
     private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField, regionField, keywordsField, ratingField;
 
+    ImageButton backButton;
+
     // Gallery storage URI
     private Uri photoUri;
 
@@ -62,6 +65,7 @@ public class AddABottle extends AppCompatActivity {
         regionField = findViewById(R.id.regionField);
         keywordsField = findViewById(R.id.keywordsField);
         ratingField = findViewById(R.id.ratingField);
+        backButton = findViewById(R.id.backButton);
 
         // Photo Button
         Button addPhotoButton = findViewById(R.id.addPhotoButton);
@@ -79,6 +83,9 @@ public class AddABottle extends AppCompatActivity {
             saveEntryToFile();
             finish(); // Close add bottle and return to prior window. Works with OnResume refresh code.
         });
+
+        // Back button listener
+        backButton.setOnClickListener(v -> finish());
 
         // Check for existing data (Critical for Edit function)
         // Adjust header text if editing
