@@ -66,6 +66,7 @@ public class DetailViewActivity extends AppCompatActivity {
         // Set the bottle details to the views
 
         // Glide
+        assert bottle != null;
         if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
             Glide.with(this)
                     .load(bottle.getPhotoUri())

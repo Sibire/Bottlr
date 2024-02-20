@@ -21,6 +21,7 @@ import com.example.bottlr.Bottle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 //endregion
 
 public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
@@ -60,7 +61,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Liquor Cabinet");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Liquor Cabinet");
         reloadBottles();
     }
 
@@ -80,9 +81,10 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     // Initial bottle load
     private List<Bottle> loadBottles() {
         List<Bottle> bottles = new ArrayList<>();
-        File directory = getContext().getFilesDir();
+        File directory = requireContext().getFilesDir();
         File[] files = directory.listFiles();
 
+        assert files != null;
         for (File file : files) {
             if (file.isFile() && file.getName().startsWith("bottle_")) {
                 Bottle bottle = parseBottle(file);

@@ -192,7 +192,9 @@ public class AddABottle extends AppCompatActivity {
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
         int bytesRead;
-        while ((bytesRead = is.read(buffer)) != -1) {
+        while (true) {
+            assert is != null;
+            if ((bytesRead = is.read(buffer)) == -1) break;
             fos.write(buffer, 0, bytesRead);
         }
         is.close();

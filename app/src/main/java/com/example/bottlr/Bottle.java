@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 //endregion
 
@@ -104,7 +105,7 @@ public class Bottle implements Parcelable {
         notes = in.readString();
         region = in.readString();
         rating = in.readString();
-        keywords = new HashSet<>(Arrays.asList(in.readString().split(",")));
+        keywords = new HashSet<>(Arrays.asList(Objects.requireNonNull(in.readString()).split(",")));
     }
     //endregion
 

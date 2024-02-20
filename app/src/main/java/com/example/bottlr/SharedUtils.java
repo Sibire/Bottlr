@@ -138,7 +138,9 @@ public class SharedUtils {
                 try (OutputStream outputStream = Files.newOutputStream(cacheFile.toPath())) {
                     byte[] buffer = new byte[4096]; // Adjust this buffer size if needed
                     int bytesRead;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    while (true) {
+                        assert inputStream != null;
+                        if ((bytesRead = inputStream.read(buffer)) == -1) break;
                         outputStream.write(buffer, 0, bytesRead);
                     }
                 }

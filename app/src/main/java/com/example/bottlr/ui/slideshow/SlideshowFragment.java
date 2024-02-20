@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bottlr.databinding.FragmentSlideshowBinding;
 
+import java.util.Objects;
+
 // This class does nothing yet, and is still as delivered from the template
 
 public class SlideshowFragment extends Fragment {
@@ -35,7 +37,7 @@ public class SlideshowFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Slideshow");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Slideshow");
     }
 
     @Override

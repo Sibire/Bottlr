@@ -23,11 +23,14 @@ import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+// TODO: Re-Import when keyword searches are working.
+//import java.util.Arrays;
+//import java.util.HashSet;
+//import java.util.Set;
 
 public class SearchFragment extends Fragment {
 
@@ -77,9 +80,10 @@ public class SearchFragment extends Fragment {
         String notes = notesField.getText().toString().toLowerCase();
         String region = regionField.getText().toString().toLowerCase();
         String rating = ratingField.getText().toString().toLowerCase();
-        String keywordsInput = keywordsField.getText().toString().toLowerCase();
 
-        Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
+        // TODO: Add back in when keyword searching is fixed
+        //String keywordsInput = keywordsField.getText().toString().toLowerCase();
+        //Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
         List<Bottle> allBottles = getBottlesToSearch();
@@ -119,9 +123,10 @@ public class SearchFragment extends Fragment {
     // Get the list of bottles to search
     private List<Bottle> getBottlesToSearch() {
         List<Bottle> bottles = new ArrayList<>();
-        File directory = getContext().getFilesDir();
+        File directory = requireContext().getFilesDir();
         File[] files = directory.listFiles();
 
+        assert files != null;
         for (File file : files) {
             if (file.isFile() && file.getName().startsWith("bottle_")) {
                 Bottle bottle = parseBottle(file);

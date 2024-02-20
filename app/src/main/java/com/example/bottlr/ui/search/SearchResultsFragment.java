@@ -18,6 +18,7 @@ import com.example.bottlr.Bottle;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // TODO: This would almost certainly look better as a full-screen activity instead of a fragment below the query
 
@@ -35,10 +36,11 @@ public class SearchResultsFragment extends Fragment {
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
 
         // Divider for clarity
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
         searchResultsRecyclerView.addItemDecoration(itemDecoration);
 
         // Get the filteredList from the arguments
+        assert getArguments() != null;
         List<Bottle> filteredList = (List<Bottle>) getArguments().getSerializable("filteredList");
 
         // Update the searchResultsAdapter with the filteredList
@@ -55,7 +57,7 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Search Results");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Search Results");
         reloadBottles();
     }
 
@@ -69,6 +71,7 @@ public class SearchResultsFragment extends Fragment {
 
     private List<Bottle> loadResultBottles() {
         // Get the filtered list of bottles from the arguments
+        assert getArguments() != null;
         return getArguments().getParcelableArrayList("filteredBottles");
     }
 
