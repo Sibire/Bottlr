@@ -46,6 +46,7 @@
         </activity>
 
         <activity android:name=".ui.gallery.DetailViewActivity" />
+        <activity android:name=".ui.settings.SettingsActivity" />
 
     </application>
 
