@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.bottlr.SharedUtils;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.example.bottlr.Bottle;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,6 +25,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.example.bottlr.R;
+
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -138,40 +141,103 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Loop through the bottles in the bottle list
         for (Bottle bottle : bottleList) {
-            // Get the Uri for the bottle image
-            Uri file = bottle.getPhotoUri();
+            // Get the file name for the bottle data
+            String dataFileName = "bottle_" + bottle.getName() + ".txt";
 
-            // Get the file name from the Uri
-            String fileName = file.getLastPathSegment();
-
-            // Create a storage reference
-            StorageReference userStorageRef = storage.getReference()
+            // Create a reference for the bottle data file
+            StorageReference dataFileRef = storage.getReference()
                     .child("users")
                     .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                     .child("bottles")
-                    .child(fileName);
+                    .child(dataFileName);
 
-            // Check if the file already exists
-            userStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                // File already exists, do not upload
-                Log.d("SettingsActivity", "File already exists for bottle: " + fileName);
-            }).addOnFailureListener(e -> {
-                // File does not exist, upload the file
-                userStorageRef.putFile(file)
+            // Upload the bottle data file
+            dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Handle successful uploads
+                        Log.d("SettingsActivity", "Upload successful for bottle data: " + dataFileName);
+                    })
+                    .addOnFailureListener(uploadException -> {
+                        // Handle failed uploads
+                        Log.d("SettingsActivity", "Upload failed for bottle data: " + dataFileName, uploadException);
+                    });
+
+            // Get the Uri for the bottle image
+            Uri imageUri = bottle.getPhotoUri();
+
+            // Check if the Uri is not null
+            // This can happen if no image is uploaded for the bottle, thus using default image
+            if (imageUri != null) {
+                // Get the file name from the Uri
+                String imageName = imageUri.getLastPathSegment();
+
+                // Create a storage reference for the image
+                StorageReference imageFileRef = storage.getReference()
+                        .child("users")
+                        .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                        .child("bottles")
+                        .child(imageName);
+
+                // Upload the image file
+                imageFileRef.putFile(imageUri)
                         .addOnSuccessListener(taskSnapshot -> {
                             // Handle successful uploads
-                            Log.d("SettingsActivity", "Upload successful for bottle: " + fileName);
+                            Log.d("SettingsActivity", "Upload successful for bottle image: " + imageName);
                         })
                         .addOnFailureListener(uploadException -> {
                             // Handle failed uploads
-                            Log.d("SettingsActivity", "Upload failed for bottle: " + fileName, uploadException);
+                            Log.d("SettingsActivity", "Upload failed for bottle image: " + imageName, uploadException);
                         });
-            });
+            } else {
+                // Handle the case where the Uri is null
+                Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
+            }
         }
     }
 
     private void syncBottlesFromCloud() {
-        // Code to sync bottles from cloud
+        // TODO: Maybe do a double-save of bottle images to the user's gallery like I do with AddABottle? Or maybe remove that now since there's cloud storage.
+        // Get a reference to the Firebase Storage instance
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a reference to the user's bottles directory in Firebase Storage
+        StorageReference userStorageRef = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("bottles");
+
+        // List all the files in the user's bottles directory in Firebase Storage
+        userStorageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        // Get the file name
+                        String fileName = fileRef.getName();
+
+                        // Check if a file with the same name exists in the local storage
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            // If a file with the same name does not exist in the local storage, download the file from Firebase Storage
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        // Handle successful downloads
+                                        Log.d("SettingsActivity", "Download successful for bottle: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        // Handle failed downloads
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("SettingsActivity", "Download failed for bottle: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
     }
 
     private void eraseCloudStorage() {
