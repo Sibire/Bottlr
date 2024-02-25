@@ -15,7 +15,8 @@
     <string name="title_activity_add_a_bottle">Add A Bottle</string>
     <string name="menu_search" />
 
-    // Back, Buy, Edit, Delete, Share
+    // Firebase Web Client ID
+    <string name="bottlr_web_client_id">AIzaSyABtWukI8kDq6tq1VAY_StTB0nl9hUt1f4</string> // First one
 
 
 </resources>
