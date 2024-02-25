@@ -2,8 +2,10 @@ package com.example.bottlr.ui.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,11 +39,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        // Update signed in user TextView
+        TextView signedInUserTextView = findViewById(R.id.signed_in_user);
+        if (mAuth.getCurrentUser() != null) {
+            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+        } else {
+            signedInUserTextView.setText("Not signed in");
+        }
+
         Button loginButton = findViewById(R.id.login_Button);
         loginButton.setOnClickListener(v -> signIn());
     }
 
     private void signIn() {
+        Log.d("SettingsActivity", "signIn method called");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -64,15 +76,18 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        Log.d("SettingsActivity", "firebaseAuthWithGoogle method called");
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
+                        Log.d("SettingsActivity", "Sign in successful");
                         Toast.makeText(SettingsActivity.this, "Signed In Successfully", Toast.LENGTH_SHORT).show();
                         finish(); // Navigate back to the settings window
                     } else {
                         // If sign in fails, display a message to the user.
+                        Log.d("SettingsActivity", "Sign in failed");
                         Toast.makeText(SettingsActivity.this, "Sign-In Failed", Toast.LENGTH_SHORT).show();
                         finish(); // Navigate back to the settings window
                     }
