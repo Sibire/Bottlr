@@ -119,6 +119,7 @@ public class SearchFragment extends Fragment {
     }
 
     // Get the list of bottles to search
+    // TODO: Update with SharedUtils Code
     private List<Bottle> getBottlesToSearch() {
         List<Bottle> bottles = new ArrayList<>();
         File directory = requireContext().getFilesDir();
