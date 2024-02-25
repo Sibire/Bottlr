@@ -1,7 +1,7 @@
 package com.example.bottlr.ui.settings;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +25,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.example.bottlr.R;
-
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
 // TODO: Automate cloud storage
+// TODO: Toast Notifications for Upload, Sync, Delete
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -172,6 +172,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String imageName = imageUri.getLastPathSegment();
 
                 // Create a storage reference for the image
+                assert imageName != null;
                 StorageReference imageFileRef = storage.getReference()
                         .child("users")
                         .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
@@ -241,34 +242,41 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void eraseCloudStorage() {
-        // Get a reference to the Firebase Storage instance
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Cloud Storage Confirmation")
+                .setMessage("Are you sure you want to delete all Bottle files from cloud storage?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    // Get a reference to the Firebase Storage instance
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        // Create a reference to the user's bottles directory in Firebase Storage
-        StorageReference userStorageRef = storage.getReference()
-                .child("users")
-                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                .child("bottles");
+                    // Create a reference to the user's bottles directory in Firebase Storage
+                    StorageReference userStorageRef = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("bottles");
 
-        // List all the files in the user's bottles directory in Firebase Storage
-        userStorageRef.listAll()
-                .addOnSuccessListener(listResult -> {
-                    for (StorageReference fileRef : listResult.getItems()) {
-                        // Delete the file from Firebase Storage
-                        fileRef.delete()
-                                .addOnSuccessListener(aVoid -> {
-                                    // Handle successful deletions
-                                    Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
-                                })
-                                .addOnFailureListener(deleteException -> {
-                                    // Handle failed deletions
-                                    Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
-                                });
-                    }
+                    // List all the files in the user's bottles directory in Firebase Storage
+                    userStorageRef.listAll()
+                            .addOnSuccessListener(listResult -> {
+                                for (StorageReference fileRef : listResult.getItems()) {
+                                    // Delete the file from Firebase Storage
+                                    fileRef.delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Handle successful deletions
+                                                Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
+                                            })
+                                            .addOnFailureListener(deleteException -> {
+                                                // Handle failed deletions
+                                                Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                // Handle errors in listing files
+                                Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                            });
                 })
-                .addOnFailureListener(e -> {
-                    // Handle errors in listing files
-                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
-                });
+                .setNegativeButton(android.R.string.no, null).show();
     }
 }
