@@ -110,17 +110,21 @@ public class SettingsActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("SettingsActivity", "Sign in successful");
+                        updateSignedInUserTextView();
                         Toast.makeText(SettingsActivity.this, "Signed In Successfully", Toast.LENGTH_SHORT).show();
-                        finish(); // Navigate back to the settings window
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.d("SettingsActivity", "Sign in failed");
                         Toast.makeText(SettingsActivity.this, "Sign-In Failed", Toast.LENGTH_SHORT).show();
-                        finish(); // Navigate back to the settings window
                     }
                 });
     }
     private void signOut() {
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(SettingsActivity.this, "You're Already Signed Out", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Firebase sign out
         mAuth.signOut();
 
@@ -128,10 +132,21 @@ public class SettingsActivity extends AppCompatActivity {
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 task -> {
                     // Update your UI here
+                    updateSignedInUserTextView();
                     Toast.makeText(SettingsActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
-                    finish(); // Navigate back to the settings window
                 });
     }
+
+    @SuppressLint("SetTextI18n")
+    private void updateSignedInUserTextView() {
+        TextView signedInUserTextView = findViewById(R.id.signed_in_user);
+        if (mAuth.getCurrentUser() != null) {
+            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+        } else {
+            signedInUserTextView.setText("Not Signed In");
+        }
+    }
+
     private void uploadBottlesToCloud() {
         if (mAuth.getCurrentUser() == null) {
             // Sign-In Check
@@ -199,6 +214,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
             }
         }
+        Toast.makeText(SettingsActivity.this, "Bottles Uploaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
     }
 
     private void syncBottlesFromCloud() {
@@ -244,6 +260,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     });
                         }
                     }
+                    Toast.makeText(SettingsActivity.this, "Bottles Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
                 })
                 .addOnFailureListener(e -> {
                     // Handle errors in listing files
@@ -291,6 +308,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 // Handle errors in listing files
                                 Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
                             });
+                    Toast.makeText(SettingsActivity.this, "Cloud Storage Cleared", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
