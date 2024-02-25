@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
+import com.example.bottlr.SharedUtils;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
 import java.io.File;
@@ -85,7 +86,7 @@ public class SearchFragment extends Fragment {
         //Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
-        List<Bottle> allBottles = getBottlesToSearch();
+        List<Bottle> allBottles = SharedUtils.loadBottles(getContext());
         Log.d("SearchFragment", "All bottles: " + allBottles);
 
         // Filter the list based on search criteria
@@ -118,26 +119,6 @@ public class SearchFragment extends Fragment {
         searchResultsAdapter.notifyDataSetChanged();
     }
 
-    // Get the list of bottles to search
-    // TODO: Update with SharedUtils Code
-    private List<Bottle> getBottlesToSearch() {
-        List<Bottle> bottles = new ArrayList<>();
-        File directory = requireContext().getFilesDir();
-        File[] files = directory.listFiles();
-
-        assert files != null;
-        for (File file : files) {
-            if (file.isFile() && file.getName().startsWith("bottle_")) {
-                Bottle bottle = parseBottle(file);
-                if (bottle != null) {
-                    // Make sure the bottle actually exists
-                    bottles.add(bottle);
-                }
-            }
-        }
-        Log.d("SearchFragment", "Bottles to search: " + bottles);
-        return bottles;
-    }
     // Handle bottle selection
     public void searchedBottleSelected(int position) {
         Bottle selectedBottle = searchResultsAdapter.getBottle(position);
