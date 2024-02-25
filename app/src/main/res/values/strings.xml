@@ -16,7 +16,14 @@
     <string name="menu_search" />
 
     // Firebase Web Client ID
-    <string name="bottlr_web_client_id">834964503352-5ph44s7crhmkka72kp1nr9s4vkebdvga.apps.googleusercontent.com</string> // First one
+    <string name="bottlr_web_client_id">834964503352-5ph44s7crhmkka72kp1nr9s4vkebdvga.apps.googleusercontent.com</string>
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log Out</string>
+    <string name="not_signed_in">Not Signed In</string>
+    <string name="erase_cloud_storage">Erase Cloud Storage</string>
+    <string name="sync_bottles_from_cloud">Sync Bottles From Cloud</string>
+    <string name="upload_bottles_to_cloud">Upload Bottles To Cloud</string>
+    // First one
 
 
 </resources>

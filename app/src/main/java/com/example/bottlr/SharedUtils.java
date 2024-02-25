@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
-
+import java.util.List;
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -256,6 +256,25 @@ public class SharedUtils {
         } else {
             Toast.makeText(context, "Failed To Delete Bottle.", Toast.LENGTH_SHORT).show();
         }
+    }
+    //endregion
+
+    //region Bottle List Loading
+    public static List<Bottle> loadBottles(Context context) {
+        List<Bottle> bottles = new ArrayList<>();
+        File directory = context.getFilesDir();
+        File[] files = directory.listFiles();
+
+        assert files != null;
+        for (File file : files) {
+            if (file.isFile() && file.getName().startsWith("bottle_")) {
+                Bottle bottle = parseBottle(file);
+                if (bottle != null) {
+                    bottles.add(bottle); // Add the bottle to the list
+                }
+            }
+        }
+        return bottles;
     }
     //endregion
 

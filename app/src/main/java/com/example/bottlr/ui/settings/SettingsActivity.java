@@ -1,12 +1,19 @@
 package com.example.bottlr.ui.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.bottlr.SharedUtils;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.example.bottlr.Bottle;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -17,6 +24,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.example.bottlr.R;
+import java.util.List;
+import java.util.Objects;
+
+// TODO: Automate cloud storage
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -24,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +57,19 @@ public class SettingsActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
         } else {
-            signedInUserTextView.setText("Not signed in");
+            signedInUserTextView.setText("Not Signed In");
         }
 
         Button loginButton = findViewById(R.id.login_Button);
         loginButton.setOnClickListener(v -> signIn());
+        Button logoutButton = findViewById(R.id.logout_Button);
+        logoutButton.setOnClickListener(v -> signOut());
+        Button uploadButton = findViewById(R.id.upload_Button);
+        uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
+        Button syncButton = findViewById(R.id.sync_Button);
+        syncButton.setOnClickListener(v -> syncBottlesFromCloud());
+        Button eraseButton = findViewById(R.id.erase_Button);
+        eraseButton.setOnClickListener(v -> eraseCloudStorage());
     }
 
     private void signIn() {
@@ -96,5 +116,65 @@ public class SettingsActivity extends AppCompatActivity {
                         finish(); // Navigate back to the settings window
                     }
                 });
+    }
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                task -> {
+                    // Update your UI here
+                    Toast.makeText(SettingsActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
+                    finish(); // Navigate back to the settings window
+                });
+    }
+    private void uploadBottlesToCloud() {
+        // Get a reference to the Firebase Storage instance
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Use the loadBottles() method to get all the bottles
+        List<Bottle> bottleList = SharedUtils.loadBottles(this);
+
+        // Loop through the bottles in the bottle list
+        for (Bottle bottle : bottleList) {
+            // Get the Uri for the bottle image
+            Uri file = bottle.getPhotoUri();
+
+            // Get the file name from the Uri
+            String fileName = file.getLastPathSegment();
+
+            // Create a storage reference
+            StorageReference userStorageRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("bottles")
+                    .child(fileName);
+
+            // Check if the file already exists
+            userStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                // File already exists, do not upload
+                Log.d("SettingsActivity", "File already exists for bottle: " + fileName);
+            }).addOnFailureListener(e -> {
+                // File does not exist, upload the file
+                userStorageRef.putFile(file)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            // Handle successful uploads
+                            Log.d("SettingsActivity", "Upload successful for bottle: " + fileName);
+                        })
+                        .addOnFailureListener(uploadException -> {
+                            // Handle failed uploads
+                            Log.d("SettingsActivity", "Upload failed for bottle: " + fileName, uploadException);
+                        });
+            });
+        }
+    }
+
+    private void syncBottlesFromCloud() {
+        // Code to sync bottles from cloud
+    }
+
+    private void eraseCloudStorage() {
+        // Code to erase cloud storage
     }
 }

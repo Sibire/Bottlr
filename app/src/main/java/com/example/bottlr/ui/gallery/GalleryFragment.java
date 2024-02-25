@@ -1,8 +1,5 @@
 package com.example.bottlr.ui.gallery;
 
-//region Imports
-import static com.example.bottlr.SharedUtils.parseBottle;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,13 +13,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
+import com.example.bottlr.SharedUtils;
 import com.example.bottlr.ui.RecyclerView.BottleAdapter;
 import com.example.bottlr.Bottle;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-//endregion
 
 public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
 
@@ -48,7 +43,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         // Bottle listing
-        List<Bottle> bottles = loadBottles();
+        List<Bottle> bottles = SharedUtils.loadBottles(requireContext());
         adapter = new BottleAdapter(bottles, this);
         recyclerView.setAdapter(adapter);
 
@@ -71,32 +66,12 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
 
     // Reload bottle method
     private void reloadBottles() {
-        List<Bottle> bottles = loadBottles();
+        List<Bottle> bottles = SharedUtils.loadBottles(requireContext());
         if (adapter != null) {
             adapter.setBottles(bottles);
             adapter.notifyDataSetChanged();
         }
     }
-
-    // Initial bottle load
-    private List<Bottle> loadBottles() {
-        List<Bottle> bottles = new ArrayList<>();
-        File directory = requireContext().getFilesDir();
-        File[] files = directory.listFiles();
-
-        assert files != null;
-        for (File file : files) {
-            if (file.isFile() && file.getName().startsWith("bottle_")) {
-                Bottle bottle = parseBottle(file);
-                if (bottle != null) {
-                    // Make sure the bottle actually exists
-                    bottles.add(bottle);
-                }
-            }
-        }
-        return bottles;
-    }
-    //endregion
 
     //region Bottle Select Code
 

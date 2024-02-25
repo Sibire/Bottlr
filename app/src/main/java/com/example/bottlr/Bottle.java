@@ -26,6 +26,8 @@ public class Bottle implements Parcelable {
     private Set<String> keywords;
     private final String rating;
 
+    private String bottleID;
+
     //endregion
 
     //region Constructor
@@ -89,6 +91,10 @@ public class Bottle implements Parcelable {
     // Rating
     public String getRating() { return rating; }
     public void setRating(String rating) { this.region = rating; }
+
+    public String getBottleID() { return bottleID; }
+    public void setBottleID(String ID) { this.bottleID = ID; }
+
     //endregion
 
     //region Create Bottle from Parcel Data
