@@ -62,8 +62,11 @@ public class SettingsActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d("SettingsActivity", "onActivityResult called");
+
         // Result returned by GoogleSignInClient.getSignInIntent
         if (requestCode == RC_SIGN_IN) {
+            Log.d("SettingsActivity", "Result received from sign-in intent");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -71,6 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, notification handled in firebaseAuthWithGoogle
+                Log.d("SettingsActivity", "Google Sign In failed", e);
             }
         }
     }
