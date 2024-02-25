@@ -133,6 +133,11 @@ public class SettingsActivity extends AppCompatActivity {
                 });
     }
     private void uploadBottlesToCloud() {
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(SettingsActivity.this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Get a reference to the Firebase Storage instance
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -198,6 +203,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void syncBottlesFromCloud() {
         // TODO: Maybe do a double-save of bottle images to the user's gallery like I do with AddABottle? Or maybe remove that now since there's cloud storage.
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(SettingsActivity.this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Get a reference to the Firebase Storage instance
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -242,6 +252,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void eraseCloudStorage() {
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(SettingsActivity.this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setTitle("Delete Cloud Storage Confirmation")
                 .setMessage("Are you sure you want to delete all Bottle files from cloud storage?")
