@@ -16,7 +16,7 @@
     <string name="menu_search" />
 
     // Firebase Web Client ID
-    <string name="bottlr_web_client_id">AIzaSyABtWukI8kDq6tq1VAY_StTB0nl9hUt1f4</string> // First one
+    <string name="bottlr_web_client_id">834964503352-5ph44s7crhmkka72kp1nr9s4vkebdvga.apps.googleusercontent.com</string> // First one
 
 
 </resources>
