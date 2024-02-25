@@ -241,6 +241,34 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void eraseCloudStorage() {
-        // Code to erase cloud storage
+        // Get a reference to the Firebase Storage instance
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a reference to the user's bottles directory in Firebase Storage
+        StorageReference userStorageRef = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("bottles");
+
+        // List all the files in the user's bottles directory in Firebase Storage
+        userStorageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        // Delete the file from Firebase Storage
+                        fileRef.delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    // Handle successful deletions
+                                    Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
+                                })
+                                .addOnFailureListener(deleteException -> {
+                                    // Handle failed deletions
+                                    Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
     }
 }
