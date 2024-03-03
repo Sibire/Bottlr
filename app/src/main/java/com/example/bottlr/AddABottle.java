@@ -158,9 +158,10 @@ public class AddABottle extends AppCompatActivity {
     // Make sure to erase all permission and camera code from main and move it here
     // Main no longer has a use for that, adding it to the button there was just for testing
     private void launchCameraIntent() {
+        String bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From The Camera");
+        values.put(MediaStore.Images.Media.TITLE, bottleName);
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Taken in the Bottlr App using the Camera");
         cameraImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -181,11 +182,17 @@ public class AddABottle extends AppCompatActivity {
                     imagePreview.setImageURI(photoUri);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Failed to copy image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed To Copy Image", Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode == CAMERA_REQUEST_CODE) {
-                photoUri = cameraImageUri;
-                imagePreview.setImageURI(cameraImageUri);
+                try {
+                    // Copy the image taken by the camera and get the URI of the copied image
+                    photoUri = copyImageToAppDir(cameraImageUri);
+                    imagePreview.setImageURI(photoUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed To Copy Image", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -195,7 +202,7 @@ public class AddABottle extends AppCompatActivity {
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
         String bottleName = bottleNameField.getText().toString();
-        String filename = bottleName + "_image.jpg";
+        String filename = bottleName + "_BottlrUploadedImage.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
         int bytesRead;
