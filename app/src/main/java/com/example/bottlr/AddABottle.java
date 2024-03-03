@@ -197,6 +197,7 @@ public class AddABottle extends AppCompatActivity {
         }
     }
 
+    // TODO: This might be removable
     // Copies uploaded files into the app directory so they're not subject to the same URI issues they were before.
     // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
