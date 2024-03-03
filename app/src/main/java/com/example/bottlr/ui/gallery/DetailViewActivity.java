@@ -113,7 +113,7 @@ public class DetailViewActivity extends AppCompatActivity {
 
         // Save image button listener
         saveImageButton.setOnClickListener(v -> {
-            if (bottle != null && bottle.getPhotoUri() != null) {
+            if (bottle.getPhotoUri() != null) {
                 // Save the image to the user's gallery
                 saveImageToGallery(DetailViewActivity.this, bottle);
             }

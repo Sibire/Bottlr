@@ -22,7 +22,6 @@ import com.example.bottlr.AddABottle;
 import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
-import com.example.bottlr.ui.gallery.DetailViewActivity;
 
 import java.io.File;
 import java.util.Objects;
@@ -116,7 +115,7 @@ public class HomeFragment extends Fragment {
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
                 // Save the image to the user's gallery
-                saveImageToGallery(getContext(), recentBottle);
+                saveImageToGallery(requireContext(), recentBottle);
             }
         });
 
