@@ -97,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, notification handled in firebaseAuthWithGoogle
-                Log.d("SettingsActivity", "Google Sign In failed", e);
+                Log.d("SettingsActivity", "Google Sign In Failed", e);
             }
         }
     }

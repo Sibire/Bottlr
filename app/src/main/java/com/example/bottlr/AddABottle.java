@@ -129,6 +129,12 @@ public class AddABottle extends AppCompatActivity {
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
     private void chooseImageSource() {
+        String bottleName = bottleNameField.getText().toString();
+        if (bottleName.isEmpty()) {
+            Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
@@ -188,7 +194,8 @@ public class AddABottle extends AppCompatActivity {
     // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
-        String filename = "bottle_" + bottleNameField.getText().toString() + ".jpg";
+        String bottleName = bottleNameField.getText().toString();
+        String filename = bottleName + "_image.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
         int bytesRead;
