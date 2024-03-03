@@ -26,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.example.bottlr.R;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -188,27 +190,34 @@ public class SettingsActivity extends AppCompatActivity {
             // Check if the Uri is not null
             // This can happen if no image is uploaded for the bottle, thus using default image
             if (imageUri != null) {
-                // Get the file name from the Uri
-                String imageName = imageUri.getLastPathSegment();
+                try {
+                    InputStream stream = getContentResolver().openInputStream(imageUri);
 
-                // Create a storage reference for the image
-                assert imageName != null;
-                StorageReference imageFileRef = storage.getReference()
-                        .child("users")
-                        .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                        .child("bottles")
-                        .child(imageName);
+                    // Get the file name from the Uri
+                    String imageName = imageUri.getLastPathSegment();
 
-                // Upload the image file
-                imageFileRef.putFile(imageUri)
-                        .addOnSuccessListener(taskSnapshot -> {
-                            // Handle successful uploads
-                            Log.d("SettingsActivity", "Upload successful for bottle image: " + imageName);
-                        })
-                        .addOnFailureListener(uploadException -> {
-                            // Handle failed uploads
-                            Log.d("SettingsActivity", "Upload failed for bottle image: " + imageName, uploadException);
-                        });
+                    // Create a storage reference for the image
+                    assert imageName != null;
+                    StorageReference imageFileRef = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("bottles")
+                            .child(imageName);
+
+                    // Upload the image file
+                    assert stream != null;
+                    imageFileRef.putStream(stream)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                // Handle successful uploads
+                                Log.d("SettingsActivity", "Upload successful for bottle image: " + imageName);
+                            })
+                            .addOnFailureListener(uploadException -> {
+                                // Handle failed uploads
+                                Log.d("SettingsActivity", "Upload failed for bottle image: " + imageName, uploadException);
+                            });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             } else {
                 // Handle the case where the Uri is null
                 Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
