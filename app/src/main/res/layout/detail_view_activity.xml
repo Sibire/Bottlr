@@ -85,6 +85,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvBottleName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -107,6 +108,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvBottleName"/>
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvDistillery"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -127,6 +129,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvDistillery"/>
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvRating"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -147,6 +150,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvRating"/>
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvBottleDetails"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -187,6 +191,7 @@
                 app:layout_constraintTop_toBottomOf="@id/detailImageView"/>
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvNotes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,6 +213,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvNotes"/>
 
             <TextView
+                android:textIsSelectable="true"
                 android:id="@+id/tvKeywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
