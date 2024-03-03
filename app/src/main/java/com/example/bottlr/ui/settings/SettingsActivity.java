@@ -149,6 +149,76 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: Implement Automatic Save/Load
+//    private void uploadSingleBottleToCloud(Bottle bottle) {
+//        if (mAuth.getCurrentUser() == null) {
+//            // Sign-In Check
+//            return;
+//        }
+//        // Get a reference to the Firebase Storage instance
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//
+//        // Get the file name for the bottle data
+//        String dataFileName = "bottle_" + bottle.getName() + ".txt";
+//
+//        // Create a reference for the bottle data file
+//        StorageReference dataFileRef = storage.getReference()
+//                .child("users")
+//                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+//                .child("bottles")
+//                .child(dataFileName);
+//
+//        // Upload the bottle data file
+//        dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
+//                .addOnSuccessListener(taskSnapshot -> {
+//                    // Handle successful uploads
+//                    Log.d("SettingsActivity", "Upload successful for bottle data: " + dataFileName);
+//                })
+//                .addOnFailureListener(uploadException -> {
+//                    // Handle failed uploads
+//                    Log.d("SettingsActivity", "Upload failed for bottle data: " + dataFileName, uploadException);
+//                });
+//
+//        // Get the Uri for the bottle image
+//        Uri imageUri = bottle.getPhotoUri();
+//
+//        // Check if the Uri is not null
+//        // This can happen if no image is uploaded for the bottle, thus using default image
+//        if (imageUri != null) {
+//            try {
+//                InputStream stream = getContentResolver().openInputStream(imageUri);
+//
+//                // Get the file name from the Uri
+//                String imageName = imageUri.getLastPathSegment();
+//
+//                // Create a storage reference for the image
+//                assert imageName != null;
+//                StorageReference imageFileRef = storage.getReference()
+//                        .child("users")
+//                        .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+//                        .child("bottles")
+//                        .child(imageName);
+//
+//                // Upload the image file
+//                assert stream != null;
+//                imageFileRef.putStream(stream)
+//                        .addOnSuccessListener(taskSnapshot -> {
+//                            // Handle successful uploads
+//                            Log.d("SettingsActivity", "Upload successful for bottle image: " + imageName);
+//                        })
+//                        .addOnFailureListener(uploadException -> {
+//                            // Handle failed uploads
+//                            Log.d("SettingsActivity", "Upload failed for bottle image: " + imageName, uploadException);
+//                        });
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            // Handle the case where the Uri is null
+//            Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
+//        }
+//    }
+
     private void uploadBottlesToCloud() {
         if (mAuth.getCurrentUser() == null) {
             // Sign-In Check

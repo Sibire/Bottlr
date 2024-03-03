@@ -274,6 +274,9 @@ public class AddABottle extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
         }
+        // Automatic Upload (If Applicable)
+        // TODO: This
+        // uploadBottleToCloud(bottle);
 
     }
     //endregion
