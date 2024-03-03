@@ -202,7 +202,7 @@ public class AddABottle extends AppCompatActivity {
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
         String bottleName = bottleNameField.getText().toString();
-        String filename = bottleName + "_BottlrUploadedImage.jpg";
+        String filename = bottleName + "_BottlrImage.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
         int bytesRead;
