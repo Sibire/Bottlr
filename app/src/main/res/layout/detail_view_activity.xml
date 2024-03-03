@@ -61,6 +61,17 @@
                 android:contentDescription="Delete"
                 android:layout_gravity="end"/>
 
+            <ImageButton
+                android:id="@+id/saveImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_download"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Save Image"
+                android:layout_gravity="end"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

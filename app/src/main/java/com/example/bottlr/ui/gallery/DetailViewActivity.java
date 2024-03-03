@@ -1,6 +1,7 @@
 package com.example.bottlr.ui.gallery;
 
 import static com.example.bottlr.SharedUtils.queryBuilder;
+import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import android.content.Intent;
@@ -32,6 +33,7 @@ public class DetailViewActivity extends AppCompatActivity {
     ImageButton shareButton;
     ImageButton buyButton;
     ImageButton editButton;
+    ImageButton saveImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class DetailViewActivity extends AppCompatActivity {
         buyButton = findViewById(R.id.buyButton);
         editButton = findViewById(R.id.editButton);
         backButton = findViewById(R.id.backButton);
+        saveImageButton = findViewById(R.id.saveImageButton);
 
         // Get the bottle from the intent
         Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
@@ -107,5 +110,13 @@ public class DetailViewActivity extends AppCompatActivity {
 
         // Back button listener
         backButton.setOnClickListener(v -> finish());
+
+        // Save image button listener
+        saveImageButton.setOnClickListener(v -> {
+            if (bottle != null && bottle.getPhotoUri() != null) {
+                // Save the image to the user's gallery
+                saveImageToGallery(DetailViewActivity.this, bottle);
+            }
+        });
     }
 }

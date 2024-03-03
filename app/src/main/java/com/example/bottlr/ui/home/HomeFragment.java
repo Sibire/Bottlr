@@ -2,6 +2,7 @@ package com.example.bottlr.ui.home;
 
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.queryBuilder;
+import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import android.content.Intent;
@@ -21,6 +22,8 @@ import com.example.bottlr.AddABottle;
 import com.example.bottlr.MainActivity;
 import com.example.bottlr.R;
 import com.example.bottlr.Bottle;
+import com.example.bottlr.ui.gallery.DetailViewActivity;
+
 import java.io.File;
 import java.util.Objects;
 
@@ -59,6 +62,9 @@ public class HomeFragment extends Fragment {
         // Share button initialization
         ImageButton shareButton = root.findViewById(R.id.shareButton);
 
+        // Save image button initialization
+        ImageButton saveImageButton = root.findViewById(R.id.saveImageButton);
+
         // Call update
         updateRecentBottleView();
 
@@ -96,8 +102,6 @@ public class HomeFragment extends Fragment {
         });
 
         // Share button listener
-
-
         shareButton.setOnClickListener(view -> {
             if (getActivity() instanceof MainActivity) {
                 Bottle bottleToShare = getMostRecentBottle();
@@ -106,6 +110,16 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+
+        // Save image button listener
+        saveImageButton.setOnClickListener(v -> {
+            Bottle recentBottle = getMostRecentBottle();
+            if (recentBottle != null && recentBottle.getPhotoUri() != null) {
+                // Save the image to the user's gallery
+                saveImageToGallery(getContext(), recentBottle);
+            }
+        });
+
 
         //endregion
 

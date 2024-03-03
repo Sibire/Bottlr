@@ -1,8 +1,12 @@
 package com.example.bottlr;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -275,6 +279,42 @@ public class SharedUtils {
             }
         }
         return bottles;
+    }
+    //endregion
+
+    //region Save Image to Gallery
+    public static void saveImageToGallery(Context context, Bottle bottle) {
+        // Convert the Uri to a Bitmap
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), bottle.getPhotoUri());
+
+            // Prepare the values for the new image
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, bottle.getName() + "_BottlrSavedImage.jpg");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+
+            // Add the new image to the MediaStore.Images collection
+            Uri imageUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            if (imageUri != null) {
+                try (OutputStream outputStream = context.getContentResolver().openOutputStream(imageUri)) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed To Save Image", Toast.LENGTH_SHORT).show();
+                }
+            }
+            // TODO: Get this notification working
+            //else {
+            //    Toast.makeText(context, "No Image To Save", Toast.LENGTH_SHORT).show();
+            //}
+
+            // Show a toast message
+            Toast.makeText(context, "Saved As " + bottle.getName() + "_BottlrSavedImage.jpg", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Failed To Save Image", Toast.LENGTH_SHORT).show();
+        }
     }
     //endregion
 
