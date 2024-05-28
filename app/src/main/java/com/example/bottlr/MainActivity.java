@@ -2,8 +2,16 @@ package com.example.bottlr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Scene;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+
 import com.example.bottlr.ui.settings.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
@@ -20,7 +28,7 @@ import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderF
 
 // TODO: Get the detail view to close properly when backing out of it
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     // region onCreate and Template code
 
@@ -56,6 +64,19 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    @Override //Used for on click section in layout button attribute to switch layouts.
+    public void onClick(View view) //add button with an else-if statement
+    {
+        int id = view.getId();
+        if (id == id) {
+
+        } else if (id == id) {
+
+        } else {
+
+        }
     }
 
     @Override
