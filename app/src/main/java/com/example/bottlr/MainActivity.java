@@ -56,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", 0f, -0.9f * navMenu.getWidth());
             animator.setDuration(300);
             animator.start();
-        } else if (id == R.id.button2) {
+        } else if (id == R.id.menu_home_button) { //nav home screen click
+            setContentView(R.layout.homescreen);
+        } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             setContentView(R.layout.bottlelabel);
         } else {
 
