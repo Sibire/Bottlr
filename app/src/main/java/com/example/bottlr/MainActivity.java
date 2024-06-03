@@ -1,12 +1,8 @@
 package com.example.bottlr;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Scene;
-import android.transition.Slide;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +10,8 @@ import android.widget.AdapterView;
 
 import com.example.bottlr.ui.settings.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -30,10 +28,6 @@ import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderF
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // region onCreate and Template code
-
-    // This code is just about entirely stock from the app template provided by Android Studio
-    // Don't screw with it unless you absolutely need to
     private AppBarConfiguration mAppBarConfiguration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,38 +38,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseApp.initializeApp(this);
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
         firebaseAppCheck.installAppCheckProviderFactory(PlayIntegrityAppCheckProviderFactory.getInstance());
-
-
-        /*ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, AddABottle.class);
-            startActivity(intent);
-        });
-
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);*/
     }
 
     @Override //Used for on click section in layout button attribute to switch layouts.
     public void onClick(View view) //add button with an else-if statement
     {
         int id = view.getId();
-        if (id == id) {
-
-        } else if (id == id) {
-
+        if (id == R.id.menu_icon) { //menu navigation button
+            //animate view slide
+            ConstraintLayout navMenu = findViewById(R.id.nav_window);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", 0f, 0f * navMenu.getWidth());
+            animator.setDuration(700);
+            animator.start();
+        } else if (id == R.id.exit_nav_button) { //exit nav menu
+            //animate view slide
+            ConstraintLayout navMenu = findViewById(R.id.nav_window);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", 0f, -0.9f * navMenu.getWidth());
+            animator.setDuration(300);
+            animator.start();
+        } else if (id == R.id.button2) {
+            setContentView(R.layout.bottlelabel);
         } else {
 
         }
