@@ -1,7 +1,5 @@
 package com.example.bottlr.ui.search;
 
-import static com.example.bottlr.SharedUtils.parseBottle;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.R;
 import com.example.bottlr.SharedUtils;
-import com.example.bottlr.ui.RecyclerView.BottleAdapter;
+import com.example.bottlr.BottleAdapter;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

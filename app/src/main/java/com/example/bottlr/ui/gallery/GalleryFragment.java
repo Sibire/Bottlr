@@ -1,3 +1,4 @@
+/*
 package com.example.bottlr.ui.gallery;
 
 import android.content.Intent;
@@ -7,17 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
 import com.example.bottlr.SharedUtils;
-import com.example.bottlr.ui.RecyclerView.BottleAdapter;
+import com.example.bottlr.BottleAdapter;
 import com.example.bottlr.Bottle;
 import java.util.List;
-import java.util.Objects;
 
 public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleListener {
 
@@ -33,7 +32,7 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = root.findViewById(R.id.liquorRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -53,12 +52,14 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
 
     //region On Resume Reload
 
-    @Override
+   */
+/* @Override
     public void onResume() {
         super.onResume();
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Liquor Cabinet");
         reloadBottles();
-    }
+    }*//*
+
 
     //endregion
 
@@ -88,3 +89,4 @@ public class GalleryFragment extends Fragment implements BottleAdapter.OnBottleL
     //endregion
 
 }
+*/

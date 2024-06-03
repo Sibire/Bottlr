@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottlr.R;
-import com.example.bottlr.ui.RecyclerView.BottleAdapter;
+import com.example.bottlr.BottleAdapter;
 import com.example.bottlr.Bottle;
 import com.example.bottlr.ui.gallery.DetailViewActivity;
 import java.util.ArrayList;

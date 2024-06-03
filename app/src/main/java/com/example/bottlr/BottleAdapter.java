@@ -1,4 +1,4 @@
-package com.example.bottlr.ui.RecyclerView;
+package com.example.bottlr;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -10,12 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.example.bottlr.Bottle;
-import com.example.bottlr.R;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     private List<Bottle> bottles;
@@ -36,7 +33,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     }
 
     @Override
-    public void onBindViewHolder(BottleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final BottleViewHolder holder, int position) {
         Bottle bottle = bottles.get(position);
         holder.textViewBottleName.setText(bottle.getName());
         holder.textViewDistillery.setText(bottle.getDistillery());
