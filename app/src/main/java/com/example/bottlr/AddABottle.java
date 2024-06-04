@@ -1,3 +1,4 @@
+/*
 package com.example.bottlr;
 
 import android.Manifest;
@@ -312,3 +313,4 @@ public class AddABottle extends AppCompatActivity {
     //endregion
 
 }
+*/

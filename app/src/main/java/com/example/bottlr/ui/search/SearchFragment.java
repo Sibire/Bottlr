@@ -1,3 +1,4 @@
+/*
 package com.example.bottlr.ui.search;
 
 import android.content.Intent;
@@ -127,3 +128,4 @@ public class SearchFragment extends Fragment {
         }
     }
 }
+*/

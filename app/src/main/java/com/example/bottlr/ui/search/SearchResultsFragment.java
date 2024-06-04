@@ -1,3 +1,4 @@
+/*
 package com.example.bottlr.ui.search;
 
 import android.content.Intent;
@@ -83,4 +84,4 @@ public class SearchResultsFragment extends Fragment {
             startActivity(intent);
         }
     }
-}
+}*/
