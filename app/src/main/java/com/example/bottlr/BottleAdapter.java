@@ -1,0 +1,85 @@
+package com.example.bottlr;
+
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
+    public List<Bottle> bottles;
+    public List<Bottle> allBottles;
+    interface OnBottleCheckListener {
+        void onButtonClick(String string);
+    }
+    @NonNull
+    private OnBottleCheckListener onBottleClick;
+    public BottleAdapter(List<Bottle> bottles, List<Bottle> allBottles, @NonNull OnBottleCheckListener onBottleCheckListener) {
+        this.bottles = bottles != null ? bottles : new ArrayList<>(); // Ensure bottles is not null
+        this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allBottles is not null
+        this.onBottleClick = onBottleCheckListener;
+    }
+    public static class BottleViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageViewBottle;
+        TextView textViewBottleName, textViewDistillery;
+        Button bottleButton;
+        public BottleViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageViewBottle = itemView.findViewById(R.id.imageViewBottle);
+            textViewBottleName = itemView.findViewById(R.id.textViewBottleName);
+            textViewDistillery = itemView.findViewById(R.id.textViewDistillery);
+            bottleButton = itemView.findViewById(R.id.bottlesinglebutton);
+        }
+        public void setOnClickListener(View.OnClickListener onClickListener) {
+            itemView.setOnClickListener(onClickListener);
+        }
+    }
+    @NonNull
+    @Override
+    public BottleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bottlelabel, viewGroup, false);
+        return new BottleViewHolder(view);
+    }
+    @Override
+    public void onBindViewHolder(@NonNull final BottleViewHolder holder, int position) {
+        Bottle bottle = bottles.get(position);
+        holder.textViewBottleName.setText(bottle.getName());
+        holder.textViewDistillery.setText(bottle.getDistillery());
+        if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
+            Glide.with(holder.itemView.getContext())
+                    .load(Uri.parse(bottle.getPhotoUri().toString()))
+                    .error(R.drawable.nodrinkimg)
+                    .into(holder.imageViewBottle);
+        } else {
+            holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
+        }
+        (holder).bottleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBottleClick.onButtonClick(bottle.getBottleID());
+            }
+        });
+    }
+    @Override
+    public int getItemCount() { return bottles.size(); }
+
+    public void setBottles(List<Bottle> bottles) {
+        this.bottles = new ArrayList<>(bottles);
+        this.allBottles.clear();
+        this.allBottles.addAll(bottles);
+        notifyDataSetChanged();
+    }
+    public Bottle getBottle(int position) {
+        if (position >= 0 && position < bottles.size()) {
+            return bottles.get(position);
+        }
+        return null; // Null if out of bounds
+    }
+}
