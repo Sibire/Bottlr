@@ -70,19 +70,16 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     @Override
     public int getItemCount() { return bottles.size(); }
 
-    /*public void setBottles(List<Bottle> bottles) {
+    public void setBottles(List<Bottle> bottles) {
         this.bottles = new ArrayList<>(bottles);
         this.allBottles.clear();
         this.allBottles.addAll(bottles);
         notifyDataSetChanged();
-    }*/
-   /* public Bottle getBottle(int position) {
+    }
+    public Bottle getBottle(int position) {
         if (position >= 0 && position < bottles.size()) {
             return bottles.get(position);
         }
         return null; // Null if out of bounds
-    }*/
-    /*public interface OnBottleListener {
-        void onBottleClick(int position);
-    }*/
+    }
 }
