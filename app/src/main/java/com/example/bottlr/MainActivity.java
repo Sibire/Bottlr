@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             searchResultsAdapter.notifyDataSetChanged();
         }
     }*/
-
     /*private List<Bottle> loadResultBottles() {
         // Get the filtered list of bottles from the arguments
         assert getArguments() != null;
