@@ -64,8 +64,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO: Get the detail view to close properly when backing out of it
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private AppBarConfiguration mAppBarConfiguration;
     private List<Bottle> bottles;
