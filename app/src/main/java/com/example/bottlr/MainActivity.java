@@ -910,9 +910,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //  but not in the homefragment or detailviewactivity
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
     public void detailedView(String string) { //TODO: populate fields
-        setContentView(R.layout.detail_view_activity);
-        /*// Find the views
+        setContentView(R.layout.description_screen);
+
         ImageView bottleImage = findViewById(R.id.detailImageView);
+        //bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        TextView bottleName = findViewById(R.id.tvBottleName);
+        TextView bottleDistillery = findViewById(R.id.tvDistillery);
+        TextView bottleRating = findViewById(R.id.tvRating);
+        TextView bottleDetails = findViewById(R.id.tvBottleDetails);
+        TextView bottleNotes = findViewById(R.id.tvNotes);
+        TextView bottleKeywords = findViewById(R.id.tvKeywords);
+
+        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+
+        bottleName.setText(bottle.getName());
+        /*bottleDistillery.setText(bottle.getDistillery());
+        String rating = bottle.getRating() + " / 10";
+        bottleRating.setText(rating);
+        String details = bottle.getType() + ", " + bottle.getRegion() + ", " + bottle.getAge() + " Year, " + bottle.getAbv() + "% ABV";
+        bottleDetails.setText(details);
+        bottleNotes.setText(bottle.getNotes());
+        String keywords = "Keywords:\n" + String.join(", ", bottle.getKeywords());
+        bottleKeywords.setText(keywords);*/
+
+        // Find the views
+        /*ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         // view Initialization
         TextView bottleName = findViewById(R.id.tvBottleName);
@@ -929,7 +951,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         saveImageButton = findViewById(R.id.saveImageButton);
 
         // Get the bottle from the intent
-        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+        //Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
 
         // Set the bottle details to the views
 
@@ -952,9 +974,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottleDetails.setText(details);
         bottleNotes.setText(bottle.getNotes());
         String keywords = "Keywords:\n" + String.join(", ", bottle.getKeywords());
-        bottleKeywords.setText(keywords);
+        bottleKeywords.setText(keywords);*/
 
-        // Delete button listener
+        /*// Delete button listener
         deleteButton.setOnClickListener(v -> showDeleteConfirm(bottle, this));
 
         // Buy button listener
@@ -962,12 +984,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(bottle))));
             startActivity(intent);
-        });
+        });*/
 
         // Share button listener
-        shareButton.setOnClickListener(view -> shareBottleInfo(bottle, this));
+        //shareButton.setOnClickListener(view -> shareBottleInfo(bottle, this));
 
-        // Edit button listener
+        /*// Edit button listener
         editButton.setOnClickListener(view -> {
             // Call AddABottle to reuse existing assets
             Intent intent = new Intent(DetailViewActivity.this, AddABottle.class);
