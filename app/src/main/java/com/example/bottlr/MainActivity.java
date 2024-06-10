@@ -329,10 +329,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: Get this working again
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
     public void detailedView(String string) { //TODO: populate fields
-        setContentView(R.layout.detail_view_activity);
+        setContentView(R.layout.description_screen);
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        //bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         // view Initialization
         TextView bottleName = findViewById(R.id.tvBottleName);
         TextView bottleDistillery = findViewById(R.id.tvDistillery);
@@ -340,15 +340,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView bottleDetails = findViewById(R.id.tvBottleDetails);
         TextView bottleNotes = findViewById(R.id.tvNotes);
         TextView bottleKeywords = findViewById(R.id.tvKeywords);
-        deleteButton = findViewById(R.id.deleteButton);
+
+        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+
+        bottleName.setText(bottle.getName());
+
+        /*deleteButton = findViewById(R.id.deleteButton);
         shareButton = findViewById(R.id.shareButton);
         buyButton = findViewById(R.id.buyButton);
         editButton = findViewById(R.id.editButton);
         backButton2 = findViewById(R.id.backButton);
-        saveImageButton = findViewById(R.id.saveImageButton);
+        saveImageButton = findViewById(R.id.saveImageButton);*/
 
         // Get the bottle from the intent
-        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+        /*Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
 
         // Set the bottle details to the views
 
@@ -403,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Save the image to the user's gallery
                 saveImageToGallery(this, bottle);
             }
-        });
+        });*/
     }
     //endregion
 
