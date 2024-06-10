@@ -325,10 +325,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //  the text fields of the bottle details are not being populated.
     //  Additionally, if no image has been saved, the default image will display for the gallery and search result preview,
     //  but not in the homefragment or detailviewactivity
+
+    // TODO: Get this working again
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
     public void detailedView(String string) { //TODO: populate fields
         setContentView(R.layout.detail_view_activity);
-        /*// Find the views
+        // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         // view Initialization
@@ -351,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set the bottle details to the views
 
         // Glide
-        assert bottle != null;
+        //assert bottle != null;
         if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
             Glide.with(this)
                     .load(bottle.getPhotoUri())
@@ -386,10 +388,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Edit button listener
         editButton.setOnClickListener(view -> {
-            // Call AddABottle to reuse existing assets
-            Intent intent = new Intent(DetailViewActivity.this, AddABottle.class);
-            intent.putExtra("bottle", bottle);
-            startActivity(intent);
+            // Call addBottle to reuse existing assets
+            addBottle();
+            // Populate extant fields
+            popFields(bottle);
         });
 
         // Back button listener
@@ -399,9 +401,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         saveImageButton.setOnClickListener(v -> {
             if (bottle.getPhotoUri() != null) {
                 // Save the image to the user's gallery
-                saveImageToGallery(DetailViewActivity.this, bottle);
+                saveImageToGallery(this, bottle);
             }
-        });*/
+        });
     }
     //endregion
 
@@ -576,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String imageName = imageUri.getLastPathSegment();
 
                     // Create a storage reference for the image
-                    assert imageName != null;
+                    //assert imageName != null;
                     StorageReference imageFileRef = storage.getReference()
                             .child("users")
                             .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
@@ -584,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child(imageName);
 
                     // Upload the image file
-                    assert stream != null;
+                    //assert stream != null;
                     imageFileRef.putStream(stream)
                             .addOnSuccessListener(taskSnapshot -> {
                                 // Handle successful uploads
@@ -701,6 +703,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Add Bottle
+    // TODO: Re-implement button functionality
     public void addBottle() {
         setContentView(R.layout.addbottlewindow);
 
@@ -799,7 +802,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         byte[] buffer = new byte[1024];
         int bytesRead;
         while (true) {
-            assert is != null;
+            //assert is != null;
             if ((bytesRead = is.read(buffer)) == -1) break;
             fos.write(buffer, 0, bytesRead);
         }
