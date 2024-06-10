@@ -17,7 +17,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public List<Bottle> bottles;
     public List<Bottle> allBottles;
     interface OnBottleCheckListener {
-        void onButtonClick(String string);
+        void onButtonClick(String bottleName, String bottleId);
     }
     @NonNull
     private OnBottleCheckListener onBottleClick;
@@ -63,7 +63,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         (holder).bottleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBottleClick.onButtonClick(bottle.getName());
+                onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID());
             }
         });
     }

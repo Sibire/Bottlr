@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottles = SharedUtils.loadBottles(this);
         liquorAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String string) { detailedView(string); }
+            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
         });
         LiquorCabinetRecycler.setAdapter(liquorAdapter);
         liquorAdapter.notifyDataSetChanged();
@@ -328,22 +328,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // TODO: Get this working again
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
-    public void detailedView(String string) { //TODO: populate fields
+    public void detailedView(String bottleName, String bottleId) { //TODO: populate fields
         setContentView(R.layout.description_screen);
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
         //bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         // view Initialization
-        TextView bottleName = findViewById(R.id.tvBottleName);
+        TextView tbottleName = findViewById(R.id.tvBottleName);
         TextView bottleDistillery = findViewById(R.id.tvDistillery);
         TextView bottleRating = findViewById(R.id.tvRating);
         TextView bottleDetails = findViewById(R.id.tvBottleDetails);
         TextView bottleNotes = findViewById(R.id.tvNotes);
         TextView bottleKeywords = findViewById(R.id.tvKeywords);
 
-        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+        //Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
 
-        bottleName.setText(bottle.getName());
+        //bottleName.setText(bottle.getName());
+        tbottleName.setText(bottleName);
+
 
         /*deleteButton = findViewById(R.id.deleteButton);
         shareButton = findViewById(R.id.shareButton);
@@ -921,9 +923,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set the LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize your adapter and set it to the RecyclerView
-        searchResultsAdapter = new BottleAdapter(new ArrayList<>(), new ArrayList<>(), new BottleAdapter.OnBottleCheckListener() {
+        searchResultsAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String string) { detailedView(string); }
+            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
         });
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         searchButton.setOnClickListener(v -> {
@@ -935,9 +937,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void searchResults() {
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        searchResultsAdapter = new BottleAdapter(new ArrayList<>(), new ArrayList<>(), new BottleAdapter.OnBottleCheckListener() {
+        searchResultsAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String string) { detailedView(string); }
+            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
         });
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         // Divider for clarity
