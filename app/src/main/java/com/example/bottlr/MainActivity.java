@@ -921,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView bottleNotes = findViewById(R.id.tvNotes);
         TextView bottleKeywords = findViewById(R.id.tvKeywords);
 
-        Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+        Bottle bottle = getIntent().getParcelableExtra(string);
 
         bottleName.setText(bottle.getName());
         /*bottleDistillery.setText(bottle.getDistillery());

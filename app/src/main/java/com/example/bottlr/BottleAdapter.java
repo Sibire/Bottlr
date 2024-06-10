@@ -63,7 +63,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         (holder).bottleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBottleClick.onButtonClick(bottle.getBottleID());
+                onBottleClick.onButtonClick(bottle.getName());
             }
         });
     }
