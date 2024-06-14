@@ -65,24 +65,18 @@ import java.util.stream.Collectors;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Initializations
-    private AppBarConfiguration mAppBarConfiguration;
-    private List<Bottle> bottles;
-    private List<Bottle> allBottles;
+    private List<Bottle> bottles, allBottles;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    // Relevant permissions code
-    private static final int CAMERA_REQUEST_CODE = 201;
-    private static final int GALLERY_REQUEST_CODE = 202;
-    private EditText bottleNameField, distillerField, spiritTypeField, abvField, ageField, tastingNotesField, regionField, keywordsField, ratingField;
+    private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
+    private EditText bottleNameField, distillerField, spiritTypeField, abvField,
+            ageField, tastingNotesField, regionField, keywordsField, ratingField,
+            nameField, distilleryField, typeField, notesField;
     ImageButton backButton;
-    // Gallery storage URI
-    private Uri photoUri;
-    // Camera storage URI
-    private Uri cameraImageUri;
+    private Uri photoUri, cameraImageUri;
     private TextView tvBottleName, tvDistillery, tvBottleDetails, tvNotes, tvRating, tvKeywords;
     private ImageView imageViewBottle;
-    private EditText nameField, distilleryField, typeField, notesField;
     private BottleAdapter searchResultsAdapter;
     Button searchButton;
     //endregion
@@ -130,13 +124,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
         } else if (id == R.id.saveButton) { //save bottle button
             saveEntryToFile();
-            setContentView(R.layout.homescreen); //TODO: Make previous screen
+            setContentView(R.layout.homescreen); //TODO: Set with previous screen
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null) {
                 showDeleteConfirm(recentBottle, this); }
+            setContentView(R.layout.fragment_gallery);
+            GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
             Bottle bottleToShare = getMostRecentBottle();
             if (bottleToShare != null) {
@@ -163,11 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Save the image to the user's gallery
                 saveImageToGallery(this, recentBottle);}
         } else if (id == R.id.backButton) { //back button bottle
-            setContentView(R.layout.fragment_gallery);
+            setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
+            GenerateLiquorRecycler();
         } else if (id == R.id.search_button) { //search info
             search(); //TODO: integrate
         } else {
-            //home screen? or error text?
+            Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
     }
     //endregion
@@ -195,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvKeywords = findViewById(R.id.tvKeywords);
     }
 
-    private void updateRecentBottleView() {
+    /*private void updateRecentBottleView() { //TODO: Used?
         Bottle recentBottle = getMostRecentBottle();
         if (recentBottle != null) {
             tvBottleName.setText(recentBottle.getName());
@@ -221,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String keywords = "Keywords:\n" + String.join(", ", recentBottle.getKeywords());
             tvKeywords.setText(keywords);
         }
-    } //TODO: Used?
+    } */
 
     private Bottle getMostRecentBottle() {
         File directory = this.getFilesDir();
@@ -286,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //  Additionally, if no image has been saved, the default image will display for the gallery and search result preview,
     //  but not in the homefragment or detailviewactivity
 
-    // TODO: Get this working again
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
     public void detailedView(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
                              Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
@@ -304,7 +300,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //add data to layout
         String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
-
         tbottleName.setText(bottleName);
         tbottleDistillery.setText(bottleDistillery);
         String rating = bottleRating + " / 10";
@@ -313,46 +308,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleNotes.setText(bottleNotes);
         String keywords = "Keywords:\n" + String.join(", ", bottleKeywords);
         tbottleKeywords.setText(keywords);
-        bottleImage.setImageURI(bottlePhoto);
-
-        ImageButton deleteButton = findViewById(R.id.deleteButton);
-        ImageButton shareButton = findViewById(R.id.shareButton);
-        ImageButton buyButton = findViewById(R.id.buyButton);
-        ImageButton editButton = findViewById(R.id.editButton);
-        ImageButton backButton2 = findViewById(R.id.backButton);
-        ImageButton saveImageButton = findViewById(R.id.saveImageButton);
-
-        /*// Delete button listener
-        deleteButton.setOnClickListener(v -> showDeleteConfirm(bottle, this));
-
-        // Buy button listener
-        buyButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(bottle))));
-            startActivity(intent);
-        });
-
-        // Share button listener
-        shareButton.setOnClickListener(view -> shareBottleInfo(bottle, this));
-
-        // Edit button listener
-        editButton.setOnClickListener(view -> {
-            // Call addBottle to reuse existing assets
-            addBottle();
-            // Populate extant fields
-            popFields(bottle);
-        });
-
-        // Back button listener
-        backButton2.setOnClickListener(v -> finish());
-
-        // Save image button listener
-        saveImageButton.setOnClickListener(v -> {
-            if (bottle.getPhotoUri() != null) {
-                // Save the image to the user's gallery
-                saveImageToGallery(this, bottle);
-            }
-        });*/
+        if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
+            bottleImage.setImageResource(R.drawable.nodrinkimg);
+        } else {
+            bottleImage.setImageURI(bottlePhoto);
+        }
     }
     //endregion
 
@@ -652,7 +612,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Add Bottle
-    // TODO: Re-implement button functionality
     public void addBottle() {
         setContentView(R.layout.addbottlewindow);
 
@@ -919,7 +878,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             /*Intent intent = new Intent(getActivity(), DetailViewActivity.class);
             intent.putExtra("selectedBottle", selectedBottle);
             startActivity(intent);*/
-            setContentView(R.layout.detail_view_activity);
+            setContentView(R.layout.description_screen);
         }
     }
     private void performSearch() {
