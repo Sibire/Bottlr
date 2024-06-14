@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     public List<Bottle> bottles;
     public List<Bottle> allBottles;
     interface OnBottleCheckListener {
-        void onButtonClick(String bottleName, String bottleId);
+        void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
+                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords);
     }
     @NonNull
     private OnBottleCheckListener onBottleClick;
@@ -63,7 +65,8 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         (holder).bottleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID());
+                onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
+                        bottle.getAbv(), bottle.getAge(), bottle.getPhotoUri(), bottle.getNotes(), bottle.getRegion(), bottle.getRating(), bottle.getKeywords());
             }
         });
     }

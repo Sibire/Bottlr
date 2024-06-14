@@ -302,7 +302,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottles = SharedUtils.loadBottles(this);
         liquorAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
+            public void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
+                                      Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
+                detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
+                        bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords); }
         });
         LiquorCabinetRecycler.setAdapter(liquorAdapter);
         liquorAdapter.notifyDataSetChanged();
@@ -328,23 +331,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // TODO: Get this working again
     ImageButton backButton2, deleteButton, shareButton, buyButton, editButton, saveImageButton;
-    public void detailedView(String bottleName, String bottleId) { //TODO: populate fields
+    public void detailedView(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
+                             Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
         setContentView(R.layout.description_screen);
+
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        //bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
-        // view Initialization
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         TextView tbottleName = findViewById(R.id.tvBottleName);
-        TextView bottleDistillery = findViewById(R.id.tvDistillery);
-        TextView bottleRating = findViewById(R.id.tvRating);
-        TextView bottleDetails = findViewById(R.id.tvBottleDetails);
-        TextView bottleNotes = findViewById(R.id.tvNotes);
-        TextView bottleKeywords = findViewById(R.id.tvKeywords);
+        TextView tbottleDistillery = findViewById(R.id.tvDistillery);
+        TextView tbottleRating = findViewById(R.id.tvRating);
+        TextView tbottleDetails = findViewById(R.id.tvBottleDetails);
+        TextView tbottleNotes = findViewById(R.id.tvNotes);
+        TextView tbottleKeywords = findViewById(R.id.tvKeywords);
 
-        //Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
+        //add data to layout
+        String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
 
-        //bottleName.setText(bottle.getName());
         tbottleName.setText(bottleName);
+        tbottleDistillery.setText(bottleDistillery);
+        String rating = bottleRating + " / 10";
+        tbottleRating.setText(rating);
+        tbottleDetails.setText(details);
+        tbottleNotes.setText(bottleNotes);
+        String keywords = "Keywords:\n" + String.join(", ", bottleKeywords);
+        tbottleKeywords.setText(keywords);
+        bottleImage.setImageURI(bottlePhoto);
+
 
 
         /*deleteButton = findViewById(R.id.deleteButton);
@@ -354,33 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         backButton2 = findViewById(R.id.backButton);
         saveImageButton = findViewById(R.id.saveImageButton);*/
 
-        // Get the bottle from the intent
-        /*Bottle bottle = getIntent().getParcelableExtra("selectedBottle");
-
-        // Set the bottle details to the views
-
-        // Glide
-        //assert bottle != null;
-        if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
-            Glide.with(this)
-                    .load(bottle.getPhotoUri())
-                    .error(R.drawable.nodrinkimg) // Default image in case of error
-                    .into(bottleImage);
-        }
-        // Image not working debugging code
-        Log.d("DetailViewActivity", "Image URI: " + bottle.getPhotoUri());
-        // Other fields
-        bottleName.setText(bottle.getName());
-        bottleDistillery.setText(bottle.getDistillery());
-        String rating = bottle.getRating() + " / 10";
-        bottleRating.setText(rating);
-        String details = bottle.getType() + ", " + bottle.getRegion() + ", " + bottle.getAge() + " Year, " + bottle.getAbv() + "% ABV";
-        bottleDetails.setText(details);
-        bottleNotes.setText(bottle.getNotes());
-        String keywords = "Keywords:\n" + String.join(", ", bottle.getKeywords());
-        bottleKeywords.setText(keywords);
-
-        // Delete button listener
+        /*// Delete button listener
         deleteButton.setOnClickListener(v -> showDeleteConfirm(bottle, this));
 
         // Buy button listener
@@ -925,7 +912,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize your adapter and set it to the RecyclerView
         searchResultsAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
+            public void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
+                                      Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
+                detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
+                        bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords); }
         });
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         searchButton.setOnClickListener(v -> {
@@ -939,7 +929,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchResultsAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
             @Override
-            public void onButtonClick(String bottleName, String bottleId) { detailedView(bottleName, bottleId); }
+            public void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
+                                      Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
+                detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
+                        bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords); }
         });
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         // Divider for clarity
