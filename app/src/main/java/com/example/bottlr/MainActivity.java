@@ -132,7 +132,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             saveEntryToFile();
             setContentView(R.layout.homescreen); //TODO: Make previous screen
         } else if (id == R.id.homescreen) { //fragment home
-            homeScreen(); //TODO: integrate into main home screen/details
+            homeScreen();
+        } else if (id == R.id.deleteButton) { //delete bottle
+            Bottle recentBottle = getMostRecentBottle();
+            if (recentBottle != null) {
+                showDeleteConfirm(recentBottle, this); }
+        } else if (id == R.id.shareButton) { //share bottle
+            Bottle bottleToShare = getMostRecentBottle();
+            if (bottleToShare != null) {
+                shareBottleInfo(bottleToShare, this); }
+        } else if (id == R.id.buyButton) { //buy bottle
+            Bottle recentBottle = getMostRecentBottle();
+            if (getMostRecentBottle() != null) {
+                String query = queryBuilder(recentBottle);
+                String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(query);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent); }
+        } else if (id == R.id.editButton) { //edit Bottle
+            //if (getMostRecentBottle() != null) {
+                // Call AddABottle to reuse existing assets
+                //Intent intent = new Intent(this, AddABottle.class);
+                //intent.putExtra("bottle", getMostRecentBottle());
+                //startActivity(intent); }
+                //addBottle();
+                //popFields(bottle);
+        } else if (id == R.id.saveImageButton) { //saveImage
+            Bottle recentBottle = getMostRecentBottle();
+            if (recentBottle != null && recentBottle.getPhotoUri() != null) {
+                // Save the image to the user's gallery
+                saveImageToGallery(this, recentBottle);}
+        } else if (id == R.id.backButton) { //back button bottle
+            setContentView(R.layout.fragment_gallery);
         } else if (id == R.id.search_button) { //search info
             search(); //TODO: integrate
         } else {
@@ -162,76 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvNotes = findViewById(R.id.tvNotes);
         tvRating = findViewById(R.id.tvRating);
         tvKeywords = findViewById(R.id.tvKeywords);
+    }
 
-        // Shopping button initialization
-        ImageButton buyButton = findViewById(R.id.buyButton);
-
-        // Delete button initialization
-        ImageButton deleteButton = findViewById(R.id.deleteButton);
-
-        // Edit button initialization
-        ImageButton editButton = findViewById(R.id.editButton);
-
-        // Share button initialization
-        ImageButton shareButton = findViewById(R.id.shareButton);
-
-        // Save image button initialization
-        ImageButton saveImageButton = findViewById(R.id.saveImageButton);
-
-        // Call update
-        updateRecentBottleView();
-
-        //region Shopping Query
-
-        // Buy button listener
-        buyButton.setOnClickListener(v -> {
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null) {
-                String query = queryBuilder(recentBottle);
-                String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(query);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            }
-        });
-
-        // Delete button listener
-        deleteButton.setOnClickListener(v -> {
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null) {
-                showDeleteConfirm(recentBottle, this);
-            }
-        });
-
-        // Edit button listener
-        /*editButton.setOnClickListener(view -> {
-            if (getMostRecentBottle() != null) {
-                // Call AddABottle to reuse existing assets
-                Intent intent = new Intent(this, AddABottle.class);
-                intent.putExtra("bottle", getMostRecentBottle());
-                startActivity(intent);
-            }
-        });*/
-
-        // Share button listener
-        shareButton.setOnClickListener(view -> {
-            if (this instanceof MainActivity) {
-                Bottle bottleToShare = getMostRecentBottle();
-                if (bottleToShare != null) {
-                    shareBottleInfo(bottleToShare, this);
-                }
-            }
-        });
-
-        // Save image button listener
-        saveImageButton.setOnClickListener(v -> {
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null && recentBottle.getPhotoUri() != null) {
-                // Save the image to the user's gallery
-                saveImageToGallery(this, recentBottle);
-            }
-        });
-    } //TODO: Needs implemented
     private void updateRecentBottleView() {
         Bottle recentBottle = getMostRecentBottle();
         if (recentBottle != null) {
@@ -258,17 +221,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String keywords = "Keywords:\n" + String.join(", ", recentBottle.getKeywords());
             tvKeywords.setText(keywords);
         }
-    }
+    } //TODO: Used?
+
     private Bottle getMostRecentBottle() {
         File directory = this.getFilesDir();
         File[] files = directory.listFiles((dir, name) -> name.startsWith("bottle_") && name.endsWith(".txt"));
-
         // Sort out deprecation issues
         // Low priority issue
-
         Bottle mostRecentBottle = null;
         long lastModifiedTime = Long.MIN_VALUE;
-
         if (files != null) {
             for (File file : files) {
                 if (file.lastModified() > lastModifiedTime) {
@@ -280,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-
         return mostRecentBottle;
     }
     //endregion
@@ -291,12 +251,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView LiquorCabinetRecycler = findViewById(R.id.liquorRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LiquorCabinetRecycler.setLayoutManager(layoutManager);
-
-        //List<Bottle> bottles = SharedUtils.loadBottles(this);
         // Line divider to keep things nice and neat
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);
-
         // Bottle listing
         BottleAdapter liquorAdapter;
         bottles = SharedUtils.loadBottles(this);
@@ -358,14 +315,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleKeywords.setText(keywords);
         bottleImage.setImageURI(bottlePhoto);
 
-
-
-        /*deleteButton = findViewById(R.id.deleteButton);
-        shareButton = findViewById(R.id.shareButton);
-        buyButton = findViewById(R.id.buyButton);
-        editButton = findViewById(R.id.editButton);
-        backButton2 = findViewById(R.id.backButton);
-        saveImageButton = findViewById(R.id.saveImageButton);*/
+        ImageButton deleteButton = findViewById(R.id.deleteButton);
+        ImageButton shareButton = findViewById(R.id.shareButton);
+        ImageButton buyButton = findViewById(R.id.buyButton);
+        ImageButton editButton = findViewById(R.id.editButton);
+        ImageButton backButton2 = findViewById(R.id.backButton);
+        ImageButton saveImageButton = findViewById(R.id.saveImageButton);
 
         /*// Delete button listener
         deleteButton.setOnClickListener(v -> showDeleteConfirm(bottle, this));
