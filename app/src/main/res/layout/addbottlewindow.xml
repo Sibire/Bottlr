@@ -1,118 +1,398 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:onClick="onClick"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:title="Add A Bottle"
-            app:titleTextColor="@android:color/white">
-
-            <ImageButton
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_revert"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="Back"
-                android:layout_gravity="start"/>
-
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <EditText
-        android:id="@+id/bottleNameField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Bottle Name"/>
-
-    <EditText
-        android:id="@+id/distillerField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Distiller"/>
-
-    <EditText
-        android:id="@+id/spiritTypeField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Spirit Type"/>
-
-    <EditText
-        android:id="@+id/regionField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Region"/>
-
-    <EditText
-        android:id="@+id/ageField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Age (Years)"
-        android:inputType="number"/>
-
-    <EditText
-        android:id="@+id/abvField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ABV (%)"
-        android:inputType="numberDecimal"/>
-
-    <EditText
-        android:id="@+id/ratingField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Rating (1-10)"
-        android:inputType="number"/>
-
-    <EditText
-        android:id="@+id/tastingNotesField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tasting Notes"
-        android:inputType="textMultiLine"
-        android:gravity="top"
-        android:minLines="3"/>
-
-    <EditText
-        android:id="@+id/keywordsField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Keywords (Comma-Separated)"
-        android:inputType="text"/>
-
-    <Button
-        android:id="@+id/addPhotoButton"
+    <TextView
+        android:id="@+id/Title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Bottle Photo"/>
+        android:text="Bottlr"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.001" />
 
     <ImageView
-        android:id="@+id/imagePreview"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"/>
-
-    <Button
-        android:id="@+id/saveButton"
+        android:id="@+id/line_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Bottle"/>
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="-20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title_text"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/line" />
 
-    </LinearLayout>
-</ScrollView>
+    <Button
+        android:id="@+id/menu_icon"
+        android:layout_width="80dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="253dp"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:foreground="@drawable/menu_icon"
+        android:onClick="onClick"
+        android:scaleX=".8"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageView
+        android:id="@+id/cloud_sync_button_home"
+        android:layout_width="79dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="185dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="7dp"
+        android:clickable="true"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/cloud_empty" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="Add A Bottle"
+                    app:titleTextColor="@android:color/white">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="Back"
+                        android:onClick="onClick"
+                        android:src="@android:drawable/ic_menu_revert" />
+
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <EditText
+                android:id="@+id/bottleNameField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Bottle Name" />
+
+            <EditText
+                android:id="@+id/distillerField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Distiller" />
+
+            <EditText
+                android:id="@+id/spiritTypeField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Spirit Type" />
+
+            <EditText
+                android:id="@+id/regionField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Region" />
+
+            <EditText
+                android:id="@+id/ageField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Age (Years)"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/abvField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ABV (%)"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/ratingField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Rating (1-10)"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/tastingNotesField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="Tasting Notes"
+                android:inputType="textMultiLine"
+                android:minLines="3" />
+
+            <EditText
+                android:id="@+id/keywordsField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Keywords (Comma-Separated)"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/addPhotoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="Add Bottle Photo" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="Save Bottle" />
+
+            <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nav_window"
+        android:layout_width="420sp"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:translationX="-420sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/nav_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="155dp"
+            android:scaleX=".7"
+            android:scaleY="1.1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/nav_bar" />
+
+        <ImageView
+            android:id="@+id/nav_menu_logo"
+            android:layout_width="104dp"
+            android:layout_height="117dp"
+            android:layout_marginEnd="250dp"
+            android:layout_marginBottom="580dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/bottlrnavtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="91dp"
+            android:layout_marginBottom="400dp"
+            android:text="Bottlr Menu"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/menu_home_button"
+            android:layout_width="214dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="250dp"
+            android:background="@color/transparent"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:paddingEnd="80sp"
+            android:text="Home"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/home_nav_icon"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="250dp"
+            android:elevation="3sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_home_24" />
+
+        <Button
+            android:id="@+id/menu_liquorcab_button"
+            android:layout_width="214dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="150dp"
+            android:background="@color/transparent"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:paddingStart="48sp"
+            android:text="Liquor Cabinet"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/liquorcab_nav_icon"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginBottom="150dp"
+            android:elevation="3sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_menu_gallery" />
+
+        <Button
+            android:id="@+id/menu_search_button"
+            android:layout_width="214dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="50dp"
+            android:background="@color/transparent"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:paddingStart="34sp"
+            android:text="Search Cloud"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/search_nav_icon"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="50dp"
+            android:elevation="3sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_search_24" />
+
+        <Button
+            android:id="@+id/menu_settings_button"
+            android:layout_width="214dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="-50dp"
+            android:background="@color/transparent"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:paddingEnd="40sp"
+            android:text="Settings"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/settings_nav_icon"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="-50dp"
+            android:elevation="3sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/settings" />
+
+        <Button
+            android:id="@+id/exit_nav_button"
+            android:layout_width="254dp"
+            android:layout_height="751dp"
+            android:layout_marginStart="160dp"
+            android:background="@color/transparent"
+            android:onClick="onClick"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
