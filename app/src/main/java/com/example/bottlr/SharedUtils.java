@@ -298,6 +298,7 @@ public class SharedUtils {
             Uri imageUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             if (imageUri != null) {
                 try (OutputStream outputStream = context.getContentResolver().openOutputStream(imageUri)) {
+                    assert outputStream != null;
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                 } catch (IOException e) {
                     e.printStackTrace();

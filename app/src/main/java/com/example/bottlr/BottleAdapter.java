@@ -22,7 +22,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
                            Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords);
     }
     @NonNull
-    private OnBottleCheckListener onBottleClick;
+    private final OnBottleCheckListener onBottleClick;
     public BottleAdapter(List<Bottle> bottles, List<Bottle> allBottles, @NonNull OnBottleCheckListener onBottleCheckListener) {
         this.bottles = bottles != null ? bottles : new ArrayList<>(); // Ensure bottles is not null
         this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allBottles is not null
@@ -62,13 +62,8 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         } else {
             holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
         }
-        (holder).bottleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
-                        bottle.getAbv(), bottle.getAge(), bottle.getPhotoUri(), bottle.getNotes(), bottle.getRegion(), bottle.getRating(), bottle.getKeywords());
-            }
-        });
+        (holder).bottleButton.setOnClickListener(v -> onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
+                bottle.getAbv(), bottle.getAge(), bottle.getPhotoUri(), bottle.getNotes(), bottle.getRegion(), bottle.getRating(), bottle.getKeywords()));
     }
     @Override
     public int getItemCount() { return bottles.size(); }
