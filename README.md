@@ -28,7 +28,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/Sibire/Bottlr/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp">
     
-<h3 align="center">Bottlr</h1>
+<h1 align="center">Bottlr</h1>
   <p align="center">
     A simple, lightweight tool for managing your liquor inventory.
     <br />
