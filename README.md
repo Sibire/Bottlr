@@ -68,7 +68,7 @@
   </ol>
 </details>
 <!-- ABOUT THE PROJECT -->
-About Bottlr:
+<h3 align="center">About Bottlr:</h3>
 
 
 Bottlr is a simple, lightweight tool for managing your liquor inventory. Whether you're a personal collector, a bartender, or a manager, Bottlr has the cataloguing and inventory tools you'll need to manage your collection, regardless of size.
@@ -84,7 +84,7 @@ Built With
 TODO
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- GETTING STARTED -->
-Getting Started
+<h3 align="center">Getting Started</h3>
 TODO
 
 Prerequisites
@@ -110,7 +110,7 @@ Install it from your downloads folder.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- USAGE EXAMPLES -->
-Usage
+<h3 align="center">Usage</h3>
 
 Once installed, you can start using Bottlr to manage your liquor inventory. Here are some basic commands and functionalities:
 
@@ -128,7 +128,7 @@ For more examples, please refer to the Documentation
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- ROADMAP -->
-Roadmap
+<h3 align="center">Roadmap</h3>
 
  Feature 1
  
@@ -142,19 +142,19 @@ See the open issues for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- CONTRIBUTING -->
-Contributing
+<h3 align="center">Contributing</h3>
 
 This is a closed team not accepting any external contributions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- LICENSE -->
-License
+<h3 align="center">License</h3>
 
 Distributed under the MIT License. See LICENSE.txt for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- CONTACT -->
-Contact:
+<h3 align="center">Contact:</h3>
 
 Aoife Komperda & Michael George
 
@@ -164,7 +164,7 @@ Project Link: https://github.com/sibire/bottlr
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- ACKNOWLEDGMENTS -->
-Acknowledgments
+<h3 align="center">Acknowledgments</h3>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
