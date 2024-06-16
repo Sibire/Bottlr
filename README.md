@@ -26,9 +26,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/bottlr">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+  <img src="https://github.com/Sibire/Bottlr/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp>
+    
 <h3 align="center">Bottlr</h3>
   <p align="center">
     A simple, lightweight tool for managing your liquor inventory.
