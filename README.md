@@ -26,7 +26,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <img src="https://github.com/Sibire/Bottlr/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp>
+  <img src="https://raw.githubusercontent.com/Sibire/Bottlr/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp">
     
 <h3 align="center">Bottlr</h3>
   <p align="center">
