@@ -153,9 +153,9 @@ Distributed under the MIT License. See LICENSE.txt for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <!-- CONTACT -->
-<h3 align="center">Contact:</h3>
+<h3 align="center">Contact</h3>
 
-Aoife Komperda & Michael George
+Aoife Komperda (Sibire) & Michael George (Mike-Legend)
 
 bottlrdev@gmail.com
 
