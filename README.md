@@ -68,7 +68,7 @@
   </ol>
 </details>
 <!-- ABOUT THE PROJECT -->
-<h3 align="center">About Bottlr:</h3>
+<h3 align="center">About Bottlr</h3>
 
 
 Bottlr is a simple, lightweight tool for managing your liquor inventory. Whether you're a personal collector, a bartender, or a manager, Bottlr has the cataloguing and inventory tools you'll need to manage your collection, regardless of size.
