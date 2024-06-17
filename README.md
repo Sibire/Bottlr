@@ -114,11 +114,7 @@ Prerequisites:
 
 Developers:
 
-- Clone the repo
-
-- sh
-Copy code
-git clone https://github.com/github_username/bottlr.git
+- Clone the repo https://github.com/Sibire/Bottlr.git
 
 - Replace the googleservices.json file with your appropriate Firebase file.
 
