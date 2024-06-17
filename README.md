@@ -104,29 +104,29 @@ Inventory Searching: Quickly find specific bottles or categories within your inv
 <!-- GETTING STARTED -->
 <h3 align="center">Getting Started</h3>
 
-- Prerequisites:
+Prerequisites:
 
-Android 11.0 or Newer
+- Android 11.0 or Newer
 
 ---
 
 <h3 align="center">Installation</h3>
 
-- Developers:
+Developers:
 
-Clone the repo
+- Clone the repo
 
-sh
+- sh
 Copy code
 git clone https://github.com/github_username/bottlr.git
 
-Replace the googleservices.json file with your appropriate Firebase file.
+- Replace the googleservices.json file with your appropriate Firebase file.
 
-- Users:
+Users:
 
-Download the app from https://github.com/Sibire/Bottlr/blob/master/app/release/Bottlr_0.12.apk
+- Download the app from https://github.com/Sibire/Bottlr/blob/master/app/release/Bottlr_0.12.apk
 
-Install it from your downloads folder.
+- Install it from your downloads folder.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
