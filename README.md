@@ -36,9 +36,9 @@
     <br />
     <a href="https://github.com/github_username/bottlr">View Demo</a>
     ·
-    <a href="https://github.com/github_username/bottlr/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="mailto:bottlrdev@gmail.com">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/bottlr/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="mailto:bottlrdev@gmail.com">Request Feature</a>
   </p>
 </div>
 <!-- TABLE OF CONTENTS -->
@@ -129,11 +129,19 @@ For more examples, please refer to the Documentation
 <!-- ROADMAP -->
 <h3 align="center">Roadmap</h3>
 
- Feature 1
+ NFC TAGGING: Quickly scan, edit, and save bottle data to commercially available NFC tags to simplify inventory management.
  
- Feature 2
+ LOCATION TRACKING: Find a bottle you like? Whether it's on a store shelf or a bar cabinet, save your destination for future visits.
+
+ COCKTAIL BOOK: Add your own recipes, and keep track of what you can make with your current inventory.
  
- Feature 3
+ PERSONALIZED SUGGESIONS: Find new cocktails and spirits based on your existing likes and inventory.
+
+ DATABASE LOOKUP: Tired of adding data manually? Quickly search for and add a bottle from an array of pre-populated selections.
+
+ COST-PER-POUR CALCULATION: Quickly and eaisly determine ideal prices for your cocktails and pours, based on volume and material cost.
+
+ CONSUMPTION TRACKER: Keep tabs on your and your patrons' service, and avoid any unpleasant hangovers from overservice.
  
  Nested Feature
  
