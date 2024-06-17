@@ -241,6 +241,12 @@ Project Link: https://github.com/sibire/bottlr
 
 <!-- ACKNOWLEDGMENTS -->
 <h3 align="center">Acknowledgments</h3>
+
+Bottlr is currently in Alpha status, version 0.12.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
