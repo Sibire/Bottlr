@@ -32,7 +32,7 @@
     A simple, lightweight tool for managing your liquor inventory.
     <br />
     <!-- TODO: ADD A DEMO VERSION -->
-    <a href="[https://github.com/github_username/bottlr](https://github.com/Sibire/Bottlr/blob/master/app/debug/Bottlr-Refactor-Build1.apk)"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Sibire/Bottlr/blob/master/app/debug/Bottlr-Refactor-Build1.apk"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/github_username/bottlr">View Demo</a>
