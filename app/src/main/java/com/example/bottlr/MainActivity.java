@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,12 +97,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) //add button with an else-if statement
     {
         int id = view.getId();
-        if (id == R.id.menu_icon) { //menu navigation button
-            //animate
-            animateObject(R.id.nav_window, 0f, 0f, 700);
-        } else if (id == R.id.exit_nav_button) { //exit nav menu
-            //animate
-            animateObject(R.id.nav_window, 0f, -0.9f, 300);
+        if (id == R.id.menu_icon) { //menu navigation button, animate
+            animateObject(R.id.nav_window, 0f, 700);
+        } else if (id == R.id.exit_nav_button) { //exit nav menu, animate
+            animateObject(R.id.nav_window, -0.9f, 300);
         } else if (id == R.id.menu_home_button) { //nav home screen click
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
@@ -129,23 +126,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null) {
-                showDeleteConfirm(recentBottle, this); }
+            showDeleteConfirm(getMostRecentBottle(), this);
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
-            Bottle bottleToShare = getMostRecentBottle();
-            if (bottleToShare != null) {
-                shareBottleInfo(bottleToShare, this); }
+            shareBottleInfo(getMostRecentBottle(), this);
         } else if (id == R.id.buyButton) { //buy bottle
-            Bottle recentBottle = getMostRecentBottle();
-            if (getMostRecentBottle() != null) {
-                String query = queryBuilder(recentBottle);
-                String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(query);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent); }
+            String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(getMostRecentBottle()));
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
         } else if (id == R.id.editButton) { //edit Bottle
             editor = 1;
             addBottle();
@@ -153,10 +143,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
             uploadBottlesToCloud();
             syncBottlesFromCloud();
-        } else if (id == R.id.saveImageButton) { //saveImage
+        } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
-                // Save the image to the user's gallery
                 saveImageToGallery(this, recentBottle);}
         } else if (id == R.id.backButton) { //back button bottle
             setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
@@ -218,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Recycler Code
+    @SuppressLint("NotifyDataSetChanged")
     void GenerateLiquorRecycler() {
         // Set Recycler
         RecyclerView LiquorCabinetRecycler = findViewById(R.id.liquorRecycler);
@@ -229,34 +219,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Bottle listing
         BottleAdapter liquorAdapter;
         bottles = SharedUtils.loadBottles(this);
-        liquorAdapter = new BottleAdapter(bottles, allBottles, new BottleAdapter.OnBottleCheckListener() {
-            @Override
-            public void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                                      Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
-                detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
-                        bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords); }
-        });
+        liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
         LiquorCabinetRecycler.setAdapter(liquorAdapter);
         liquorAdapter.notifyDataSetChanged();
     }
     //endregion
 
     //region animateObject Code
-    private void animateObject(int id, float start, float finish, int time) { //horizontal constraint animation
+    private void animateObject(int id, float finish, int time) { //horizontal constraint animation
         ConstraintLayout navMenu = findViewById(id);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", start, finish * navMenu.getWidth());
+        ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", (float) 0.0, finish * navMenu.getWidth());
         animator.setDuration(time);
         animator.start();
     }
     //endregion
 
     //region Bottle Detail View
-    // TODO: I just did some testing on a physical device. While the app functions as intended at the moment in the emulator,
-    //  using it on a physical device causes two distinct and functionality disabling bugs:
-    //  When a user loads the detail view, or views the recent bottle from the home page,
-    //  the text fields of the bottle details are not being populated.
-    //  Additionally, if no image has been saved, the default image will display for the gallery and search result preview,
-    //  but not in the homefragment or detailviewactivity
 
     public void detailedView(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
                              Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
@@ -291,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Settings
+    @SuppressLint("SetTextI18n")
     public void settings() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -332,9 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         Log.d("SettingsActivity", "onActivityResult called");
-
         // Result returned by GoogleSignInClient.getSignInIntent
         if (requestCode == RC_SIGN_IN) {
             Log.d("SettingsActivity", "Result received from sign-in intent");
@@ -397,7 +374,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         // Firebase sign out
         mAuth.signOut();
-
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 task -> {
@@ -423,22 +399,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         // Get a reference to the Firebase Storage instance
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
         // Use the loadBottles() method to get all the bottles
         List<Bottle> bottleList = SharedUtils.loadBottles(this);
-
         // Loop through the bottles in the bottle list
         for (Bottle bottle : bottleList) {
             // Get the file name for the bottle data
             String dataFileName = "bottle_" + bottle.getName() + ".txt";
-
             // Create a reference for the bottle data file
             StorageReference dataFileRef = storage.getReference()
                     .child("users")
                     .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                     .child("bottles")
                     .child(dataFileName);
-
             // Upload the bottle data file
             dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
                     .addOnSuccessListener(taskSnapshot -> {
@@ -449,19 +421,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // Handle failed uploads
                         Log.d("SettingsActivity", "Upload failed for bottle data: " + dataFileName, uploadException);
                     });
-
             // Get the Uri for the bottle image
             Uri imageUri = bottle.getPhotoUri();
-
             // Check if the Uri is not null
             // This can happen if no image is uploaded for the bottle, thus using default image
             if (imageUri != null) {
                 try {
                     InputStream stream = getContentResolver().openInputStream(imageUri);
-
                     // Get the file name from the Uri
                     String imageName = imageUri.getLastPathSegment();
-
                     // Create a storage reference for the image
                     //assert imageName != null;
                     assert imageName != null;
@@ -470,7 +438,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                             .child("bottles")
                             .child(imageName);
-
                     // Upload the image file
                     //assert stream != null;
                     assert stream != null;
@@ -642,7 +609,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
             return;
         }
-
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
@@ -796,8 +762,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set the LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize your adapter and set it to the RecyclerView
-        searchResultsAdapter = new BottleAdapter(bottles, allBottles, (bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge, bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords) -> detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
-                bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords));
+        searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
     }
 
@@ -843,6 +808,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Keep this outside any if/else so that it clears the search results if there are none
         updateSearchResults(filteredList);
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
