@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
+        SignInChecker();
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -161,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.backButton) { //back button bottle
             setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
             GenerateLiquorRecycler();
+        } else if (id == R.id.sign_in_button_home) { //sign in home button
+            SignInChecker();
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -202,6 +205,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return mostRecentBottle;
+    }
+
+    public void SignInChecker() {
+        Button signin = findViewById(R.id.sign_in_button_home);
+        settings();
+        if(mAuth.getCurrentUser() != null) {
+            signin.setVisibility(View.GONE);
+        } else {
+            signIn();
+        }
     }
     //endregion
 
