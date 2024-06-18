@@ -112,6 +112,7 @@
         android:onClick="onClick"
         android:text="Sign In"
         android:textSize="38sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"

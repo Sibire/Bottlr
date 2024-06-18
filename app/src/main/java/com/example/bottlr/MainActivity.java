@@ -71,19 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField;
-    ImageButton backButton;
     private Uri photoUri, cameraImageUri;
-    private TextView tvBottleName, tvDistillery, tvBottleDetails, tvNotes, tvRating, tvKeywords;
-    private ImageView imageViewBottle;
     private BottleAdapter searchResultsAdapter;
-    Button searchButton;
+    private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
     //endregion
 
     //region onCreate Code
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homescreen);
+        homeScreen();
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -108,15 +105,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //animate
             animateObject(R.id.nav_window, 0f, -0.9f, 300);
         } else if (id == R.id.menu_home_button) { //nav home screen click
-            setContentView(R.layout.homescreen);
+            homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.menu_search_button) { //nav search screen click
             setContentView(R.layout.fragment_search);
+            search();
+        } else if (id == R.id.search_button) { //search activate button
+            performSearch();
         } else if (id == R.id.menu_settings_button) { //settings area
+            editor = 2;
+            setContentView(R.layout.activity_settings);
             settings();
         } else if (id == R.id.fab) { //add bottle
+            editor = 0;
             addBottle();
         } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(R.layout.homescreen); //TODO: Set with previous screen
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
-        } else if (id == R.id.deleteButton) { //delete bottle
+        } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null) {
                 showDeleteConfirm(recentBottle, this); }
@@ -144,13 +147,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setData(Uri.parse(url));
                 startActivity(intent); }
         } else if (id == R.id.editButton) { //edit Bottle
-            //if (getMostRecentBottle() != null) {
-                // Call AddABottle to reuse existing assets
-                //Intent intent = new Intent(this, AddABottle.class);
-                //intent.putExtra("bottle", getMostRecentBottle());
-                //startActivity(intent); }
-                //addBottle();
-                //popFields(bottle);
+            editor = 1;
+            addBottle();
+        } else if (id == R.id.cloud_sync_button_home) { //sync cloud button
+            settings();
+            uploadBottlesToCloud();
+            syncBottlesFromCloud();
         } else if (id == R.id.saveImageButton) { //saveImage
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
@@ -159,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.backButton) { //back button bottle
             setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
             GenerateLiquorRecycler();
-        } else if (id == R.id.search_button) { //search info
-            search(); //TODO: integrate
+        } else if (id == R.id.sign_in_button_home) { //sign in home button
+            SignInChecker();
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -168,26 +170,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region onBackPressed Code
-    @Override //TODO: Fix back button without activities or fragment tracking
-    // Note: using finish() to close out the prior view, but this still exits the app.
-    // Suspect things aren't being added to the stack properly, or the code doesn't recognize any higher layers to exit besides the app itself
-    public void onBackPressed() {
+    @Override
+    public void onBackPressed() { //Resets App, i.e. goes to home screen.
         super.onBackPressed();
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
     //endregion
 
     //region Home Screen
     public void homeScreen() {
-        setContentView(R.layout.fragment_home);
-        tvBottleName = findViewById(R.id.tvBottleName);
-        tvDistillery = findViewById(R.id.tvDistillery);
-        tvBottleDetails = findViewById(R.id.tvBottleDetails);
-        imageViewBottle = findViewById(R.id.imageViewBottle);
-        imageViewBottle.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
-        tvNotes = findViewById(R.id.tvNotes);
-        tvRating = findViewById(R.id.tvRating);
-        tvKeywords = findViewById(R.id.tvKeywords);
+        setContentView(R.layout.homescreen);
+        SignInChecker();
+        //TODO: Add more info on home screen
     }
 
     private Bottle getMostRecentBottle() {
@@ -209,6 +204,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return mostRecentBottle;
+    }
+
+    public void SignInChecker() {
+        Button signin = findViewById(R.id.sign_in_button_home);
+        settings();
+        if(mAuth.getCurrentUser() != null) {
+            signin.setVisibility(View.GONE);
+        } else {
+            signIn();
+        }
     }
     //endregion
 
@@ -287,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Settings
     public void settings() {
-        setContentView(R.layout.activity_settings);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.bottlr_web_client_id)) // Keep this updated as needed
@@ -296,23 +300,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // Update signed in user TextView
-        TextView signedInUserTextView = findViewById(R.id.signed_in_user);
-        if (mAuth.getCurrentUser() != null) {
-            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
-        } else {
-            signedInUserTextView.setText("Not Signed In");
+        if(editor == 2) {
+            // Update signed in user TextView
+            TextView signedInUserTextView = findViewById(R.id.signed_in_user);
+            if (mAuth.getCurrentUser() != null) {
+                signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+            } else {
+                signedInUserTextView.setText("Not Signed In");
+            }
+            Button loginButton = findViewById(R.id.login_Button);
+            loginButton.setOnClickListener(v -> signIn());
+            Button logoutButton = findViewById(R.id.logout_Button);
+            logoutButton.setOnClickListener(v -> signOut());
+            Button uploadButton = findViewById(R.id.upload_Button);
+            uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
+            Button syncButton = findViewById(R.id.sync_Button);
+            syncButton.setOnClickListener(v -> syncBottlesFromCloud());
+            Button eraseButton = findViewById(R.id.erase_Button);
+            eraseButton.setOnClickListener(v -> eraseCloudStorage());
+            editor = 0;
         }
-        Button loginButton = findViewById(R.id.login_Button);
-        loginButton.setOnClickListener(v -> signIn());
-        Button logoutButton = findViewById(R.id.logout_Button);
-        logoutButton.setOnClickListener(v -> signOut());
-        Button uploadButton = findViewById(R.id.upload_Button);
-        uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
-        Button syncButton = findViewById(R.id.sync_Button);
-        syncButton.setOnClickListener(v -> syncBottlesFromCloud());
-        Button eraseButton = findViewById(R.id.erase_Button);
-        eraseButton.setOnClickListener(v -> eraseCloudStorage());
     }
     //endregion
 
@@ -585,7 +592,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Add Bottle
     public void addBottle() {
         setContentView(R.layout.addbottlewindow);
-
         // Setting up the add bottle window congruent to .xml
         bottleNameField = findViewById(R.id.bottleNameField);
         distillerField = findViewById(R.id.distillerField);
@@ -596,15 +602,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         regionField = findViewById(R.id.regionField);
         keywordsField = findViewById(R.id.keywordsField);
         ratingField = findViewById(R.id.ratingField);
-        backButton = findViewById(R.id.backButton);
-
-        // Check for existing data (Critical for Edit function)
         // Adjust header text if editing
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (getIntent().hasExtra("bottle")) {
-            Bottle bottleToEdit = getIntent().getParcelableExtra("bottle");
+        if (editor == 1) {
+            Bottle bottleToEdit = getMostRecentBottle();
             toolbar.setTitle("Edit Bottle");
             popFields(bottleToEdit);
+            editor = 0;
         } else {
             toolbar.setTitle("Add A Bottle");
         }
@@ -758,9 +762,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Populates fields with existing data if used as an edit class
     private void popFields(Bottle bottle) {
         if (bottle != null) {
-
             // Imports any existing data, but marks empty fields.
-
             bottleNameField.setText(bottle.getName() != null && !bottle.getName().isEmpty() ? bottle.getName() : "No Name Saved");
             distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "No Distiller Saved");
             spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "No Type Saved");
@@ -770,7 +772,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
             keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
             ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
-
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
                 ImageView imagePreview = findViewById(R.id.imagePreview);
@@ -791,7 +792,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         regionField = findViewById(R.id.search_region);
         ratingField = findViewById(R.id.search_rating);
         keywordsField = findViewById(R.id.search_keywords);
-        searchButton = findViewById(R.id.search_button);
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
         // Set the LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -799,49 +799,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchResultsAdapter = new BottleAdapter(bottles, allBottles, (bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge, bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords) -> detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
                 bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords));
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
-        searchButton.setOnClickListener(v -> {
-            performSearch();
-            Log.d("SearchFragment", "Search button clicked");
-        });
     }
 
-    public void searchResults() {
-        RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
-        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
-        // Divider for clarity
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        searchResultsRecyclerView.addItemDecoration(itemDecoration);
-        // Get the filteredList from the arguments
-        //assert getArguments() != null;
-        //List<Bottle> filteredList = (List<Bottle>) getArguments().getSerializable("filteredList");
-        // Update the searchResultsAdapter with the filteredList
-        //updateSearchResults(filteredList);
-    } //TODO: change/reimplement
-
-    /*private void reloadBottles() {
-        List<Bottle> bottles = loadResultBottles();
-        if (searchResultsAdapter != null) {
-            searchResultsAdapter.setBottles(bottles);
-            searchResultsAdapter.notifyDataSetChanged();
-        }
-    }*/
-    /*private List<Bottle> loadResultBottles() {
-        // Get the filtered list of bottles from the arguments
-        assert getArguments() != null;
-        return getArguments().getParcelableArrayList("filteredBottles");
-    }*/
-
-    public void onBottleClick(int position) {
-        Bottle selectedBottle = searchResultsAdapter.getBottle(position);
-        if (selectedBottle != null) {
-            /*Intent intent = new Intent(getActivity(), DetailViewActivity.class);
-            intent.putExtra("selectedBottle", selectedBottle);
-            startActivity(intent);*/
-            setContentView(R.layout.description_screen);
-        }
-    }
     private void performSearch() {
         Log.d("SearchFragment", "performSearch() called");
         // Get search criteria from user input
@@ -872,11 +831,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
                 .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
                 .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-
                 // Those all seem to work, problem seems to be keyword searching
                 // TODO: Fix and re-enable keyword searching
                 //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase()))))
-
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
         // Check if the filtered list is empty and display a toast message if it is
@@ -889,16 +846,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
-    }
-    // Handle bottle selection
-    public void searchedBottleSelected(int position) {
-        Bottle selectedBottle = searchResultsAdapter.getBottle(position);
-        if (selectedBottle != null) {
-            /*Intent intent = new Intent(getActivity(), DetailViewActivity.class);
-            intent.putExtra("selectedBottle", selectedBottle);
-            startActivity(intent);*/
-            setContentView(R.layout.homescreen);
-        }
     }
     //endregion
 
