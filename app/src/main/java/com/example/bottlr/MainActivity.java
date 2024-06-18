@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             nameField, distilleryField, typeField, notesField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
-    private int editor;
+    private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
     //endregion
 
     //region onCreate Code
@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.search_button) { //search activate button
             performSearch();
         } else if (id == R.id.menu_settings_button) { //settings area
+            editor = 2;
+            setContentView(R.layout.activity_settings);
             settings();
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
@@ -147,6 +149,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.editButton) { //edit Bottle
             editor = 1;
             addBottle();
+        } else if (id == R.id.cloud_sync_button_home) { //sync cloud button
+            settings();
+            uploadBottlesToCloud();
+            syncBottlesFromCloud();
         } else if (id == R.id.saveImageButton) { //saveImage
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
@@ -155,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.backButton) { //back button bottle
             setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
             GenerateLiquorRecycler();
-        } else if (id == R.id.search_button) { //search info
-            search(); //TODO: integrate
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -276,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Settings
     public void settings() {
-        setContentView(R.layout.activity_settings);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.bottlr_web_client_id)) // Keep this updated as needed
@@ -285,23 +288,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // Update signed in user TextView
-        TextView signedInUserTextView = findViewById(R.id.signed_in_user);
-        if (mAuth.getCurrentUser() != null) {
-            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
-        } else {
-            signedInUserTextView.setText("Not Signed In");
+        if(editor == 2) {
+            // Update signed in user TextView
+            TextView signedInUserTextView = findViewById(R.id.signed_in_user);
+            if (mAuth.getCurrentUser() != null) {
+                signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+            } else {
+                signedInUserTextView.setText("Not Signed In");
+            }
+            Button loginButton = findViewById(R.id.login_Button);
+            loginButton.setOnClickListener(v -> signIn());
+            Button logoutButton = findViewById(R.id.logout_Button);
+            logoutButton.setOnClickListener(v -> signOut());
+            Button uploadButton = findViewById(R.id.upload_Button);
+            uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
+            Button syncButton = findViewById(R.id.sync_Button);
+            syncButton.setOnClickListener(v -> syncBottlesFromCloud());
+            Button eraseButton = findViewById(R.id.erase_Button);
+            eraseButton.setOnClickListener(v -> eraseCloudStorage());
+            editor = 0;
         }
-        Button loginButton = findViewById(R.id.login_Button);
-        loginButton.setOnClickListener(v -> signIn());
-        Button logoutButton = findViewById(R.id.logout_Button);
-        logoutButton.setOnClickListener(v -> signOut());
-        Button uploadButton = findViewById(R.id.upload_Button);
-        uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
-        Button syncButton = findViewById(R.id.sync_Button);
-        syncButton.setOnClickListener(v -> syncBottlesFromCloud());
-        Button eraseButton = findViewById(R.id.erase_Button);
-        eraseButton.setOnClickListener(v -> eraseCloudStorage());
     }
     //endregion
 
@@ -590,6 +596,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Bottle bottleToEdit = getMostRecentBottle();
             toolbar.setTitle("Edit Bottle");
             popFields(bottleToEdit);
+            editor = 0;
         } else {
             toolbar.setTitle("Add A Bottle");
         }

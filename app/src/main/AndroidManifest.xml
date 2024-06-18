@@ -5,9 +5,7 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-permission android:name="android.permission.CAMERA"/>
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bottlr"
         tools:targetApi="31">
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -28,7 +25,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,16 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AddABottle"
             android:label="@string/title_activity_add_a_bottle"
             android:theme="@style/Theme.Bottlr.NoActionBar">
         </activity>
-
-        <activity android:name=".ui.gallery.DetailViewActivity" />
-        <activity android:name=".ui.settings.SettingsActivity" />
-
     </application>
-
 </manifest>
