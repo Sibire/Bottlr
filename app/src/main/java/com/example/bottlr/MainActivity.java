@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(R.layout.homescreen); //TODO: Set with previous screen
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
-        } else if (id == R.id.deleteButton) { //delete bottle
+        } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null) {
                 showDeleteConfirm(recentBottle, this); }
