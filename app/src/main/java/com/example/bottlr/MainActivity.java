@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homescreen);
-        SignInChecker();
+        homeScreen();
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //animate
             animateObject(R.id.nav_window, 0f, -0.9f, 300);
         } else if (id == R.id.menu_home_button) { //nav home screen click
-            setContentView(R.layout.homescreen);
+            homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
@@ -171,18 +170,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region onBackPressed Code
-    @Override //TODO: Fix back button without activities or fragment tracking
-    // Note: using finish() to close out the prior view, but this still exits the app.
-    // Suspect things aren't being added to the stack properly, or the code doesn't recognize any higher layers to exit besides the app itself
-    public void onBackPressed() {
+    @Override
+    public void onBackPressed() { //Resets App, i.e. goes to home screen.
         super.onBackPressed();
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
     //endregion
 
     //region Home Screen
     public void homeScreen() {
-        setContentView(R.layout.fragment_home);
+        setContentView(R.layout.homescreen);
+        SignInChecker();
         //TODO: Add more info on home screen
     }
 
