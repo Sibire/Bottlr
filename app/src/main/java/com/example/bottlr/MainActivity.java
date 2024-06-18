@@ -71,12 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField;
-    ImageButton backButton;
     private Uri photoUri, cameraImageUri;
-    private TextView tvBottleName, tvDistillery, tvBottleDetails, tvNotes, tvRating, tvKeywords;
-    private ImageView imageViewBottle;
     private BottleAdapter searchResultsAdapter;
-    Button searchButton;
+    private int editor;
     //endregion
 
     //region onCreate Code
@@ -120,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_settings_button) { //settings area
             settings();
         } else if (id == R.id.fab) { //add bottle
+            editor = 0;
             addBottle();
         } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
@@ -147,13 +145,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setData(Uri.parse(url));
                 startActivity(intent); }
         } else if (id == R.id.editButton) { //edit Bottle
-            //if (getMostRecentBottle() != null) {
-                // Call AddABottle to reuse existing assets
-                //Intent intent = new Intent(this, AddABottle.class);
-                //intent.putExtra("bottle", getMostRecentBottle());
-                //startActivity(intent); }
-                //addBottle();
-                //popFields(bottle);
+            editor = 1;
+            addBottle();
         } else if (id == R.id.saveImageButton) { //saveImage
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
@@ -183,14 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Home Screen
     public void homeScreen() {
         setContentView(R.layout.fragment_home);
-        tvBottleName = findViewById(R.id.tvBottleName);
-        tvDistillery = findViewById(R.id.tvDistillery);
-        tvBottleDetails = findViewById(R.id.tvBottleDetails);
-        imageViewBottle = findViewById(R.id.imageViewBottle);
-        imageViewBottle.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
-        tvNotes = findViewById(R.id.tvNotes);
-        tvRating = findViewById(R.id.tvRating);
-        tvKeywords = findViewById(R.id.tvKeywords);
+        //TODO: Add more info on home screen
     }
 
     private Bottle getMostRecentBottle() {
@@ -588,7 +574,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Add Bottle
     public void addBottle() {
         setContentView(R.layout.addbottlewindow);
-
         // Setting up the add bottle window congruent to .xml
         bottleNameField = findViewById(R.id.bottleNameField);
         distillerField = findViewById(R.id.distillerField);
@@ -599,13 +584,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         regionField = findViewById(R.id.regionField);
         keywordsField = findViewById(R.id.keywordsField);
         ratingField = findViewById(R.id.ratingField);
-        backButton = findViewById(R.id.backButton);
-
-        // Check for existing data (Critical for Edit function)
         // Adjust header text if editing
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (getIntent().hasExtra("bottle")) {
-            Bottle bottleToEdit = getIntent().getParcelableExtra("bottle");
+        if (editor == 1) {
+            Bottle bottleToEdit = getMostRecentBottle();
             toolbar.setTitle("Edit Bottle");
             popFields(bottleToEdit);
         } else {
@@ -791,7 +773,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         regionField = findViewById(R.id.search_region);
         ratingField = findViewById(R.id.search_rating);
         keywordsField = findViewById(R.id.search_keywords);
-        searchButton = findViewById(R.id.search_button);
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
         // Set the LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -831,11 +812,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
                 .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
                 .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-
                 // Those all seem to work, problem seems to be keyword searching
                 // TODO: Fix and re-enable keyword searching
                 //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase()))))
-
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
         // Check if the filtered list is empty and display a toast message if it is
