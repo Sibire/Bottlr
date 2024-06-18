@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GenerateLiquorRecycler();
         } else if (id == R.id.menu_search_button) { //nav search screen click
             setContentView(R.layout.fragment_search);
+            search();
+        } else if (id == R.id.search_button) { //search activate button
+            performSearch();
         } else if (id == R.id.menu_settings_button) { //settings area
             settings();
         } else if (id == R.id.fab) { //add bottle
@@ -758,9 +761,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Populates fields with existing data if used as an edit class
     private void popFields(Bottle bottle) {
         if (bottle != null) {
-
             // Imports any existing data, but marks empty fields.
-
             bottleNameField.setText(bottle.getName() != null && !bottle.getName().isEmpty() ? bottle.getName() : "No Name Saved");
             distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "No Distiller Saved");
             spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "No Type Saved");
@@ -770,7 +771,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
             keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
             ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
-
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
                 ImageView imagePreview = findViewById(R.id.imagePreview);
@@ -799,49 +799,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchResultsAdapter = new BottleAdapter(bottles, allBottles, (bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge, bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords) -> detailedView(bottleName, bottleId, bottleDistillery, bottleType, bottleABV, bottleAge,
                 bottlePhoto, bottleNotes, bottleRegion, bottleRating, bottleKeywords));
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
-        searchButton.setOnClickListener(v -> {
-            performSearch();
-            Log.d("SearchFragment", "Search button clicked");
-        });
     }
 
-    public void searchResults() {
-        RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
-        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
-        // Divider for clarity
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        searchResultsRecyclerView.addItemDecoration(itemDecoration);
-        // Get the filteredList from the arguments
-        //assert getArguments() != null;
-        //List<Bottle> filteredList = (List<Bottle>) getArguments().getSerializable("filteredList");
-        // Update the searchResultsAdapter with the filteredList
-        //updateSearchResults(filteredList);
-    } //TODO: change/reimplement
-
-    /*private void reloadBottles() {
-        List<Bottle> bottles = loadResultBottles();
-        if (searchResultsAdapter != null) {
-            searchResultsAdapter.setBottles(bottles);
-            searchResultsAdapter.notifyDataSetChanged();
-        }
-    }*/
-    /*private List<Bottle> loadResultBottles() {
-        // Get the filtered list of bottles from the arguments
-        assert getArguments() != null;
-        return getArguments().getParcelableArrayList("filteredBottles");
-    }*/
-
-    public void onBottleClick(int position) {
-        Bottle selectedBottle = searchResultsAdapter.getBottle(position);
-        if (selectedBottle != null) {
-            /*Intent intent = new Intent(getActivity(), DetailViewActivity.class);
-            intent.putExtra("selectedBottle", selectedBottle);
-            startActivity(intent);*/
-            setContentView(R.layout.description_screen);
-        }
-    }
     private void performSearch() {
         Log.d("SearchFragment", "performSearch() called");
         // Get search criteria from user input
@@ -889,16 +848,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
-    }
-    // Handle bottle selection
-    public void searchedBottleSelected(int position) {
-        Bottle selectedBottle = searchResultsAdapter.getBottle(position);
-        if (selectedBottle != null) {
-            /*Intent intent = new Intent(getActivity(), DetailViewActivity.class);
-            intent.putExtra("selectedBottle", selectedBottle);
-            startActivity(intent);*/
-            setContentView(R.layout.homescreen);
-        }
     }
     //endregion
 
