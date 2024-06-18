@@ -1,5 +1,6 @@
 package com.example.bottlr;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,9 +40,6 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             textViewDistillery = itemView.findViewById(R.id.textViewDistillery);
             bottleButton = itemView.findViewById(R.id.bottlesinglebutton);
         }
-        public void setOnClickListener(View.OnClickListener onClickListener) {
-            itemView.setOnClickListener(onClickListener);
-        }
     }
     @NonNull
     @Override
@@ -68,16 +66,11 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     @Override
     public int getItemCount() { return bottles.size(); }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setBottles(List<Bottle> bottles) {
         this.bottles = new ArrayList<>(bottles);
         this.allBottles.clear();
         this.allBottles.addAll(bottles);
         notifyDataSetChanged();
-    }
-    public Bottle getBottle(int position) {
-        if (position >= 0 && position < bottles.size()) {
-            return bottles.get(position);
-        }
-        return null; // Null if out of bounds
     }
 }
