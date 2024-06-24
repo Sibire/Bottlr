@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.nfcButton) { //nfc button info
             nfcShare();
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
-
+            FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
+            filterFrame.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
