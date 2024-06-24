@@ -158,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);
+        } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
+            filterSearch();
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -829,6 +831,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
+    }
+
+    public void filterSearch() {
+        //hide filter
+        FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
+        filterFrame.setVisibility(View.GONE);
+        //hide regular cabinet
+        RecyclerView liquor = findViewById(R.id.liquorRecycler);
+        liquor.setVisibility(View.GONE);
+        //show filtered results
+        RecyclerView searchFilter = findViewById(R.id.search_results_recyclerview);
+        searchFilter.setVisibility(View.VISIBLE);
+        search();
+        performSearch();
     }
     //endregion
 
