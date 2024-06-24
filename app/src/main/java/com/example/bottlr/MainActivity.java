@@ -152,8 +152,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GenerateLiquorRecycler();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker();
-        } else if (id == R.id.nfcButton) { //sign in home button
+        } else if (id == R.id.nfcButton) { //nfc button info
             nfcShare();
+        } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
+
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
