@@ -140,7 +140,7 @@
                 android:id="@+id/search_keywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Keyword Search Disabled"
+                android:hint="Keyword"
                 android:inputType="text" />
 
             <Button

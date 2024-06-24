@@ -808,10 +808,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String notes = notesField.getText().toString().toLowerCase();
         String region = regionField.getText().toString().toLowerCase();
         String rating = ratingField.getText().toString().toLowerCase();
-
-        // TODO: Add back in when keyword searching is fixed
-        //String keywordsInput = keywordsField.getText().toString().toLowerCase();
-        //Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
+        String keywordsInput = keywordsField.getText().toString().toLowerCase();
+        Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
         List<Bottle> allBottles = SharedUtils.loadBottles(this);
@@ -827,9 +825,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
                 .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
                 .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                // Those all seem to work, problem seems to be keyword searching
-                // TODO: Fix and re-enable keyword searching
-                //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase()))))
+                //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase())))) Original line
+                .filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null))
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
         // Check if the filtered list is empty and display a toast message if it is
