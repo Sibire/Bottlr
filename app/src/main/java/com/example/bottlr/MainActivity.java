@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
     private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private int lastLayout;
     //endregion
 
     //region onCreate Code
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
+            lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_search_button) { //nav search screen click
             setContentView(R.layout.fragment_search);
             search();
@@ -149,8 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
                 saveImageToGallery(this, recentBottle);}
         } else if (id == R.id.backButton) { //back button bottle
-            setContentView(R.layout.fragment_gallery); //TODO: Set with previous screen
-            GenerateLiquorRecycler();
+            customBackButton();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker();
         } else if (id == R.id.nfcButton) { //nfc button info
@@ -173,12 +174,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+    public void customBackButton() {
+        setContentView(lastLayout);
+        if (lastLayout == R.layout.fragment_gallery) {
+            setContentView(R.layout.fragment_gallery);
+            GenerateLiquorRecycler();
+        } else if (lastLayout == R.layout.homescreen) {
+            homeScreen();
+        }
+    }
     //endregion
 
     //region Home Screen
     public void homeScreen() {
         setContentView(R.layout.homescreen);
         SignInChecker();
+        lastLayout = R.layout.homescreen;
         //TODO: Add more info on home screen
     }
 
