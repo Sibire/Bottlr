@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
         } else if (id == R.id.saveButton) { //save bottle button
             saveEntryToFile();
-            setContentView(R.layout.homescreen); //TODO: Set with previous screen
+            customBackButton();
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
