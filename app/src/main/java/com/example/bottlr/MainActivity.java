@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GenerateLiquorRecycler();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker();
+        } else if (id == R.id.nfcButton) { //sign in home button
+            nfcShare();
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -266,6 +268,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bottleImage.setImageURI(bottlePhoto);
         }
     }
+    //endregion
+
+    //region NFC info
+
+    public void nfcShare() {
+        //if adding bottle via NFC
+
+        //if sharing bottle info via NFC
+
+    }
+
     //endregion
 
     //region Settings
