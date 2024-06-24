@@ -109,6 +109,17 @@
                         android:onClick="onClick"
                         android:src="@android:drawable/ic_menu_revert" />
 
+                    <ImageButton
+                        android:id="@+id/nfcButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="Back"
+                        android:onClick="onClick"
+                        android:src="@drawable/baseline_nfc_24"
+                        android:translationX="100sp" />
+
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
