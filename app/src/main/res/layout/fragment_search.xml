@@ -346,9 +346,9 @@
 
         <Button
             android:id="@+id/exit_nav_button"
-            android:layout_width="254dp"
+            android:layout_width="160dp"
             android:layout_height="751dp"
-            android:layout_marginStart="160dp"
+            android:layout_marginStart="250dp"
             android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
