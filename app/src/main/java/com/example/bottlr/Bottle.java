@@ -23,7 +23,8 @@ public class Bottle implements Parcelable {
     private Uri photoUri;
     private String notes;
     private String region;
-    private Set<String> keywords;
+    //private Set<String> keywords;
+    private String keywords;
     private final String rating;
 
     private String bottleID;
@@ -32,7 +33,7 @@ public class Bottle implements Parcelable {
 
     //region Constructor
     // Bottle constructor
-    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes, String region, Set<String> keywords, String rating) {
+    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes, String region, /*Set<String> keywords*/String keywords, String rating) {
         this.name = name;
         this.distillery = distillery;
         this.type = type;
@@ -85,8 +86,10 @@ public class Bottle implements Parcelable {
     public void setRegion(String region) { this.region = region; }
 
     // Keywords
-    public Set<String> getKeywords() { return keywords; }
-    public void setKeywords(Set<String> keywords) { this.keywords = keywords; }
+    //public Set<String> getKeywords() { return keywords; }
+    //public void setKeywords(Set<String> keywords) { this.keywords = keywords; }
+    public String getKeywords() { return keywords; }
+    public void setKeywords(String keywords) { this.keywords = keywords; }
 
     // Rating
     public String getRating() { return rating; }
@@ -111,7 +114,8 @@ public class Bottle implements Parcelable {
         notes = in.readString();
         region = in.readString();
         rating = in.readString();
-        keywords = new HashSet<>(Arrays.asList(Objects.requireNonNull(in.readString()).split(",")));
+        keywords = in.readString();
+        //keywords = new HashSet<>(Arrays.asList(Objects.requireNonNull(in.readString()).split(",")));
     }
     //endregion
 
@@ -138,7 +142,8 @@ public class Bottle implements Parcelable {
         dest.writeString(notes);
         dest.writeString(region);
         dest.writeString(rating);
-        dest.writeString(String.join(",", keywords));
+        //dest.writeString(String.join(",", keywords));
+        dest.writeString(keywords);
     }
     //endregion
 

@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Bottle Detail View
 
     public void detailedView(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                             Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords) {
+                             Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, /*Set<String> bottleKeywords*/String bottleKeywords) {
         setContentView(R.layout.description_screen);
 
         // Find the views
@@ -278,6 +278,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleRating.setText(rating);
         tbottleDetails.setText(details);
         tbottleNotes.setText(bottleNotes);
+
+        /*for (int i = 0; i < bottleKeywords.length(); i++) {
+            if (bottleKeywords.charAt(i) == ',' || bottleKeywords.charAt(i) == ' ') {
+
+            }
+        }*/
+
         String keywords = "Keywords:\n" + String.join(", ", bottleKeywords);
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
@@ -715,8 +722,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("AddABottle", "Image URI: " + photoUri);
         String region = regionField.getText().toString();
         String rating = ratingField.getText().toString();
+        String keywords = keywordsField.getText().toString();
 
-        Set<String> keywords = new HashSet<>(Arrays.asList(keywordsField.getText().toString().split(",")));
+        /*Set<String> keywords = new HashSet<>(Arrays.asList(keywordsField.getText().toString().split(",")));
 
         // Keyword String Constructor
         StringBuilder keywordsBuilder = new StringBuilder();
@@ -725,7 +733,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 keywordsBuilder.append(", ");
             }
             keywordsBuilder.append(keyword.trim());
-        }
+        }*/
+
+
 
         String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
         String fileContents = "Name: " + name + "\n" +
@@ -735,7 +745,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 "Age: " + age + "\n" +
                 "Notes: " + notes + "\n" +
                 "Region: " + region + "\n" +
-                "Keywords: " + keywordsBuilder + "\n" +
+                "Keywords: " + keywords + "\n" +
                 "Rating: " + rating + "\n" +
                 "Photo: " + photoPath;
 
@@ -767,7 +777,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "No Age (Years) Saved");
             tastingNotesField.setText(bottle.getNotes() != null && !bottle.getNotes().isEmpty() ? bottle.getNotes() : "No Notes Saved");
             regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
-            keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
+            keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? bottle.getKeywords() : "No Keywords Saved");
+            //keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
             ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
