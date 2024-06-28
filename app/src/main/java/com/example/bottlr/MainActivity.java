@@ -735,8 +735,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             keywordsBuilder.append(keyword.trim());
         }*/
 
-
-
         String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
         String fileContents = "Name: " + name + "\n" +
                 "Distiller: " + distillery + "\n" +
