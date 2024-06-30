@@ -255,6 +255,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                              Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords) {
         setContentView(R.layout.description_screen);
 
+        //fill empty data
+        if(bottleName.isEmpty()) { bottleName = "Name"; }
+        if(bottleDistillery.isEmpty()) { bottleDistillery = "No Distillery"; }
+        if(bottleType.isEmpty()) { bottleType = "No Type"; }
+        if(bottleABV.isEmpty()) { bottleABV = "N/A"; }
+        if(bottleAge.isEmpty()) { bottleAge = "No"; }
+        if(bottleNotes.isEmpty()) { bottleNotes = "No Notes"; }
+        if(bottleRegion.isEmpty()) { bottleRegion = "No Region"; }
+        if(bottleRating.isEmpty()) { bottleRating = "No Rating"; }
+        if(bottleKeywords.isEmpty()) { bottleKeywords = "None"; }
+
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
