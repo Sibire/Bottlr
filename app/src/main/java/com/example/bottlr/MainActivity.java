@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_settings_button) { //settings area
             editor = 2;
             setContentView(R.layout.activity_settings);
+            lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return mostRecentBottle;
     }
 
+    @SuppressLint("SetTextI18n")
     public void SignInChecker(int layout) {
         Button signin = findViewById(R.id.sign_in_button_home);
         FrameLayout recentBottle = findViewById(R.id.home_last_bottle);
@@ -462,7 +464,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateSignedInUserTextView() {
         TextView signedInUserTextView = findViewById(R.id.signed_in_user);
         if (mAuth.getCurrentUser() != null) {
-            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+            signedInUserTextView.setText(mAuth.getCurrentUser().getDisplayName());
+            if(lastLayout != R.layout.activity_settings) {
+                SignInChecker(lastLayout);
+            }
         } else {
             signedInUserTextView.setText("Not Signed In");
         }
