@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
     private int lastLayout;
-    private Bottle currentBottle;
+    private String currentBottle;
     //endregion
 
     //region onCreate Code
@@ -199,30 +199,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File directory = this.getFilesDir();
         File[] files = directory.listFiles((dir, name) -> name.startsWith("bottle_") && name.endsWith(".txt"));
         Bottle mostRecentBottle = null;
-        long lastModifiedTime = Long.MIN_VALUE;
-        /*if (files != null) {
-            for (File file : files) {
-                if (file.lastModified() > lastModifiedTime) {
-                    Bottle bottle = parseBottle(file);
-                    if (bottle != null) {
-                        mostRecentBottle = bottle;
-                        lastModifiedTime = file.lastModified();
-                    }
-                }
-            }
-        }*/
         if (files != null) {
             for (File file : files) {
-                if (file.lastModified() > lastModifiedTime) {
-                    Bottle bottle = parseBottle(file);
-                    if (bottle != null) {
-                        mostRecentBottle = bottle;
-                        lastModifiedTime = file.lastModified();
-                    }
+                Bottle bottle = parseBottle(file);
+                if (currentBottle.equals(bottle.getName())) {
+                    mostRecentBottle = bottle;
                 }
             }
         }
-
         return mostRecentBottle;
     }
 
@@ -303,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             bottleImage.setImageURI(bottlePhoto);
         }
+        currentBottle = bottleName;
     }
     //endregion
 
