@@ -72,10 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField;
-    private Uri photoUri, cameraImageUri;
+    private Uri photoUri, cameraImageUri, currentBottleImage;
     private BottleAdapter searchResultsAdapter;
-    private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
-    private int lastLayout;
+    private int editor, lastLayout, currentBottleImageNone; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
     //endregion
 
@@ -201,7 +200,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TODO: Add more info on home screen
 
         //last bottle viewed displayed
-
+        if (currentBottle != null) {
+            TextView tbottleName = findViewById(R.id.tvBottleName);
+            tbottleName.setText(currentBottle);
+            ImageView bottleImage = findViewById(R.id.detailImageView);
+            if(currentBottleImage == null && !bottleImage.toString().equals("No photo")) {
+                bottleImage.setImageResource(R.drawable.nodrinkimg);
+            } else {
+                bottleImage.setImageURI(currentBottleImage);
+            }
+        } else {
+            TextView tbottleName = findViewById(R.id.tvBottleName);
+            tbottleName.setText("No Bottle Viewed");
+        }
     }
 
     private Bottle getMostRecentBottle() {
@@ -221,9 +232,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void SignInChecker() {
         Button signin = findViewById(R.id.sign_in_button_home);
+        FrameLayout recentBottle = findViewById(R.id.home_last_bottle);
         settings();
         if(mAuth.getCurrentUser() != null) {
             signin.setVisibility(View.GONE);
+            recentBottle.setVisibility(View.VISIBLE);
         } else {
             signIn();
         }
@@ -298,8 +311,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
+            currentBottleImageNone = R.drawable.nodrinkimg;
         } else {
             bottleImage.setImageURI(bottlePhoto);
+            currentBottleImage = bottlePhoto;
         }
         currentBottle = bottleName;
     }
