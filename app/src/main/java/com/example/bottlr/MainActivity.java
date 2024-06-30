@@ -10,6 +10,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,9 +73,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField;
-    private Uri photoUri, cameraImageUri, currentBottleImage;
+    private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
-    private int editor, lastLayout, currentBottleImageNone; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
     //endregion
 
@@ -200,14 +201,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TODO: Add more info on home screen
 
         //last bottle viewed displayed
-        if (currentBottle != null) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        String storedData = sharedPreferences.getString("CurrentBottle", "defaultValue");
+        if (!storedData.isEmpty()) {
+            currentBottle = storedData;
+            Bottle checker = getMostRecentBottle();
             TextView tbottleName = findViewById(R.id.tvBottleName);
             tbottleName.setText(currentBottle);
             ImageView bottleImage = findViewById(R.id.detailImageView);
-            if(currentBottleImage == null && !bottleImage.toString().equals("No photo")) {
+            if(checker.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
                 bottleImage.setImageResource(R.drawable.nodrinkimg);
             } else {
-                bottleImage.setImageURI(currentBottleImage);
+                bottleImage.setImageURI(checker.getPhotoUri());
             }
         } else {
             TextView tbottleName = findViewById(R.id.tvBottleName);
@@ -311,12 +316,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
-            currentBottleImageNone = R.drawable.nodrinkimg;
         } else {
             bottleImage.setImageURI(bottlePhoto);
-            currentBottleImage = bottlePhoto;
         }
         currentBottle = bottleName;
+        //Store last viewed info as user preference for restart
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CurrentBottle", currentBottle);
+        editor.apply();
     }
     //endregion
 
