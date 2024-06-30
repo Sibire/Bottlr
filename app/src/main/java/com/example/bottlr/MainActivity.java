@@ -199,6 +199,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SignInChecker();
         lastLayout = R.layout.homescreen;
         //TODO: Add more info on home screen
+
+        //last bottle viewed displayed
+
     }
 
     private Bottle getMostRecentBottle() {
