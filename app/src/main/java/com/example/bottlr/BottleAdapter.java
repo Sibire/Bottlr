@@ -20,7 +20,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public List<Bottle> allBottles;
     interface OnBottleCheckListener {
         void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, /*Set<String> bottleKeywords*/String bottleKeywords);
+                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords);
     }
     @NonNull
     private final OnBottleCheckListener onBottleClick;

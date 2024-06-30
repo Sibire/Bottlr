@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Bottle Detail View
 
     public void detailedView(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                             Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, /*Set<String> bottleKeywords*/String bottleKeywords) {
+                             Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords) {
         setContentView(R.layout.description_screen);
 
         // Find the views
@@ -274,13 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleDetails.setText(details);
         tbottleNotes.setText(bottleNotes);
 
-        /*for (int i = 0; i < bottleKeywords.length(); i++) {
-            if (bottleKeywords.charAt(i) == ',' || bottleKeywords.charAt(i) == ' ') {
-
-            }
-        }*/
-
-        String keywords = "Keywords:\n" + String.join(", ", bottleKeywords);
+        String keywords = "Keywords:\n" + bottleKeywords;
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
@@ -719,17 +713,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String rating = ratingField.getText().toString();
         String keywords = keywordsField.getText().toString();
 
-        /*Set<String> keywords = new HashSet<>(Arrays.asList(keywordsField.getText().toString().split(",")));
-
-        // Keyword String Constructor
-        StringBuilder keywordsBuilder = new StringBuilder();
-        for (String keyword : keywords) {
-            if (keywordsBuilder.length() > 0) {
-                keywordsBuilder.append(", ");
-            }
-            keywordsBuilder.append(keyword.trim());
-        }*/
-
         String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
         String fileContents = "Name: " + name + "\n" +
                 "Distiller: " + distillery + "\n" +
@@ -771,7 +754,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tastingNotesField.setText(bottle.getNotes() != null && !bottle.getNotes().isEmpty() ? bottle.getNotes() : "No Notes Saved");
             regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
             keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? bottle.getKeywords() : "No Keywords Saved");
-            //keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? String.join(", ", bottle.getKeywords()) : "No Keywords Saved");
             ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
@@ -812,8 +794,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String notes = notesField.getText().toString().toLowerCase();
         String region = regionField.getText().toString().toLowerCase();
         String rating = ratingField.getText().toString().toLowerCase();
-        String keywordsInput = keywordsField.getText().toString().toLowerCase();
-        Set<String> searchKeywords = new HashSet<>(Arrays.asList(keywordsInput.split("\\s*,\\s*")));
+        String keywords = keywordsField.getText().toString().toLowerCase();
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
         List<Bottle> allBottles = SharedUtils.loadBottles(this);
@@ -829,8 +810,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
                 .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
                 .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                //.filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null && searchKeywords.stream().allMatch(keyword -> bottle.getKeywords().contains(keyword.trim().toLowerCase())))) Original line
-                .filter(bottle -> searchKeywords.isEmpty() || (bottle.getKeywords() != null))
+                .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
                 .collect(Collectors.toList());
         Log.d("SearchFragment", "Filtered list: " + filteredList);
         // Check if the filtered list is empty and display a toast message if it is

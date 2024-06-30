@@ -64,7 +64,6 @@ public class SharedUtils {
             String age = readValueSafe(br);
             String notes = readValueSafe(br);
             String region = readValueSafe(br);
-            //Set<String> keywords = new HashSet<>(Arrays.asList(readValueSafe(br).split(",")));
             String keywords = readValueSafe(br);
             String rating = readValueSafe(br);
             String photoUriString = readValueSafe(br);

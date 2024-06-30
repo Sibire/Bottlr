@@ -86,8 +86,6 @@ public class Bottle implements Parcelable {
     public void setRegion(String region) { this.region = region; }
 
     // Keywords
-    //public Set<String> getKeywords() { return keywords; }
-    //public void setKeywords(Set<String> keywords) { this.keywords = keywords; }
     public String getKeywords() { return keywords; }
     public void setKeywords(String keywords) { this.keywords = keywords; }
 
@@ -115,7 +113,6 @@ public class Bottle implements Parcelable {
         region = in.readString();
         rating = in.readString();
         keywords = in.readString();
-        //keywords = new HashSet<>(Arrays.asList(Objects.requireNonNull(in.readString()).split(",")));
     }
     //endregion
 
@@ -142,7 +139,6 @@ public class Bottle implements Parcelable {
         dest.writeString(notes);
         dest.writeString(region);
         dest.writeString(rating);
-        //dest.writeString(String.join(",", keywords));
         dest.writeString(keywords);
     }
     //endregion
