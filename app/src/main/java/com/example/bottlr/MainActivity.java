@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor; //0 = no edits, 1 = bottle editor, 2 = setting access
     private int lastLayout;
+    private Bottle currentBottle;
     //endregion
 
     //region onCreate Code
@@ -197,10 +198,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Bottle getMostRecentBottle() {
         File directory = this.getFilesDir();
         File[] files = directory.listFiles((dir, name) -> name.startsWith("bottle_") && name.endsWith(".txt"));
-        // Sort out deprecation issues
-        // Low priority issue
         Bottle mostRecentBottle = null;
         long lastModifiedTime = Long.MIN_VALUE;
+        /*if (files != null) {
+            for (File file : files) {
+                if (file.lastModified() > lastModifiedTime) {
+                    Bottle bottle = parseBottle(file);
+                    if (bottle != null) {
+                        mostRecentBottle = bottle;
+                        lastModifiedTime = file.lastModified();
+                    }
+                }
+            }
+        }*/
         if (files != null) {
             for (File file : files) {
                 if (file.lastModified() > lastModifiedTime) {
@@ -212,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
         return mostRecentBottle;
     }
 
@@ -597,7 +608,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Add Bottle
     public void addBottle() {
         setContentView(R.layout.addbottlewindow);
-        // Setting up the add bottle window congruent to .xml
         bottleNameField = findViewById(R.id.bottleNameField);
         distillerField = findViewById(R.id.distillerField);
         spiritTypeField = findViewById(R.id.spiritTypeField);
