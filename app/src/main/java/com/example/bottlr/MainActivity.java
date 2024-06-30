@@ -55,11 +55,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -194,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Home Screen
+    @SuppressLint("SetTextI18n")
     public void homeScreen() {
         setContentView(R.layout.homescreen);
         SignInChecker();
@@ -206,13 +204,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!storedData.isEmpty()) {
             currentBottle = storedData;
             Bottle checker = getMostRecentBottle();
-            TextView tbottleName = findViewById(R.id.tvBottleName);
-            tbottleName.setText(currentBottle);
-            ImageView bottleImage = findViewById(R.id.detailImageView);
-            if(checker.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
-                bottleImage.setImageResource(R.drawable.nodrinkimg);
+            if (checker != null) {
+                TextView tbottleName = findViewById(R.id.tvBottleName);
+                tbottleName.setText(currentBottle);
+                ImageView bottleImage = findViewById(R.id.detailImageView);
+                if(checker.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
+                    bottleImage.setImageResource(R.drawable.nodrinkimg);
+                } else {
+                    bottleImage.setImageURI(checker.getPhotoUri());
+                }
             } else {
-                bottleImage.setImageURI(checker.getPhotoUri());
+                TextView tbottleName = findViewById(R.id.tvBottleName);
+                tbottleName.setText("No Bottle Viewed");
             }
         } else {
             TextView tbottleName = findViewById(R.id.tvBottleName);
@@ -227,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (files != null) {
             for (File file : files) {
                 Bottle bottle = parseBottle(file);
+                assert bottle != null;
                 if (currentBottle.equals(bottle.getName())) {
                     mostRecentBottle = bottle;
                 }
