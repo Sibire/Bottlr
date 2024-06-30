@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             animateObject(R.id.nav_window, 0f, 700);
             KeyboardVanish(view);
         } else if (id == R.id.exit_nav_button) { //exit nav menu, animate
-            animateObject(R.id.nav_window, -0.9f, 300);
+            animateObject(R.id.nav_window, -1f, 300);
         } else if (id == R.id.menu_home_button) { //nav home screen click
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
