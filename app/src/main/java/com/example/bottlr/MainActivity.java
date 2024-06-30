@@ -166,6 +166,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
             filterSearch();
             KeyboardVanish(view);
+        } else if (id == R.id.closefilterButton) { //search filter close
+            FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
+            filterFrame.setVisibility(View.GONE);
+            KeyboardVanish(view);
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
