@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = view.getId();
         if (id == R.id.menu_icon) { //menu navigation button, animate
             animateObject(R.id.nav_window, 0f, 700);
+            KeyboardVanish(view);
         } else if (id == R.id.exit_nav_button) { //exit nav menu, animate
             animateObject(R.id.nav_window, -0.9f, 300);
         } else if (id == R.id.menu_home_button) { //nav home screen click
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             addBottle();
         } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
+            KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
             saveEntryToFile();
             customBackButton();
@@ -617,6 +620,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             toolbar.setTitle("Add A Bottle");
         }
+    }
+
+    void KeyboardVanish(View view) {
+        //if keyboard doesn't go away
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+        view.clearFocus();
     }
     //endregion
 
