@@ -126,21 +126,13 @@
         android:id="@+id/liquorSearchFrame"
         android:layout_width="327dp"
         android:layout_height="490dp"
-        android:layout_marginTop="180dp"
         android:elevation="5dp"
         android:visibility="gone"
+        android:background="@color/teal_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="3"
-            android:scaleY="3"
-            app:srcCompat="@drawable/nav_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"

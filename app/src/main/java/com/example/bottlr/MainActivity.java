@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             search();
         } else if (id == R.id.search_button) { //search activate button
             performSearch();
+            KeyboardVanish(view);
         } else if (id == R.id.menu_settings_button) { //settings area
             editor = 2;
             setContentView(R.layout.activity_settings);
@@ -147,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor = 1;
             addBottle();
         } else if (id == R.id.cloud_sync_button_home) { //sync cloud button
+            KeyboardVanish(view);
             settings();
             uploadBottlesToCloud();
             syncBottlesFromCloud();
@@ -165,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             filterFrame.setVisibility(View.VISIBLE);
         } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
             filterSearch();
+            KeyboardVanish(view);
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
