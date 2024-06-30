@@ -109,6 +109,16 @@
                         android:onClick="onClick"
                         android:src="@android:drawable/ic_menu_revert" />
 
+                    <ImageButton
+                        android:id="@+id/nfcButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:onClick="onClick"
+                        android:src="@drawable/baseline_nfc_24"
+                        android:translationX="100sp" />
+
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -383,9 +393,9 @@
 
         <Button
             android:id="@+id/exit_nav_button"
-            android:layout_width="254dp"
+            android:layout_width="160dp"
             android:layout_height="751dp"
-            android:layout_marginStart="160dp"
+            android:layout_marginStart="250dp"
             android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
@@ -393,6 +403,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

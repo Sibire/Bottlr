@@ -1,5 +1,6 @@
 package com.example.bottlr;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     public List<Bottle> allBottles;
     interface OnBottleCheckListener {
         void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, Set<String> bottleKeywords);
+                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords);
     }
     @NonNull
     private final OnBottleCheckListener onBottleClick;
@@ -38,9 +39,6 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             textViewBottleName = itemView.findViewById(R.id.textViewBottleName);
             textViewDistillery = itemView.findViewById(R.id.textViewDistillery);
             bottleButton = itemView.findViewById(R.id.bottlesinglebutton);
-        }
-        public void setOnClickListener(View.OnClickListener onClickListener) {
-            itemView.setOnClickListener(onClickListener);
         }
     }
     @NonNull
@@ -68,16 +66,11 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     @Override
     public int getItemCount() { return bottles.size(); }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setBottles(List<Bottle> bottles) {
         this.bottles = new ArrayList<>(bottles);
         this.allBottles.clear();
         this.allBottles.addAll(bottles);
         notifyDataSetChanged();
-    }
-    public Bottle getBottle(int position) {
-        if (position >= 0 && position < bottles.size()) {
-            return bottles.get(position);
-        }
-        return null; // Null if out of bounds
     }
 }

@@ -140,7 +140,7 @@
 
     <TextView
         android:id="@+id/tvNotes"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:scrollbars="vertical"
@@ -164,24 +164,24 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.348" />
+        app:layout_constraintVertical_bias="0.469" />
 
     <ImageView
         android:id="@+id/detailImageView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="231dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="160dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.83"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="1" />
 
     <ImageButton
@@ -190,9 +190,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="41dp"
-        android:layout_marginTop="67dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Back"
         android:onClick="onClick"
@@ -200,7 +200,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.25" />
 
     <ImageButton
         android:id="@+id/editButton"
@@ -210,7 +211,7 @@
         android:layout_marginStart="29dp"
         android:layout_marginTop="67dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Edit"
         android:onClick="onClick"
@@ -218,7 +219,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buyButton"
-        app:layout_constraintTop_toBottomOf="@+id/detailImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/buyButton"
@@ -228,7 +230,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="66dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="151dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Buy"
         android:onClick="onClick"
@@ -246,7 +248,7 @@
         android:layout_gravity="end"
         android:layout_marginTop="67dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Share"
         android:onClick="onClick"
@@ -265,7 +267,7 @@
         android:layout_marginStart="34dp"
         android:layout_marginTop="67dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Delete"
         android:onClick="onClick"
@@ -284,7 +286,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="65dp"
         android:layout_marginEnd="152dp"
-        android:layout_marginBottom="158dp"
+        android:layout_marginBottom="50dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Save Image"
         android:onClick="onClick"
@@ -292,7 +294,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shareButton"
-        app:layout_constraintTop_toBottomOf="@+id/detailImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.163" />
+
+    <ImageButton
+        android:id="@+id/nfcButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="27dp"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="onClick"
+        android:src="@drawable/baseline_nfc_24"
+        android:translationX="100sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editButton" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nav_window"
@@ -480,9 +500,9 @@
 
         <Button
             android:id="@+id/exit_nav_button"
-            android:layout_width="254dp"
+            android:layout_width="160dp"
             android:layout_height="751dp"
-            android:layout_marginStart="160dp"
+            android:layout_marginStart="250dp"
             android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
