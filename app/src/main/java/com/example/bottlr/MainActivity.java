@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_settings_button) { //settings area
             editor = 2;
             setContentView(R.layout.activity_settings);
+            lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.backButton) { //back button bottle
             customBackButton();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
-            SignInChecker();
+            SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
             nfcShare();
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
@@ -194,33 +195,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("SetTextI18n")
     public void homeScreen() {
         setContentView(R.layout.homescreen);
-        SignInChecker();
+        SignInChecker(R.layout.homescreen);
         lastLayout = R.layout.homescreen;
-        //TODO: Add more info on home screen
-
-        //last bottle viewed displayed
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        String storedData = sharedPreferences.getString("CurrentBottle", "defaultValue");
-        if (!storedData.isEmpty()) {
-            currentBottle = storedData;
-            Bottle checker = getMostRecentBottle();
-            if (checker != null) {
-                TextView tbottleName = findViewById(R.id.tvBottleName);
-                tbottleName.setText(currentBottle);
-                ImageView bottleImage = findViewById(R.id.detailImageView);
-                if(checker.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
-                    bottleImage.setImageResource(R.drawable.nodrinkimg);
-                } else {
-                    bottleImage.setImageURI(checker.getPhotoUri());
-                }
-            } else {
-                TextView tbottleName = findViewById(R.id.tvBottleName);
-                tbottleName.setText("No Bottle Viewed");
-            }
-        } else {
-            TextView tbottleName = findViewById(R.id.tvBottleName);
-            tbottleName.setText("No Bottle Viewed");
-        }
     }
 
     private Bottle getMostRecentBottle() {
@@ -239,15 +215,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return mostRecentBottle;
     }
 
-    public void SignInChecker() {
+    @SuppressLint("SetTextI18n")
+    public void SignInChecker(int layout) {
         Button signin = findViewById(R.id.sign_in_button_home);
         FrameLayout recentBottle = findViewById(R.id.home_last_bottle);
         settings();
         if(mAuth.getCurrentUser() != null) {
             signin.setVisibility(View.GONE);
             recentBottle.setVisibility(View.VISIBLE);
+
+            //last bottle viewed displayed
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+            String storedData = sharedPreferences.getString("CurrentBottle", "defaultValue");
+            if (!storedData.isEmpty()) {
+                currentBottle = storedData;
+                Bottle checker = getMostRecentBottle();
+                if (checker != null) {
+                    TextView tbottleName = findViewById(R.id.tvBottleName);
+                    tbottleName.setText(currentBottle);
+                    ImageView bottleImage = findViewById(R.id.detailImageView);
+                    if(checker.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
+                        bottleImage.setImageResource(R.drawable.nodrinkimg);
+                    } else {
+                        bottleImage.setImageURI(checker.getPhotoUri());
+                    }
+                } else {
+                    TextView tbottleName = findViewById(R.id.tvBottleName);
+                    tbottleName.setText("No Bottle Viewed");
+                }
+            } else {
+                TextView tbottleName = findViewById(R.id.tvBottleName);
+                tbottleName.setText("No Bottle Viewed");
+            }
         } else {
-            signIn();
+            if(layout != R.layout.homescreen) {
+                signIn();
+            }
         }
     }
     //endregion
@@ -461,7 +464,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateSignedInUserTextView() {
         TextView signedInUserTextView = findViewById(R.id.signed_in_user);
         if (mAuth.getCurrentUser() != null) {
-            signedInUserTextView.setText(mAuth.getCurrentUser().getEmail());
+            signedInUserTextView.setText(mAuth.getCurrentUser().getDisplayName());
+            if(lastLayout != R.layout.activity_settings) {
+                SignInChecker(lastLayout);
+            }
         } else {
             signedInUserTextView.setText("Not Signed In");
         }
