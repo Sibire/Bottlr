@@ -4,11 +4,6 @@ package com.example.bottlr;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 //endregion
 
 public class Bottle implements Parcelable {
@@ -23,7 +18,6 @@ public class Bottle implements Parcelable {
     private Uri photoUri;
     private String notes;
     private String region;
-    //private Set<String> keywords;
     private String keywords;
     private final String rating;
 
@@ -49,9 +43,7 @@ public class Bottle implements Parcelable {
 
     //region Getters / Setters
 
-    // Bottle getters and setters
-    // Not all of these are used or implemented *yet* but as there's going to be an edit function
-    // I need to cover all of my bases
+    // Bottle getters and setters for future use
 
     // Name
     public String getName() { return name; }
@@ -118,6 +110,7 @@ public class Bottle implements Parcelable {
 
     //region DescribeContents
     // Required for Parcelable
+    // TODO: Verify this
     @Override
     public int describeContents() {
         return 0;

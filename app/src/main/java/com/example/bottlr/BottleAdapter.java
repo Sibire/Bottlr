@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
     public List<Bottle> bottles;

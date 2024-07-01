@@ -20,9 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SharedUtils {
 
@@ -39,9 +36,6 @@ public class SharedUtils {
     //endregion
 
     //region Parse Bottle from Save
-
-    // Code for parsing bottle details from save files
-
     public static Bottle parseBottle(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
@@ -49,15 +43,8 @@ public class SharedUtils {
 
             if (name.isEmpty()) {
                 return null;
-                // Make sure the bottle is a valid entry, this is a double-check alongside a similar
-                // Save block to handle a problem with double-saving an empty bottle
-                // Probably because there's both a bitmap and URI image method
-                // Keep it in as a safeguard, but check if those two really are the culprits
-                // Once the app is actually functional
+                // Make sure the bottle is a valid entry
             }
-
-            // Else continue
-
             String distillery = readValueSafe(br);
             String type = readValueSafe(br);
             String abv = readValueSafe(br);
@@ -69,7 +56,6 @@ public class SharedUtils {
             String photoUriString = readValueSafe(br);
             Uri photoUri = (!photoUriString.equals("No photo") && !photoUriString.isEmpty()) ? Uri.parse(photoUriString) : null;
 
-            // Return bottle
             return new Bottle(name, distillery, type, abv, age, photoUri, notes, region, keywords, rating);
 
             // Exception handling
@@ -110,9 +96,6 @@ public class SharedUtils {
     //endregion
 
     //region Share Functionalities
-
-    // Had to take this out of Mainactivity due to issues with needing static vs non-static fields
-    // Handle all share functionalities here
 
     //region shareBottleInfo
 

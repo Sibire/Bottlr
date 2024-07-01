@@ -117,7 +117,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_text"
+        app:layout_constraintTop_toBottomOf="@+id/signed_in_user"
         app:layout_constraintVertical_bias="0.495" />
 
     <FrameLayout

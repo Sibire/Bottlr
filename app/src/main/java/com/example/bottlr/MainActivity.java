@@ -221,11 +221,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("SetTextI18n")
     public void SignInChecker(int layout) {
-        Button signin = findViewById(R.id.sign_in_button_home);
+        Button signIn = findViewById(R.id.sign_in_button_home);
         FrameLayout recentBottle = findViewById(R.id.home_last_bottle);
         settings();
         if(mAuth.getCurrentUser() != null) {
-            signin.setVisibility(View.GONE);
+            signIn.setVisibility(View.GONE);
             recentBottle.setVisibility(View.VISIBLE);
 
             //last bottle viewed displayed
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 task -> {
-                    // Update your UI here
+                    // Update UI
                     updateSignedInUserTextView();
                     Toast.makeText(this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
                 });
@@ -516,7 +516,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Get the file name from the Uri
                     String imageName = imageUri.getLastPathSegment();
                     // Create a storage reference for the image
-                    //assert imageName != null;
                     assert imageName != null;
                     StorageReference imageFileRef = storage.getReference()
                             .child("users")
@@ -524,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child("bottles")
                             .child(imageName);
                     // Upload the image file
-                    //assert stream != null;
                     assert stream != null;
                     imageFileRef.putStream(stream)
                             .addOnSuccessListener(taskSnapshot -> {
@@ -716,9 +714,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
-    // Launching the camera using the code originally implemented in main
-    // Make sure to erase all permission and camera code from main and move it here
-    // Main no longer has a use for that, adding it to the button there was just for testing
+    // Launching camera
     private void launchCameraIntent() {
         String bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
         ContentValues values = new ContentValues();
@@ -840,9 +836,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ratingField = findViewById(R.id.search_rating);
         keywordsField = findViewById(R.id.search_keywords);
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
-        // Set the LayoutManager
+        // Set LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Initialize your adapter and set it to the RecyclerView
+        // Initialize adapter and set it to the RecyclerView
         searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
         searchResultsRecyclerView.setAdapter(searchResultsAdapter);
     }
