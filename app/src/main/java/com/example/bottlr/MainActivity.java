@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+
     }
     //endregion
 
@@ -337,17 +341,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("CurrentBottle", currentBottle);
         editor.apply();
     }
-    //endregion
-
-    //region NFC info
-
-    public void nfcShare() {
-        //if adding bottle via NFC
-
-        //if sharing bottle info via NFC
-
-    }
-
     //endregion
 
     //region Settings
@@ -971,6 +964,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
 //        }
 //    }
+    //endregion
+
+    //region NFC Code
+    //TODO: NFC Integration
+    // Placeholder code
+    public void nfcShare() {
+        // Get the current bottle
+        Bottle currentBottle = getMostRecentBottle();
+        if (currentBottle == null) {
+            Toast.makeText(this, "No bottle selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Convert the bottle data to a string
+        String bottleData = currentBottle.toString(); // You might need to implement the toString() method in the Bottle class
+
+        // Get an instance of the default NFC adapter
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        // Check if the device supports NFC
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "This device doesn't support NFC", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if NFC is enabled
+        if (!nfcAdapter.isEnabled()) {
+            Toast.makeText(this, "NFC is disabled", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create an NDEF record with the bottle data
+        NdefRecord ndefRecord = NdefRecord.createMime("text/plain", bottleData.getBytes());
+
+        // Create an NDEF message with the NDEF record
+        NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{ndefRecord});
+
+        // Set the NDEF message to be pushed when another NFC device is detected
+        nfcAdapter.setNdefPushMessage(ndefMessage, this);
+        //TODO: Sort this out
+    }
     //endregion
 
 }
