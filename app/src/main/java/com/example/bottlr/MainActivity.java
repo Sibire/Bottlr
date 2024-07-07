@@ -63,16 +63,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Initializations
     private List<Bottle> bottles, allBottles;
+    private List<Cocktail> cocktails, allCocktails;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
-            nameField, distilleryField, typeField, notesField;
+            nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
+            mixerField, juiceField, liqueurField, garnishField, extraField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
+    private CocktailAdapter searchResultsAdapter2;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private boolean drinkFlag; //true = bottle, false = cocktail
     private String currentBottle;
     //endregion
 
@@ -90,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+        cocktails = new ArrayList<>();
+        allCocktails = new ArrayList<>();
     }
     //endregion
 
@@ -106,6 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_home_button) { //nav home screen click
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
+            drinkFlag = true;
+            setContentView(R.layout.fragment_gallery);
+            GenerateLiquorRecycler();
+            lastLayout = R.layout.fragment_gallery;
+        } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
+            drinkFlag = false;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -122,11 +134,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
+            drinkFlag = true;
             addBottle();
-        } else if (id == R.id.addPhotoButton) { //add photo button
+        } else if (id == R.id.addPhotoButton) { //add photo button bottle
+            drinkFlag = true;
+            if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
+            KeyboardVanish(view);
+        } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
+            drinkFlag = false;
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
+            drinkFlag = true;
+            saveEntryToFile();
+            customBackButton();
+        } else if (id == R.id.saveButtonCocktail) { //save cocktail button
+            drinkFlag = false;
             saveEntryToFile();
             customBackButton();
         } else if (id == R.id.homescreen) { //fragment home
@@ -170,6 +193,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
+        } else if (id == R.id.switchButton) { //switch add bottle type
+            if (drinkFlag) {
+                drinkFlag = false;
+                addBottle();
+            } else {
+                drinkFlag = true;
+                addBottle();
+            }
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -270,11 +301,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);
         // Bottle listing
-        BottleAdapter liquorAdapter;
-        bottles = SharedUtils.loadBottles(this);
-        liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        LiquorCabinetRecycler.setAdapter(liquorAdapter);
-        liquorAdapter.notifyDataSetChanged();
+        if (drinkFlag) {
+            BottleAdapter liquorAdapter;
+            bottles = SharedUtils.loadBottles(this);
+            liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        } else {
+            CocktailAdapter liquorAdapter;
+            cocktails = SharedUtils.loadCocktails(this);
+            liquorAdapter = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        }
+
     }
     //endregion
 
@@ -336,6 +376,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CurrentBottle", currentBottle);
         editor.apply();
+    }
+
+    public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
+                                     String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
+        setContentView(R.layout.description_screen);
+
+        //test
+        TextView tbottleName = findViewById(R.id.tvBottleName);
+        tbottleName.setText(cocktailName);
+
+        //fill empty data
+        /*if(bottleName.isEmpty()) { bottleName = "Name"; }
+        if(bottleDistillery.isEmpty()) { bottleDistillery = "No Distillery"; }
+        if(bottleType.isEmpty()) { bottleType = "No Type"; }
+        if(bottleABV.isEmpty()) { bottleABV = "N/A"; }
+        if(bottleAge.isEmpty()) { bottleAge = "No"; }
+        if(bottleNotes.isEmpty()) { bottleNotes = "No Notes"; }
+        if(bottleRegion.isEmpty()) { bottleRegion = "No Region"; }
+        if(bottleRating.isEmpty()) { bottleRating = "No Rating"; }
+        if(bottleKeywords.isEmpty()) { bottleKeywords = "None"; }*/
+
+        // Find the views
+        /*ImageView bottleImage = findViewById(R.id.detailImageView);
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        TextView tbottleName = findViewById(R.id.tvBottleName);
+        TextView tbottleDistillery = findViewById(R.id.tvDistillery);
+        TextView tbottleRating = findViewById(R.id.tvRating);
+        TextView tbottleDetails = findViewById(R.id.tvBottleDetails);
+        TextView tbottleNotes = findViewById(R.id.tvNotes);
+        TextView tbottleKeywords = findViewById(R.id.tvKeywords);*/
+
+        //add data to layout
+        /*String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
+        tbottleName.setText(bottleName);
+        tbottleDistillery.setText(bottleDistillery);
+        String rating = bottleRating + " / 10";
+        tbottleRating.setText(rating);
+        tbottleDetails.setText(details);
+        tbottleNotes.setText(bottleNotes);*/
+
+        /*String keywords = "Keywords:\n" + bottleKeywords;
+        tbottleKeywords.setText(keywords);
+        if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
+            bottleImage.setImageResource(R.drawable.nodrinkimg);
+        } else {
+            bottleImage.setImageURI(bottlePhoto);
+        }
+        currentBottle = bottleName;
+        //Store last viewed info as user preference for restart
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CurrentBottle", currentBottle);
+        editor.apply();*/
     }
     //endregion
 
@@ -541,6 +634,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
             }
         }
+        //copy of bottle, but for cocktails
+        List<Cocktail> cocktailList = SharedUtils.loadCocktails(this);
+        for (Cocktail cocktail : cocktailList) {
+            String dataFileName = "cocktail_" + cocktail.getName() + ".txt";
+            StorageReference dataFileRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("cocktails")
+                    .child(dataFileName);
+            dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Log.d("SettingsActivity", "Upload successful for cocktail data: " + dataFileName);
+                    })
+                    .addOnFailureListener(uploadException -> {
+                        Log.d("SettingsActivity", "Upload failed for cocktail data: " + dataFileName, uploadException);
+                    });
+            Uri imageUri = cocktail.getPhotoUri();
+            if (imageUri != null) {
+                try {
+                    InputStream stream = getContentResolver().openInputStream(imageUri);
+                    String imageName = imageUri.getLastPathSegment();
+                    assert imageName != null;
+                    StorageReference imageFileRef = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails")
+                            .child(imageName);
+                    assert stream != null;
+                    imageFileRef.putStream(stream)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                Log.d("SettingsActivity", "Upload successful for cocktail image: " + imageName);
+                            })
+                            .addOnFailureListener(uploadException -> {
+                                Log.d("SettingsActivity", "Upload failed for cocktail image: " + imageName, uploadException);
+                            });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.d("SettingsActivity", "No photo URI for cocktail: " + cocktail.getName());
+            }
+        }
         Toast.makeText(this, "Bottles Uploaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
     }
     private void syncBottlesFromCloud() {
@@ -558,6 +693,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .child("users")
                 .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                 .child("bottles");
+        StorageReference userStorageRef2 = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("cocktails");
 
         // List all the files in the user's bottles directory in Firebase Storage
         userStorageRef.listAll()
@@ -582,6 +721,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
                                         } else {
                                             Log.d("SettingsActivity", "Download failed for bottle: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    //Toast.makeText(this, "Bottles Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
+        userStorageRef2.listAll() //copy of bottle, but for cocktails
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        String fileName = fileRef.getName();
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        Log.d("SettingsActivity", "Download successful for cocktail: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("SettingsActivity", "Download failed for cocktail: " + fileName, downloadException);
                                         }
                                     });
                         }
@@ -612,9 +777,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child("users")
                             .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                             .child("bottles");
-
+                    StorageReference userStorageRef2 = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails");
                     // List all the files in the user's bottles directory in Firebase Storage
                     userStorageRef.listAll()
+                            .addOnSuccessListener(listResult -> {
+                                for (StorageReference fileRef : listResult.getItems()) {
+                                    // Delete the file from Firebase Storage
+                                    fileRef.delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Handle successful deletions
+                                                Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
+                                            })
+                                            .addOnFailureListener(deleteException -> {
+                                                // Handle failed deletions
+                                                Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                // Handle errors in listing files
+                                Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                            });
+                    userStorageRef2.listAll()
                             .addOnSuccessListener(listResult -> {
                                 for (StorageReference fileRef : listResult.getItems()) {
                                     // Delete the file from Firebase Storage
@@ -641,25 +828,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Add Bottle
     public void addBottle() {
-        setContentView(R.layout.addbottlewindow);
-        bottleNameField = findViewById(R.id.bottleNameField);
-        distillerField = findViewById(R.id.distillerField);
-        spiritTypeField = findViewById(R.id.spiritTypeField);
-        abvField = findViewById(R.id.abvField);
-        ageField = findViewById(R.id.ageField);
-        tastingNotesField = findViewById(R.id.tastingNotesField);
-        regionField = findViewById(R.id.regionField);
-        keywordsField = findViewById(R.id.keywordsField);
-        ratingField = findViewById(R.id.ratingField);
-        // Adjust header text if editing
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        if (editor == 1) {
-            Bottle bottleToEdit = getMostRecentBottle();
-            toolbar.setTitle("Edit Bottle");
-            popFields(bottleToEdit);
-            editor = 0;
-        } else {
-            toolbar.setTitle("Add A Bottle");
+        if(drinkFlag) {
+            setContentView(R.layout.addbottlewindow);
+            bottleNameField = findViewById(R.id.bottleNameField);
+            distillerField = findViewById(R.id.distillerField);
+            spiritTypeField = findViewById(R.id.spiritTypeField);
+            abvField = findViewById(R.id.abvField);
+            ageField = findViewById(R.id.ageField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            regionField = findViewById(R.id.regionField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                Bottle bottleToEdit = getMostRecentBottle();
+                toolbar.setTitle("Edit Bottle");
+                popFields(bottleToEdit);
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Bottle");
+            }
+        } else{
+            setContentView(R.layout.addcocktailwindow);
+            cocktailNameField = findViewById(R.id.cocktailNameField);
+            baseField = findViewById(R.id.baseField);
+            mixerField = findViewById(R.id.mixerField);
+            juiceField = findViewById(R.id.juiceField);
+            liqueurField = findViewById(R.id.liqueurField);
+            garnishField = findViewById(R.id.garnishField);
+            extraField = findViewById(R.id.extraField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                /*Bottle bottleToEdit = getMostRecentBottle(); //TODO
+                toolbar.setTitle("Edit Cocktail");
+                popFields(bottleToEdit);*/
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Cocktail");
+            }
         }
     }
 
@@ -693,10 +904,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
     private void chooseImageSource() {
-        String bottleName = bottleNameField.getText().toString();
-        if (bottleName.isEmpty()) {
-            Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
-            return;
+        if(drinkFlag) {
+            String bottleName = bottleNameField.getText().toString();
+            if (bottleName.isEmpty()) {
+                Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else {
+            String cocktailName = cocktailNameField.getText().toString();
+            if (cocktailName.isEmpty()) {
+                Toast.makeText(this, "Cocktail Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -716,7 +935,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Launching camera
     private void launchCameraIntent() {
-        String bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        } else {
+            bottleName = cocktailNameField.getText().toString() + "_BottlrCameraImage";
+        }
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, bottleName);
         values.put(MediaStore.Images.Media.DESCRIPTION, "Taken in the Bottlr App using the Camera");
@@ -732,7 +956,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
-        String bottleName = bottleNameField.getText().toString();
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString();
+        } else {
+            bottleName = cocktailNameField.getText().toString();
+        }
         String filename = bottleName + "_BottlrImage.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
@@ -752,49 +981,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Bottle Saving
     // Saves bottle to a file
     private void saveEntryToFile() {
+        if(drinkFlag) {
+            String name = bottleNameField.getText().toString();
 
-        String name = bottleNameField.getText().toString();
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the bottle has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
 
-        // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
-        // Check if the bottle has a name
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
-            return; // Do not proceed with saving if there's no name
+            String distillery = distillerField.getText().toString();
+            String type = spiritTypeField.getText().toString();
+            String abv = abvField.getText().toString();
+            String age = ageField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddABottle", "Image URI: " + photoUri);
+            String region = regionField.getText().toString();
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Distiller: " + distillery + "\n" +
+                    "Type: " + type + "\n" +
+                    "ABV: " + abv + "\n" +
+                    "Age: " + age + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Region: " + region + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
+        } else { //cocktail inclusion
+            String name = cocktailNameField.getText().toString();
+
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the cocktail has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
+
+            String base = baseField.getText().toString();
+            String mixer = mixerField.getText().toString();
+            String juice = juiceField.getText().toString();
+            String liqueur = liqueurField.getText().toString();
+            String garnish = garnishField.getText().toString();
+            String extra = extraField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddACocktail", "Image URI: " + photoUri);
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "cocktail_" + cocktailNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Base: " + base + "\n" +
+                    "Mixer: " + mixer + "\n" +
+                    "Juice: " + juice + "\n" +
+                    "Liqueur: " + liqueur + "\n" +
+                    "Garnish: " + garnish + "\n" +
+                    "Extra: " + extra + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        String distillery = distillerField.getText().toString();
-        String type = spiritTypeField.getText().toString();
-        String abv = abvField.getText().toString();
-        String age = ageField.getText().toString();
-        String notes = tastingNotesField.getText().toString();
-        String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
-        Log.d("AddABottle", "Image URI: " + photoUri);
-        String region = regionField.getText().toString();
-        String rating = ratingField.getText().toString();
-        String keywords = keywordsField.getText().toString();
-
-        String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
-        String fileContents = "Name: " + name + "\n" +
-                "Distiller: " + distillery + "\n" +
-                "Type: " + type + "\n" +
-                "ABV: " + abv + "\n" +
-                "Age: " + age + "\n" +
-                "Notes: " + notes + "\n" +
-                "Region: " + region + "\n" +
-                "Keywords: " + keywords + "\n" +
-                "Rating: " + rating + "\n" +
-                "Photo: " + photoPath;
-
-        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
-            fos.write(fileContents.getBytes());
-            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
-        }
-
-        // Exception handling
-        catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
-        }
         // Automatic Upload (If Applicable)
         // TODO: This
         // uploadBottleToCloud(bottle);

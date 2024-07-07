@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:onClick="onClick"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/Title_text"
@@ -75,86 +77,146 @@
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/line_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="Add A Cocktail"
+                    app:titleTextColor="@android:color/white">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="Back"
+                        android:onClick="onClick"
+                        android:src="@android:drawable/ic_menu_revert" />
+
+                    <ImageButton
+                        android:id="@+id/nfcButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:onClick="onClick"
+                        android:src="@drawable/baseline_nfc_24"
+                        android:translationX="60sp" />
+
+                    <ImageButton
+                        android:id="@+id/switchButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:onClick="onClick"
+                        android:src="@drawable/switch_clip"
+                        android:translationX="110sp" />
+
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
 
             <EditText
-                android:id="@+id/search_name"
+                android:id="@+id/cocktailNameField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name" />
+                android:hint="Cocktail Name" />
 
             <EditText
-                android:id="@+id/search_distillery"
+                android:id="@+id/baseField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Distillery" />
+                android:hint="Base" />
 
             <EditText
-                android:id="@+id/search_type"
+                android:id="@+id/mixerField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type" />
+                android:hint="Mixer" />
 
             <EditText
-                android:id="@+id/search_abv"
+                android:id="@+id/juiceField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="ABV" />
+                android:hint="Juice" />
 
             <EditText
-                android:id="@+id/search_age"
+                android:id="@+id/liqueurField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Age"
+                android:hint="Liqueur" />
+
+            <EditText
+                android:id="@+id/garnishField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Garnish"/>
+
+            <EditText
+                android:id="@+id/extraField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Extra"/>
+
+            <EditText
+                android:id="@+id/ratingField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Rating (1-10)"
                 android:inputType="number" />
 
             <EditText
-                android:id="@+id/search_region"
+                android:id="@+id/tastingNotesField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Region" />
+                android:gravity="top"
+                android:hint="Tasting Notes"
+                android:inputType="textMultiLine"
+                android:minLines="2" />
 
             <EditText
-                android:id="@+id/search_rating"
+                android:id="@+id/keywordsField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Rating"
-                android:inputType="numberDecimal" />
-
-            <EditText
-                android:id="@+id/search_notes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Notes"
-                android:inputType="textMultiLine" />
-
-            <EditText
-                android:id="@+id/search_keywords"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Keyword"
+                android:hint="Keywords (Comma-Separated)"
                 android:inputType="text" />
 
             <Button
-                android:id="@+id/search_button"
+                android:id="@+id/addPhotoButtonCocktail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:onClick="onClick"
-                android:text="Search" />
+                android:text="Add Cocktail Photo" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_results_recyclerview"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/saveButtonCocktail"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:onClick="onClick"
+                android:text="Save Cocktail" />
+
+            <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop" />
 
         </LinearLayout>
     </ScrollView>
@@ -396,4 +458,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
