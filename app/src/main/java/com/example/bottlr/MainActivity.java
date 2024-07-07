@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
-            nameField, distilleryField, typeField, notesField;
+            nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
+            mixerField, juiceField, liqueurField, garnishField, extraField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
     private CocktailAdapter searchResultsAdapter2;
@@ -134,10 +135,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
             addBottle();
-        } else if (id == R.id.addPhotoButton) { //add photo button
+        } else if (id == R.id.addPhotoButton) { //add photo button bottle
+            drinkFlag = true;
+            if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
+            KeyboardVanish(view);
+        } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
+            drinkFlag = false;
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
+            drinkFlag = true;
+            saveEntryToFile();
+            customBackButton();
+        } else if (id == R.id.saveButtonCocktail) { //save cocktail button
+            drinkFlag = false;
             saveEntryToFile();
             customBackButton();
         } else if (id == R.id.homescreen) { //fragment home
@@ -766,10 +777,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
     private void chooseImageSource() {
-        String bottleName = bottleNameField.getText().toString();
-        if (bottleName.isEmpty()) {
-            Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
-            return;
+        if(drinkFlag) {
+            String bottleName = bottleNameField.getText().toString();
+            if (bottleName.isEmpty()) {
+                Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else {
+            String cocktailName = cocktailNameField.getText().toString();
+            if (cocktailName.isEmpty()) {
+                Toast.makeText(this, "Cocktail Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -789,7 +808,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Launching camera
     private void launchCameraIntent() {
-        String bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        } else {
+            bottleName = cocktailNameField.getText().toString() + "_BottlrCameraImage";
+        }
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, bottleName);
         values.put(MediaStore.Images.Media.DESCRIPTION, "Taken in the Bottlr App using the Camera");
@@ -805,7 +829,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
-        String bottleName = bottleNameField.getText().toString();
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString();
+        } else {
+            bottleName = cocktailNameField.getText().toString();
+        }
         String filename = bottleName + "_BottlrImage.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
@@ -825,49 +854,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Bottle Saving
     // Saves bottle to a file
     private void saveEntryToFile() {
+        if(drinkFlag) {
+            String name = bottleNameField.getText().toString();
 
-        String name = bottleNameField.getText().toString();
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the bottle has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
 
-        // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
-        // Check if the bottle has a name
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
-            return; // Do not proceed with saving if there's no name
+            String distillery = distillerField.getText().toString();
+            String type = spiritTypeField.getText().toString();
+            String abv = abvField.getText().toString();
+            String age = ageField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddABottle", "Image URI: " + photoUri);
+            String region = regionField.getText().toString();
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Distiller: " + distillery + "\n" +
+                    "Type: " + type + "\n" +
+                    "ABV: " + abv + "\n" +
+                    "Age: " + age + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Region: " + region + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
+        } else { //cocktail inclusion
+            String name = cocktailNameField.getText().toString();
+
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the cocktail has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
+
+            String base = baseField.getText().toString();
+            String mixer = mixerField.getText().toString();
+            String juice = juiceField.getText().toString();
+            String liqueur = liqueurField.getText().toString();
+            String garnish = garnishField.getText().toString();
+            String extra = extraField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddACocktail", "Image URI: " + photoUri);
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "cocktail_" + cocktailNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Base: " + base + "\n" +
+                    "Mixer: " + mixer + "\n" +
+                    "Juice: " + juice + "\n" +
+                    "Liqueur: " + liqueur + "\n" +
+                    "Garnish: " + garnish + "\n" +
+                    "Extra: " + extra + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        String distillery = distillerField.getText().toString();
-        String type = spiritTypeField.getText().toString();
-        String abv = abvField.getText().toString();
-        String age = ageField.getText().toString();
-        String notes = tastingNotesField.getText().toString();
-        String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
-        Log.d("AddABottle", "Image URI: " + photoUri);
-        String region = regionField.getText().toString();
-        String rating = ratingField.getText().toString();
-        String keywords = keywordsField.getText().toString();
-
-        String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
-        String fileContents = "Name: " + name + "\n" +
-                "Distiller: " + distillery + "\n" +
-                "Type: " + type + "\n" +
-                "ABV: " + abv + "\n" +
-                "Age: " + age + "\n" +
-                "Notes: " + notes + "\n" +
-                "Region: " + region + "\n" +
-                "Keywords: " + keywords + "\n" +
-                "Rating: " + rating + "\n" +
-                "Photo: " + photoPath;
-
-        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
-            fos.write(fileContents.getBytes());
-            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
-        }
-
-        // Exception handling
-        catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
-        }
         // Automatic Upload (If Applicable)
         // TODO: This
         // uploadBottleToCloud(bottle);
