@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
         } else if (id == R.id.fab) { //add bottle
             editor = 0;
+            drinkFlag = true;
             addBottle();
         } else if (id == R.id.addPhotoButton) { //add photo button bottle
             drinkFlag = true;
@@ -192,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
+        } else if (id == R.id.switchButton) { //switch add bottle type
+            drinkFlag = false;
+            addBottle();
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -725,25 +729,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Add Bottle
     public void addBottle() {
-        setContentView(R.layout.addbottlewindow);
-        bottleNameField = findViewById(R.id.bottleNameField);
-        distillerField = findViewById(R.id.distillerField);
-        spiritTypeField = findViewById(R.id.spiritTypeField);
-        abvField = findViewById(R.id.abvField);
-        ageField = findViewById(R.id.ageField);
-        tastingNotesField = findViewById(R.id.tastingNotesField);
-        regionField = findViewById(R.id.regionField);
-        keywordsField = findViewById(R.id.keywordsField);
-        ratingField = findViewById(R.id.ratingField);
-        // Adjust header text if editing
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        if (editor == 1) {
-            Bottle bottleToEdit = getMostRecentBottle();
-            toolbar.setTitle("Edit Bottle");
-            popFields(bottleToEdit);
-            editor = 0;
-        } else {
-            toolbar.setTitle("Add A Bottle");
+        if(drinkFlag) {
+            setContentView(R.layout.addbottlewindow);
+            bottleNameField = findViewById(R.id.bottleNameField);
+            distillerField = findViewById(R.id.distillerField);
+            spiritTypeField = findViewById(R.id.spiritTypeField);
+            abvField = findViewById(R.id.abvField);
+            ageField = findViewById(R.id.ageField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            regionField = findViewById(R.id.regionField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                Bottle bottleToEdit = getMostRecentBottle();
+                toolbar.setTitle("Edit Bottle");
+                popFields(bottleToEdit);
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Bottle");
+            }
+        } else{
+            setContentView(R.layout.addcocktailwindow);
+            cocktailNameField = findViewById(R.id.cocktailNameField);
+            baseField = findViewById(R.id.baseField);
+            mixerField = findViewById(R.id.mixerField);
+            juiceField = findViewById(R.id.juiceField);
+            liqueurField = findViewById(R.id.liqueurField);
+            garnishField = findViewById(R.id.garnishField);
+            extraField = findViewById(R.id.extraField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                /*Bottle bottleToEdit = getMostRecentBottle(); //TODO
+                toolbar.setTitle("Edit Cocktail");
+                popFields(bottleToEdit);*/
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Cocktail");
+            }
         }
     }
 

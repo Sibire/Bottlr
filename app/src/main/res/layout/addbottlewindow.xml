@@ -117,7 +117,17 @@
                         android:background="?attr/selectableItemBackground"
                         android:onClick="onClick"
                         android:src="@drawable/baseline_nfc_24"
-                        android:translationX="100sp" />
+                        android:translationX="60sp" />
+
+                    <ImageButton
+                        android:id="@+id/switchButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="?attr/selectableItemBackground"
+                        android:onClick="onClick"
+                        android:src="@drawable/switch_clip"
+                        android:translationX="110sp" />
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
