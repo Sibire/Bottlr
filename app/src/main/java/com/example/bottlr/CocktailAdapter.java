@@ -17,62 +17,62 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CocktailAdapter extends RecyclerView.Adapter<CocktailAdapter.BottleViewHolder> {
-    public List<Bottle> bottles;
-    public List<Bottle> allBottles;
-    interface OnBottleCheckListener {
-        void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
-                           Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords);
+public class CocktailAdapter extends RecyclerView.Adapter<CocktailAdapter.CocktailViewHolder> {
+    public List<Cocktail> cocktails;
+    public List<Cocktail> allCocktails;
+    interface OnCocktailCheckListener {
+        void onButtonClick(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
+                           String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords);
     }
     @NonNull
-    private final OnBottleCheckListener onBottleClick;
-    public CocktailAdapter(List<Bottle> bottles, List<Bottle> allBottles, @NonNull OnBottleCheckListener onBottleCheckListener) {
-        this.bottles = bottles != null ? bottles : new ArrayList<>(); // Ensure bottles is not null
-        this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allBottles is not null
-        this.onBottleClick = onBottleCheckListener;
+    private final OnCocktailCheckListener onCocktailClick;
+    public CocktailAdapter(List<Cocktail> cocktails, List<Cocktail> allCocktails, @NonNull OnCocktailCheckListener onCocktailCheckListener) {
+        this.cocktails = cocktails != null ? cocktails : new ArrayList<>(); // Ensure cocktails is not null
+        this.allCocktails = allCocktails != null ? allCocktails : new ArrayList<>(); // Ensure allCocktails is not null
+        this.onCocktailClick = onCocktailCheckListener;
     }
-    public static class BottleViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewBottle;
-        TextView textViewBottleName, textViewDistillery;
-        Button bottleButton;
-        public BottleViewHolder(@NonNull View itemView) {
+    public static class CocktailViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageViewCocktail;
+        TextView textViewCocktailName, textViewBase;
+        Button cocktailButton;
+        public CocktailViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageViewBottle = itemView.findViewById(R.id.imageViewBottle);
-            textViewBottleName = itemView.findViewById(R.id.textViewBottleName);
-            textViewDistillery = itemView.findViewById(R.id.textViewDistillery);
-            bottleButton = itemView.findViewById(R.id.bottlesinglebutton);
+            imageViewCocktail = itemView.findViewById(R.id.imageViewCocktail);
+            textViewCocktailName = itemView.findViewById(R.id.textViewCocktailName);
+            textViewBase = itemView.findViewById(R.id.textViewBase);
+            cocktailButton = itemView.findViewById(R.id.cocktailsinglebutton);
         }
     }
     @NonNull
     @Override
-    public BottleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bottlelabel, viewGroup, false);
-        return new BottleViewHolder(view);
+    public CocktailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cocktaillabel, viewGroup, false);
+        return new CocktailViewHolder(view);
     }
     @Override
-    public void onBindViewHolder(@NonNull final BottleViewHolder holder, int position) {
-        Bottle bottle = bottles.get(position);
-        holder.textViewBottleName.setText(bottle.getName());
-        holder.textViewDistillery.setText(bottle.getDistillery());
-        if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
+    public void onBindViewHolder(@NonNull final CocktailViewHolder holder, int position) {
+        Cocktail cocktail = cocktails.get(position);
+        holder.textViewCocktailName.setText(cocktail.getName());
+        holder.textViewBase.setText(cocktail.getBase());
+        if (cocktail.getPhotoUri() != null && !cocktail.getPhotoUri().toString().equals("No photo")) {
             Glide.with(holder.itemView.getContext())
-                    .load(Uri.parse(bottle.getPhotoUri().toString()))
+                    .load(Uri.parse(cocktail.getPhotoUri().toString()))
                     .error(R.drawable.nodrinkimg)
-                    .into(holder.imageViewBottle);
+                    .into(holder.imageViewCocktail);
         } else {
-            holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
+            holder.imageViewCocktail.setImageResource(R.drawable.nodrinkimg);
         }
-        (holder).bottleButton.setOnClickListener(v -> onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
-                bottle.getAbv(), bottle.getAge(), bottle.getPhotoUri(), bottle.getNotes(), bottle.getRegion(), bottle.getRating(), bottle.getKeywords()));
+        (holder).cocktailButton.setOnClickListener(v -> onCocktailClick.onButtonClick(cocktail.getName(), cocktail.getBase(), cocktail.getMixer(), cocktail.getJuice(),
+                cocktail.getLiqueur(), cocktail.getGarnish(), cocktail.getExtra(), cocktail.getPhotoUri(), cocktail.getNotes(), cocktail.getRating(), cocktail.getKeywords()));
     }
     @Override
-    public int getItemCount() { return bottles.size(); }
+    public int getItemCount() { return cocktails.size(); }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setBottles(List<Bottle> bottles) {
-        this.bottles = new ArrayList<>(bottles);
-        this.allBottles.clear();
-        this.allBottles.addAll(bottles);
+    public void setCocktails(List<Cocktail> cocktails) {
+        this.cocktails = new ArrayList<>(cocktails);
+        this.allCocktails.clear();
+        this.allCocktails.addAll(cocktails);
         notifyDataSetChanged();
     }
 }

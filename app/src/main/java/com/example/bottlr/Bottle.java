@@ -19,7 +19,7 @@ public class Bottle implements Parcelable {
     private String notes;
     private String region;
     private String keywords;
-    private final String rating;
+    private String rating;
 
     private String bottleID;
 
@@ -84,7 +84,7 @@ public class Bottle implements Parcelable {
 
     // Rating
     public String getRating() { return rating; }
-    public void setRating(String rating) { this.region = rating; }
+    public void setRating(String rating) { this.rating = rating; }
 
     public String getBottleID() { return bottleID; }
     public void setBottleID(String ID) { this.bottleID = ID; }

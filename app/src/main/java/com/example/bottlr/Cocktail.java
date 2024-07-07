@@ -20,7 +20,7 @@ public class Cocktail implements Parcelable {
     private Uri photoUri;
     private String notes;
     private String keywords;
-    private final String rating;
+    private String rating;
 
     private String bottleID;
 
@@ -46,27 +46,35 @@ public class Cocktail implements Parcelable {
 
     //region Getters / Setters
 
-    // Bottle getters and setters for future use
+    // Cocktail getters and setters for future use
 
     // Name
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    // Distillery
-    public String getDistillery() { return distillery; }
-    public void setDistillery(String distillery) { this.distillery = distillery; }
+    // Base
+    public String getBase() { return base; }
+    public void setBase(String base) { this.base = base; }
 
-    // Type
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    // Mixer
+    public String getMixer() { return mixer; }
+    public void setMixer(String mixer) { this.mixer = mixer; }
 
-    // ABV
-    public String getAbv() { return abv; }
-    public void setAbv(String abv) { this.abv = abv; }
+    // Juice
+    public String getJuice() { return juice; }
+    public void setJuice(String juice) { this.juice = juice; }
 
-    // Age
-    public String getAge() { return age; }
-    public void setAge(String age) { this.age = age; }
+    // Liqueur
+    public String getLiqueur() { return liqueur; }
+    public void setLiqueur(String liqueur) { this.liqueur = liqueur; }
+
+    // Garnish
+    public String getGarnish() { return garnish; }
+    public void setGarnish(String garnish) { this.garnish = garnish; }
+
+    // Extra
+    public String getExtra() { return extra; }
+    public void setExtra(String extra) { this.extra = extra; }
 
     // User Notes
     public String getNotes() { return notes; }
@@ -76,20 +84,13 @@ public class Cocktail implements Parcelable {
     public Uri getPhotoUri() { return photoUri; }
     public void setPhotoUri(Uri photoUri) { this.photoUri = photoUri; }
 
-    // Region
-    public String getRegion() { return region; }
-    public void setRegion(String region) { this.region = region; }
-
     // Keywords
     public String getKeywords() { return keywords; }
     public void setKeywords(String keywords) { this.keywords = keywords; }
 
     // Rating
     public String getRating() { return rating; }
-    public void setRating(String rating) { this.region = rating; }
-
-    public String getBottleID() { return bottleID; }
-    public void setBottleID(String ID) { this.bottleID = ID; }
+    public void setRating(String rating) { this.rating = rating; }
 
     //endregion
 
@@ -99,13 +100,14 @@ public class Cocktail implements Parcelable {
 
     protected Cocktail(Parcel in) {
         name = in.readString();
-        distillery = in.readString();
-        type = in.readString();
-        abv = in.readString();
-        age = in.readString();
+        base = in.readString();
+        mixer = in.readString();
+        juice = in.readString();
+        liqueur = in.readString();
+        garnish = in.readString();
+        extra = in.readString();
         photoUri = in.readParcelable(Uri.class.getClassLoader());
         notes = in.readString();
-        region = in.readString();
         rating = in.readString();
         keywords = in.readString();
     }
@@ -127,20 +129,21 @@ public class Cocktail implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(distillery);
-        dest.writeString(type);
-        dest.writeString(abv);
-        dest.writeString(age);
+        dest.writeString(base);
+        dest.writeString(mixer);
+        dest.writeString(juice);
+        dest.writeString(liqueur);
+        dest.writeString(garnish);
+        dest.writeString(extra);
         dest.writeParcelable(photoUri, flags);
         dest.writeString(notes);
-        dest.writeString(region);
         dest.writeString(rating);
         dest.writeString(keywords);
     }
     //endregion
 
-    //region Create Bottle  / Store in Array
-    // Creating a bottle from parcel data and storing it to the bottle array
+    //region Create Cocktail  / Store in Array
+    // Creating a cocktail from parcel data and storing it to the cocktail array
     public static final Creator<Cocktail> CREATOR = new Creator<Cocktail>() {
         @Override
         public Cocktail createFromParcel(Parcel in) {
