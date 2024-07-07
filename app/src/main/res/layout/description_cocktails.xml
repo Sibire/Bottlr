@@ -7,22 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:clickable="true"
-        android:onClick="onClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.926"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
     <TextView
+        android:textIsSelectable="true"
         android:id="@+id/Title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -88,103 +74,245 @@
         app:srcCompat="@drawable/cloud_empty" />
 
     <TextView
-        android:id="@+id/signed_in_user"
+        android:id="@+id/tvBottleName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="575dp"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent="1" />
+
+    <TextView
+        android:id="@+id/tvDistillery"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="572dp"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBottleName"
+        app:layout_constraintWidth_percent="1" />
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="549dp"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDistillery"
+        app:layout_constraintWidth_percent="1" />
+
+    <TextView
+        android:id="@+id/tvBottleDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="526dp"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRating"
+        app:layout_constraintWidth_percent="1" />
+
+    <TextView
+        android:id="@+id/tvNotes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:scrollbars="vertical"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvKeywords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBottleDetails" />
+
+    <TextView
+        android:id="@+id/tvKeywords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:scrollbars="vertical"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.469" />
+
+    <ImageView
+        android:id="@+id/detailImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="160dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="1" />
+
+    <ImageButton
+        android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="174dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="179dp"
-        android:layout_marginBottom="599dp"
-        android:text="Welcome!"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Title_text" />
-
-    <Button
-        android:id="@+id/sign_in_button_home"
-        android:layout_width="262dp"
-        android:layout_height="163dp"
-        android:layout_marginTop="114dp"
-        android:layout_marginBottom="427dp"
-        android:clickable="true"
+        android:layout_gravity="start"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Back"
         android:onClick="onClick"
-        android:text="Sign In"
-        android:textSize="38sp"
-        android:visibility="visible"
+        android:src="@android:drawable/ic_menu_revert"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Edit"
+        android:onClick="onClick"
+        android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signed_in_user"
-        app:layout_constraintVertical_bias="0.495" />
+        app:layout_constraintStart_toEndOf="@+id/buyButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <FrameLayout
-        android:id="@+id/home_last_bottle"
-        android:layout_width="match_parent"
-        android:layout_height="480dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        android:visibility="gone"
+    <ImageButton
+        android:id="@+id/buyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="66dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Buy"
+        android:onClick="onClick"
+        android:src="@drawable/shopping_cart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editButton"
+        app:layout_constraintStart_toEndOf="@+id/saveImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Share"
+        android:onClick="onClick"
+        android:src="@android:drawable/ic_menu_share"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/saveImageButton"
+        app:layout_constraintStart_toEndOf="@+id/deleteButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Delete"
+        android:onClick="onClick"
+        android:src="@android:drawable/ic_menu_delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/shareButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/saveImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="152dp"
+        android:layout_marginBottom="50dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="Save Image"
+        android:onClick="onClick"
+        android:src="@drawable/ic_download"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/shareButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
+        app:layout_constraintVertical_bias="0.163" />
+
+    <ImageButton
+        android:id="@+id/nfcButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="27dp"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="onClick"
+        android:src="@drawable/baseline_nfc_24"
+        android:translationX="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/lastbottle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="443dp"
-                android:text="Last Bottle Viewed"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvBottleName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="200dp"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastbottle"
-                app:layout_constraintVertical_bias="0.093" />
-
-            <ImageView
-                android:id="@+id/detailImageView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="160dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                app:layout_constraintWidth_percent="1" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/editButton" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nav_window"
@@ -192,6 +320,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:elevation="5dp"
+        android:translationX="-420sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -304,46 +433,10 @@
             app:srcCompat="@drawable/ic_menu_gallery" />
 
         <Button
-            android:id="@+id/menu_cocktail_button"
-            android:layout_width="224dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="75dp"
-            android:layout_marginBottom="150dp"
-            android:background="@color/transparent"
-            android:clickable="true"
-            android:onClick="onClick"
-            android:paddingStart="43sp"
-            android:text="Cocktail Maker"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/cocktail_nav_icon"
-            android:layout_width="50dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="150dp"
-            android:elevation="3sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_gallery" />
-
-        <Button
             android:id="@+id/menu_search_button"
             android:layout_width="214dp"
             android:layout_height="46dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
             android:layout_marginEnd="75dp"
             android:layout_marginBottom="50dp"
             android:background="@color/transparent"
@@ -363,7 +456,6 @@
             android:layout_width="50dp"
             android:layout_height="36dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
             android:layout_marginBottom="50dp"
             android:elevation="3sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -378,7 +470,6 @@
             android:layout_width="214dp"
             android:layout_height="46dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
             android:layout_marginEnd="75dp"
             android:layout_marginBottom="-50dp"
             android:background="@color/transparent"
@@ -398,7 +489,6 @@
             android:layout_width="50dp"
             android:layout_height="36dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
             android:layout_marginBottom="-50dp"
             android:elevation="3sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -422,4 +512,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

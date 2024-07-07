@@ -109,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
+        } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
+            setContentView(R.layout.fragment_gallery);
+            GenerateLiquorRecycler();
+            lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_search_button) { //nav search screen click
             setContentView(R.layout.fragment_search);
             search();
