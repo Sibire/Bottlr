@@ -11,13 +11,14 @@ public class Cocktail implements Parcelable {
     //region Fields
     // Fields initialization
     private String name;
-    private String distillery;
-    private String type;
-    private String abv;
-    private String age;
+    private String base;
+    private String mixer;
+    private String juice;
+    private String liqueur;
+    private String garnish;
+    private String extra;
     private Uri photoUri;
     private String notes;
-    private String region;
     private String keywords;
     private final String rating;
 
@@ -26,16 +27,18 @@ public class Cocktail implements Parcelable {
     //endregion
 
     //region Constructor
-    // Bottle constructor
-    public Cocktail(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes, String region, /*Set<String> keywords*/String keywords, String rating) {
+    // Cocktail constructor
+    public Cocktail(String name, String base, String mixer, String juice, String liqueur, String garnish, String extra,
+                    Uri photoUri, String notes, String keywords, String rating) {
         this.name = name;
-        this.distillery = distillery;
-        this.type = type;
-        this.abv = abv;
-        this.age = age;
+        this.base = base;
+        this.mixer = mixer;
+        this.juice = juice;
+        this.liqueur = liqueur;
+        this.garnish = garnish;
+        this.extra = extra;
         this.photoUri = photoUri;
         this.notes = notes;
-        this.region = region;
         this.keywords = keywords;
         this.rating = rating;
     }

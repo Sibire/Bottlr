@@ -27,7 +27,8 @@ public class Bottle implements Parcelable {
 
     //region Constructor
     // Bottle constructor
-    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes, String region, /*Set<String> keywords*/String keywords, String rating) {
+    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri,
+                  String notes, String region, String keywords, String rating) {
         this.name = name;
         this.distillery = distillery;
         this.type = type;
