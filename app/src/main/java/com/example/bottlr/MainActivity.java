@@ -634,6 +634,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
             }
         }
+        //copy of bottle, but for cocktails
+        List<Cocktail> cocktailList = SharedUtils.loadCocktails(this);
+        for (Cocktail cocktail : cocktailList) {
+            String dataFileName = "cocktail_" + cocktail.getName() + ".txt";
+            StorageReference dataFileRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("cocktails")
+                    .child(dataFileName);
+            dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Log.d("SettingsActivity", "Upload successful for cocktail data: " + dataFileName);
+                    })
+                    .addOnFailureListener(uploadException -> {
+                        Log.d("SettingsActivity", "Upload failed for cocktail data: " + dataFileName, uploadException);
+                    });
+            Uri imageUri = cocktail.getPhotoUri();
+            if (imageUri != null) {
+                try {
+                    InputStream stream = getContentResolver().openInputStream(imageUri);
+                    String imageName = imageUri.getLastPathSegment();
+                    assert imageName != null;
+                    StorageReference imageFileRef = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails")
+                            .child(imageName);
+                    assert stream != null;
+                    imageFileRef.putStream(stream)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                Log.d("SettingsActivity", "Upload successful for cocktail image: " + imageName);
+                            })
+                            .addOnFailureListener(uploadException -> {
+                                Log.d("SettingsActivity", "Upload failed for cocktail image: " + imageName, uploadException);
+                            });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.d("SettingsActivity", "No photo URI for cocktail: " + cocktail.getName());
+            }
+        }
         Toast.makeText(this, "Bottles Uploaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
     }
     private void syncBottlesFromCloud() {
@@ -651,6 +693,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .child("users")
                 .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                 .child("bottles");
+        StorageReference userStorageRef2 = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("cocktails");
 
         // List all the files in the user's bottles directory in Firebase Storage
         userStorageRef.listAll()
@@ -675,6 +721,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
                                         } else {
                                             Log.d("SettingsActivity", "Download failed for bottle: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    //Toast.makeText(this, "Bottles Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
+        userStorageRef2.listAll() //copy of bottle, but for cocktails
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        String fileName = fileRef.getName();
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        Log.d("SettingsActivity", "Download successful for cocktail: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("SettingsActivity", "Download failed for cocktail: " + fileName, downloadException);
                                         }
                                     });
                         }
@@ -705,9 +777,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child("users")
                             .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                             .child("bottles");
-
+                    StorageReference userStorageRef2 = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails");
                     // List all the files in the user's bottles directory in Firebase Storage
                     userStorageRef.listAll()
+                            .addOnSuccessListener(listResult -> {
+                                for (StorageReference fileRef : listResult.getItems()) {
+                                    // Delete the file from Firebase Storage
+                                    fileRef.delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Handle successful deletions
+                                                Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
+                                            })
+                                            .addOnFailureListener(deleteException -> {
+                                                // Handle failed deletions
+                                                Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                // Handle errors in listing files
+                                Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                            });
+                    userStorageRef2.listAll()
                             .addOnSuccessListener(listResult -> {
                                 for (StorageReference fileRef : listResult.getItems()) {
                                     // Delete the file from Firebase Storage
