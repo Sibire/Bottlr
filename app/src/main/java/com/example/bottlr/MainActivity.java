@@ -8,21 +8,15 @@ import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -82,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
-    private NfcAdapter nfcAdapter;
+    private Tag currentTag = null;
     //endregion
 
     //region onCreate Code
@@ -104,33 +98,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //endregion
 
-    // Overriding OnResume and OnPause for NFC
+    // Overriding Intent for NFC
     @Override
-    protected void onResume() {
-        super.onResume();
-        Intent intent = new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        try {
-            ndef.addDataType("*/*");    // Handle all MIME types
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("Failed to add MIME type", e);
-        }
-        IntentFilter[] intentFiltersArray = new IntentFilter[]{ndef};
-        String[][] techListsArray = new String[][]{new String[]{Ndef.class.getName()}};
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter != null) {
-            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Check if the intent has an NFC tag
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter != null) {
-            nfcAdapter.disableForegroundDispatch(this);
-        }
+    public Tag getCurrentNfcTag() {
+        return currentTag;
     }
 
     //region onClick Code
@@ -199,8 +178,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
-            showNfcDialog();
             Log.d("Button", "NFC Button Tapped");
+            Tag currentTag = getCurrentNfcTag(); // You need to implement this method.
+            if (currentTag != null) {
+                NFCCode.writeToTag(currentTag, this);
+                Log.d("Button", "NFC Write Called from MainActivity");
+            } else {
+                Toast.makeText(this, "No NFC Tag detected", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);
@@ -1002,77 +987,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 //    }
     //endregion
-
-    //region NFC Code
-    //TODO: NFC Integration
-    private void showNfcDialog() {
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        Log.d("showNfcDialog", "Called");
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "NFC is not supported on this device.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (!nfcAdapter.isEnabled()) {
-            Toast.makeText(this, "Please enable NFC.", Toast.LENGTH_LONG).show();
-            // Optionally, direct the user to the NFC settings
-            startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
-            return;
-        }
-        else {
-            Toast.makeText(this, "Readying NFC...", Toast.LENGTH_LONG).show();
-        }
-
-        // Prepare to write to NFC tag by setting up a foreground dispatch to capture NFC intents
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        try {
-            ndef.addDataType("*/*");    // Handle all MIME types
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
-        }
-        IntentFilter[] intentFiltersArray = new IntentFilter[] {ndef, };
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
-    }
-
-    // Step 4: Detect NFC Tag and Write Data
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            NdefMessage ndefMessage = createNdefMessage(); // Your method to create an NdefMessage
-            Log.d("onNewIntent", "NDEF Message Created");
-
-            Ndef ndef = Ndef.get(detectedTag);
-            Log.d("Ndef Get", "Got Detected Tag");
-            if (ndef != null) {
-                try {
-                    ndef.connect();
-                    if (ndef.isWritable()) {
-                        ndef.writeNdefMessage(ndefMessage);
-                        Log.d("NDEF Writing", "NDEF Message Written");
-                        Toast.makeText(this, "NDEF Message written", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "NFC Tag is not writable", Toast.LENGTH_LONG).show();
-                    }
-                    ndef.close();
-                } catch (Exception e) {
-                    Log.e("NFC Writing", "Error writing NDEF message", e);
-                    Toast.makeText(this, "Failed to write NDEF message", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Log.d("NDEF Support Error", "NDEF is not supported");
-                Toast.makeText(this, "NDEF is not supported", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    // Helper method to create an NDEF message
-    private NdefMessage createNdefMessage() {
-        String text = "Test Data"; // Example text to write
-        NdefRecord ndefRecord = NdefRecord.createTextRecord(null, text);
-        return new NdefMessage(new NdefRecord[] { ndefRecord });
-    }
-    //endregion
-
 }
