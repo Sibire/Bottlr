@@ -194,8 +194,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
         } else if (id == R.id.switchButton) { //switch add bottle type
-            drinkFlag = false;
-            addBottle();
+            if (drinkFlag) {
+                drinkFlag = false;
+                addBottle();
+            } else {
+                drinkFlag = true;
+                addBottle();
+            }
         } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
