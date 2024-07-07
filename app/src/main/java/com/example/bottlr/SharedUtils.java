@@ -65,6 +65,36 @@ public class SharedUtils {
         }
     }
 
+    public static Cocktail parseCocktail(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String name = readValueSafe(br);
+
+            if (name.isEmpty()) {
+                return null;
+                // Make sure the bottle is a valid entry
+            }
+            String base = readValueSafe(br);
+            String mixer = readValueSafe(br);
+            String juice = readValueSafe(br);
+            String liqueur = readValueSafe(br);
+            String garnish = readValueSafe(br);
+            String extra = readValueSafe(br);
+            String notes = readValueSafe(br);
+            String keywords = readValueSafe(br);
+            String rating = readValueSafe(br);
+            String photoUriString = readValueSafe(br);
+            Uri photoUri = (!photoUriString.equals("No photo") && !photoUriString.isEmpty()) ? Uri.parse(photoUriString) : null;
+
+            return new Cocktail(name, base, mixer, juice, liqueur, garnish, extra, photoUri, notes, keywords, rating);
+
+            // Exception handling
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //endregion
 
     //region Shopping Query Builder
@@ -263,6 +293,23 @@ public class SharedUtils {
         }
         return bottles;
     }
+
+    public static List<Cocktail> loadCocktails(Context context) {
+        List<Cocktail> cocktails = new ArrayList<>();
+        File directory = context.getFilesDir();
+        File[] files = directory.listFiles();
+
+        assert files != null;
+        for (File file : files) {
+            if (file.isFile() && file.getName().startsWith("cocktail_")) {
+                Cocktail cocktail = parseCocktail(file);
+                if (cocktail != null) {
+                    cocktails.add(cocktail); // Add the bottle to the list
+                }
+            }
+        }
+        return cocktails;
+    }
     //endregion
 
     //region Save Image to Gallery
@@ -295,6 +342,40 @@ public class SharedUtils {
 
             // Show a toast message
             Toast.makeText(context, "Saved As " + bottle.getName() + "_BottlrSavedImage.jpg", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Failed To Save Image", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public static void saveImageToGalleryCocktail(Context context, Cocktail cocktail) {
+        // Convert the Uri to a Bitmap
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), cocktail.getPhotoUri());
+
+            // Prepare the values for the new image
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, cocktail.getName() + "_BottlrSavedImage.jpg");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+
+            // Add the new image to the MediaStore.Images collection
+            Uri imageUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            if (imageUri != null) {
+                try (OutputStream outputStream = context.getContentResolver().openOutputStream(imageUri)) {
+                    assert outputStream != null;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed To Save Image", Toast.LENGTH_SHORT).show();
+                }
+            }
+            // TODO: Get this notification working
+            //else {
+            //    Toast.makeText(context, "No Image To Save", Toast.LENGTH_SHORT).show();
+            //}
+
+            // Show a toast message
+            Toast.makeText(context, "Saved As " + cocktail.getName() + "_BottlrSavedImage.jpg", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "Failed To Save Image", Toast.LENGTH_SHORT).show();

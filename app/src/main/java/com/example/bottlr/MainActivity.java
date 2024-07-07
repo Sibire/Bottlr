@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Initializations
     private List<Bottle> bottles, allBottles;
+    private List<Cocktail> cocktails, allCocktails;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -72,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             nameField, distilleryField, typeField, notesField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
+    private CocktailAdapter searchResultsAdapter2;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private boolean drinkFlag; //true = bottle, false = cocktail
     private String currentBottle;
     //endregion
 
@@ -90,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+        cocktails = new ArrayList<>();
+        allCocktails = new ArrayList<>();
     }
     //endregion
 
@@ -106,10 +111,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_home_button) { //nav home screen click
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
+            drinkFlag = true;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
+            drinkFlag = false;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -274,11 +281,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);
         // Bottle listing
-        BottleAdapter liquorAdapter;
-        bottles = SharedUtils.loadBottles(this);
-        liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        LiquorCabinetRecycler.setAdapter(liquorAdapter);
-        liquorAdapter.notifyDataSetChanged();
+        if (drinkFlag) {
+            BottleAdapter liquorAdapter;
+            bottles = SharedUtils.loadBottles(this);
+            liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        } else {
+            CocktailAdapter liquorAdapter;
+            cocktails = SharedUtils.loadCocktails(this);
+            liquorAdapter = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        }
+
     }
     //endregion
 
@@ -340,6 +356,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CurrentBottle", currentBottle);
         editor.apply();
+    }
+
+    public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
+                                     String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
+        setContentView(R.layout.description_screen);
+
+        //test
+        TextView tbottleName = findViewById(R.id.tvBottleName);
+        tbottleName.setText(cocktailName);
+
+        //fill empty data
+        /*if(bottleName.isEmpty()) { bottleName = "Name"; }
+        if(bottleDistillery.isEmpty()) { bottleDistillery = "No Distillery"; }
+        if(bottleType.isEmpty()) { bottleType = "No Type"; }
+        if(bottleABV.isEmpty()) { bottleABV = "N/A"; }
+        if(bottleAge.isEmpty()) { bottleAge = "No"; }
+        if(bottleNotes.isEmpty()) { bottleNotes = "No Notes"; }
+        if(bottleRegion.isEmpty()) { bottleRegion = "No Region"; }
+        if(bottleRating.isEmpty()) { bottleRating = "No Rating"; }
+        if(bottleKeywords.isEmpty()) { bottleKeywords = "None"; }*/
+
+        // Find the views
+        /*ImageView bottleImage = findViewById(R.id.detailImageView);
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        TextView tbottleName = findViewById(R.id.tvBottleName);
+        TextView tbottleDistillery = findViewById(R.id.tvDistillery);
+        TextView tbottleRating = findViewById(R.id.tvRating);
+        TextView tbottleDetails = findViewById(R.id.tvBottleDetails);
+        TextView tbottleNotes = findViewById(R.id.tvNotes);
+        TextView tbottleKeywords = findViewById(R.id.tvKeywords);*/
+
+        //add data to layout
+        /*String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
+        tbottleName.setText(bottleName);
+        tbottleDistillery.setText(bottleDistillery);
+        String rating = bottleRating + " / 10";
+        tbottleRating.setText(rating);
+        tbottleDetails.setText(details);
+        tbottleNotes.setText(bottleNotes);*/
+
+        /*String keywords = "Keywords:\n" + bottleKeywords;
+        tbottleKeywords.setText(keywords);
+        if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
+            bottleImage.setImageResource(R.drawable.nodrinkimg);
+        } else {
+            bottleImage.setImageURI(bottlePhoto);
+        }
+        currentBottle = bottleName;
+        //Store last viewed info as user preference for restart
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CurrentBottle", currentBottle);
+        editor.apply();*/
     }
     //endregion
 
