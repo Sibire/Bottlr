@@ -644,12 +644,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .child("cocktails")
                     .child(dataFileName);
             dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
-                    .addOnSuccessListener(taskSnapshot -> {
-                        Log.d("SettingsActivity", "Upload successful for cocktail data: " + dataFileName);
-                    })
-                    .addOnFailureListener(uploadException -> {
-                        Log.d("SettingsActivity", "Upload failed for cocktail data: " + dataFileName, uploadException);
-                    });
+                    .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Upload successful for cocktail data: " + dataFileName))
+                    .addOnFailureListener(uploadException -> Log.d("SettingsActivity", "Upload failed for cocktail data: " + dataFileName, uploadException));
             Uri imageUri = cocktail.getPhotoUri();
             if (imageUri != null) {
                 try {
@@ -663,12 +659,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child(imageName);
                     assert stream != null;
                     imageFileRef.putStream(stream)
-                            .addOnSuccessListener(taskSnapshot -> {
-                                Log.d("SettingsActivity", "Upload successful for cocktail image: " + imageName);
-                            })
-                            .addOnFailureListener(uploadException -> {
-                                Log.d("SettingsActivity", "Upload failed for cocktail image: " + imageName, uploadException);
-                            });
+                            .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Upload successful for cocktail image: " + imageName))
+                            .addOnFailureListener(uploadException -> Log.d("SettingsActivity", "Upload failed for cocktail image: " + imageName, uploadException));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -738,9 +730,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         File localFile = new File(getFilesDir(), fileName);
                         if (!localFile.exists()) {
                             fileRef.getFile(localFile)
-                                    .addOnSuccessListener(taskSnapshot -> {
-                                        Log.d("SettingsActivity", "Download successful for cocktail: " + fileName);
-                                    })
+                                    .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Download successful for cocktail: " + fileName))
                                     .addOnFailureListener(downloadException -> {
                                         if (downloadException instanceof com.google.firebase.storage.StorageException
                                                 && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
