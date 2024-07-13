@@ -1,5 +1,7 @@
 package com.example.bottlr;
 
+import static com.example.bottlr.NFCCode.readFromTag;
+import static com.example.bottlr.NFCCode.writeToTag;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
@@ -98,37 +100,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //endregion
 
-    // Overriding Intent for NFC
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        // Ensure the intent is for an NFC tag
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) ||
-                NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) ||
-                NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
-            if (detectedTag != null) {
-                CharSequence[] nfcOptions = {"Read From Tag", "Write To Tag", "Cancel"}; // Do not extract from method yet
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-                builder.setTitle("NFC Tag Detected");
-                builder.setItems(nfcOptions, (dialog, which) -> {
-                    if (nfcOptions[which].equals("Read From Tag")) {
-                        NFCCode.readFromTag();
-                    } else if (nfcOptions[which].equals("Write To Tag")) {
-                        NFCCode.writeToTag(detectedTag, this);
-                    } else if (nfcOptions[which].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
+    // Region NFC Code
+    private void nfcWriteListener(){
+        Log.d("Write Listener", "Initiated");
+        CharSequence[] writeListener = {"Cancel"}; // Do not extract yet
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Scan NFC Tag To Write");
+        builder.setItems(writeListener, (dialog, which) -> {
+            if (writeListener[which].equals("Cancel")) {
+                // Disable Listening
+                Toast.makeText(this, "NFC Write Cancelled", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
-        }
+            // Enable Listening
+            // Pass tag to Write Function if detected
+            // Be sure to notify user of Write
+            // 10 Second Timeout
+            // Disable Listening
+            Toast.makeText(this, "NFC Write Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
+        });
     }
-
-    public Tag getCurrentNfcTag() {
-        return currentTag;
+    private void nfcReadListener(){
+        Log.d("Read Listener", "Initiated");
+        CharSequence[] writeListener = {"Cancel"}; // Do not extract yet
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Scan NFC Tag To Read");
+        builder.setItems(writeListener, (dialog, which) -> {
+            if (writeListener[which].equals("Cancel")) {
+                // Disable Listening
+                Toast.makeText(this, "NFC Read Cancelled", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+            // Enable Listening
+            // Pass tag to Read Function if detected
+            // Be sure to notify user of Read
+            // 10 Second Timeout
+            // Disable Listening
+            Toast.makeText(this, "NFC Read Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
+        });
     }
+    //endregion
 
     //region onClick Code
     @Override //Used for on click section in layout button attribute to switch layouts.
@@ -197,13 +208,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
             Log.d("Button", "NFC Button Tapped");
-            Tag currentTag = getCurrentNfcTag();
-            if (currentTag != null) {
-                NFCCode.writeToTag(currentTag, this);
-                Log.d("Button", "NFC Write Called from MainActivity");
-            } else {
-                Toast.makeText(this, "No NFC Tag detected", Toast.LENGTH_SHORT).show();
-            }
+            CharSequence[] nfcOptions = {"Read From Tag", "Write To Tag", "Cancel"}; // Do not extract yet
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setTitle("NFC Interactions");
+            builder.setItems(nfcOptions, (dialog, which) -> {
+                if (nfcOptions[which].equals("Read From Tag")) {
+                    nfcReadListener();
+                } else if (nfcOptions[which].equals("Write To Tag")) {
+                    nfcWriteListener();
+                } else if (nfcOptions[which].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);

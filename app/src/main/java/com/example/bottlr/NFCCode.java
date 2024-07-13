@@ -55,7 +55,11 @@ public class NFCCode {
             e.printStackTrace();
         }
     }
-    public static void readFromTag() {
+    public static void readFromTag(Tag tag, Context context) {
     //TODO: This
+        // Step 1: Verify NDEF
+        // Step 2: Read NDEF
+        // Step 3: If valid data, read in
+        // Step 4: Offer user option to save bottle, update bottle, etc
     }
 }
