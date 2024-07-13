@@ -102,9 +102,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Check if the intent has an NFC tag
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        // Ensure the intent is for an NFC tag
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) ||
+                NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) ||
+                NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+            if (detectedTag != null) {
+                CharSequence[] nfcOptions = {"Read From Tag", "Write To Tag", "Cancel"}; // Do not extract from method yet
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setTitle("NFC Tag Detected");
+                builder.setItems(nfcOptions, (dialog, which) -> {
+                    if (nfcOptions[which].equals("Read From Tag")) {
+                        NFCCode.readFromTag();
+                    } else if (nfcOptions[which].equals("Write To Tag")) {
+                        NFCCode.writeToTag(detectedTag, this);
+                    } else if (nfcOptions[which].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
         }
     }
 
@@ -179,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
             Log.d("Button", "NFC Button Tapped");
-            Tag currentTag = getCurrentNfcTag(); // You need to implement this method.
+            Tag currentTag = getCurrentNfcTag();
             if (currentTag != null) {
                 NFCCode.writeToTag(currentTag, this);
                 Log.d("Button", "NFC Write Called from MainActivity");
@@ -713,16 +731,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
             return;
         }
-        CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+        CharSequence[] camOptions = {"Take Photo", "Choose From Gallery", "Cancel"};
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Add Photo");
-        builder.setItems(options, (dialog, which) -> {
-            if (options[which].equals("Take Photo")) {
+        builder.setItems(camOptions, (dialog, which) -> {
+            if (camOptions[which].equals("Take Photo")) {
                 launchCameraIntent();
-            } else if (options[which].equals("Choose From Gallery")) {
+            } else if (camOptions[which].equals("Choose From Gallery")) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(pickPhoto, GALLERY_REQUEST_CODE);
-            } else if (options[which].equals("Cancel")) {
+            } else if (camOptions[which].equals("Cancel")) {
                 dialog.dismiss();
             }
         });

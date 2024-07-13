@@ -55,4 +55,7 @@ public class NFCCode {
             e.printStackTrace();
         }
     }
+    public static void readFromTag() {
+    //TODO: This
+    }
 }
