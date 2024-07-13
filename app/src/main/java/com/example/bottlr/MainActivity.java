@@ -1,6 +1,7 @@
 package com.example.bottlr;
 
 import static com.example.bottlr.SharedUtils.parseBottle;
+import static com.example.bottlr.SharedUtils.parseCocktail;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
@@ -248,6 +249,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return mostRecentBottle;
+    }
+
+    private Cocktail getMostRecentCocktail() {
+        File directory = this.getFilesDir();
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("cocktail_") && name.endsWith(".txt"));
+        Cocktail mostRecentCocktail = null;
+        if (files != null) {
+            for (File file : files) {
+                Cocktail cocktail = parseCocktail(file);
+                assert cocktail != null;
+                if (currentBottle.equals(cocktail.getName())) {
+                    mostRecentCocktail = cocktail;
+                }
+            }
+        }
+        return mostRecentCocktail;
     }
 
     @SuppressLint("SetTextI18n")
