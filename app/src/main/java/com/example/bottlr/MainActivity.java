@@ -5,7 +5,10 @@ import static com.example.bottlr.SharedUtils.parseCocktail;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
+import static com.example.bottlr.SharedUtils.shareCocktailInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirm;
+import static com.example.bottlr.SharedUtils.showDeleteConfirmCocktail;
+
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -156,11 +159,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
-            showDeleteConfirm(getMostRecentBottle(), this);
+            if (drinkFlag) { showDeleteConfirm(getMostRecentBottle(), this); }
+            else { showDeleteConfirmCocktail(getMostRecentCocktail(), this); }
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
-            shareBottleInfo(getMostRecentBottle(), this);
+            if(drinkFlag) {
+                shareBottleInfo(getMostRecentBottle(), this);
+            } else {
+                shareCocktailInfo(getMostRecentCocktail(), this);
+            }
         } else if (id == R.id.buyButton) { //buy bottle
             String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(getMostRecentBottle()));
             Intent intent = new Intent(Intent.ACTION_VIEW);
