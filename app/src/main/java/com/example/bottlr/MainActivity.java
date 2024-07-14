@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String currentBottle;
     private boolean isNfcReadMode = false;
     private boolean isNfcWriteMode = false;
+    private NfcAdapter nfcAdapter;
+    private PendingIntent pendingIntent;
+    private IntentFilter[] intentFiltersArray;
+    private String[][] techListsArray;
+    private AlertDialog nfcDialog;
     //endregion
 
     //region onCreate Code
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeScreen();
+        setupNFC();
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -105,83 +111,92 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     // Region NFC Code
+    private void setupNFC() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "NFC is not supported on this device.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            ndef.addDataType("*/*");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            throw new RuntimeException("Failed to add MIME type", e);
+        }
+        intentFiltersArray = new IntentFilter[]{ndef};
+        techListsArray = new String[][]{new String[]{android.nfc.tech.Ndef.class.getName()}};
+    }
 
-    //Foreground Listener Code
     private void enableForegroundDispatch() {
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter != null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
-            IntentFilter[] intentFilters = new IntentFilter[] {};
-            String[][] techList = new String[][] {};
-            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, techList);
+        if (nfcAdapter != null && (isNfcReadMode || isNfcWriteMode)) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
         }
     }
 
     private void disableForegroundDispatch() {
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
     }
 
-    // Read/Write Listeners
-    private void nfcWriteListener() {
+    private void showNfcInteractionDialog(boolean isWriteMode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Scan NFC Tag To Write");
-        // Set dialog message and cancel action
-        builder.setMessage("Tap your device to a tag to write to.")
-                .setCancelable(true)
-                .setNegativeButton("Cancel", (dialog, id) -> {
-                    isNfcWriteMode = false;
-                    disableForegroundDispatch();
-                    Toast.makeText(MainActivity.this, "NFC Write Cancelled", Toast.LENGTH_SHORT).show();
-                    dialog.cancel();
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-        enableForegroundDispatch();
-        Log.d("Foreground Dispatch", "Enabled");
-    }
-    private void nfcReadListener(){
-        Log.d("Read Listener", "Initiated");
-        isNfcReadMode = true;
-        CharSequence[] writeListener = {"Cancel"}; // Do not extract yet
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Scan NFC Tag To Read");
-        enableForegroundDispatch(); // Enable listener
-        Log.d("Read Listener", "Listener Enabled");
-        builder.setItems(writeListener, (dialog, which) -> {
-            if (writeListener[which].equals("Cancel")) {
-                isNfcReadMode = false;
-                disableForegroundDispatch(); // Disable listening
-                Log.d("Read Listener", "Listener Disabled");
-                Toast.makeText(this, "NFC Read Cancelled", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-            new Handler().postDelayed(() -> {
-                isNfcReadMode = false;
-                disableForegroundDispatch();
-                dialog.dismiss();
-                Toast.makeText(this, "NFC Read Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
-            }, 10000); // 10 seconds
+        builder.setTitle("Prepare to Scan");
+        builder.setMessage("Tap an NFC tag to " + (isWriteMode ? "write" : "read") + ". Make sure NFC is enabled on your device.");
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            stopNfcInteraction();
+            Toast.makeText(this, "NFC interaction canceled.", Toast.LENGTH_SHORT).show();
         });
+        nfcDialog = builder.create();
+        nfcDialog.show();
     }
 
-    // Intent Overrides
+    public void stopNfcInteraction() {
+        isNfcReadMode = false;
+        isNfcWriteMode = false;
+        disableForegroundDispatch();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        enableForegroundDispatch();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disableForegroundDispatch();
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent);
-        String action = intent.getAction();
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-            // Handle NDEF discovered intent
-        } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
-            // Handle TECH discovered intent
-        } else if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
-            // Handle any discovered tag
-        } else {
-            // Log or handle unexpected intent action, including null
-            Log.d("NFCIntent", "Received Intent with unexpected action: " + action);
+        Log.d("NFCDebug", "onNewIntent called with action: " + intent.getAction());
+        // Check for NFC related actions
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()) ||
+                NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) ||
+                NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
+            Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            if (detectedTag != null) {
+                Log.d("NFCDebug", "Tag detected");
+
+                if (isNfcWriteMode) {
+                    writeToTag(detectedTag, this);
+                    Log.d("NFCDebug", "Write mode, attempting to write to tag");
+                } else if (isNfcReadMode) {
+                    readFromTag(detectedTag, this);
+                    Log.d("NFCDebug", "Read mode, attempting to read from tag");
+                }
+
+                if (nfcDialog != null && nfcDialog.isShowing()) {
+                    nfcDialog.dismiss(); // Dismiss the dialog when a tag is tapped
+                    Log.d("NFCDebug", "Dialog dismissed");
+                }
+            } else {
+                Log.d("NFCDebug", "No Tag detected");
+            }
         }
     }
     //endregion
@@ -253,16 +268,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
             Log.d("Button", "NFC Button Tapped");
-            CharSequence[] nfcOptions = {"Read From Tag", "Write To Tag", "Cancel"}; // Do not extract yet
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            CharSequence[] nfcOptions = {"Read From Tag", "Write To Tag", "Cancel"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("NFC Interactions");
             builder.setItems(nfcOptions, (dialog, which) -> {
-                if (nfcOptions[which].equals("Read From Tag")) {
-                    nfcReadListener();
-                } else if (nfcOptions[which].equals("Write To Tag")) {
-                    nfcWriteListener();
-                } else if (nfcOptions[which].equals("Cancel")) {
-                    dialog.dismiss();
+                switch (which) {
+                    case 0: // Read from tag
+                        showNfcInteractionDialog(false);
+                        break;
+                    case 1: // Write to tag
+                        showNfcInteractionDialog(true);
+                        break;
+                    case 2: // Cancel
+                        stopNfcInteraction();
+                        Toast.makeText(MainActivity.this, "NFC interaction canceled.", Toast.LENGTH_SHORT).show();
+                        break;
                 }
             });
             builder.show();

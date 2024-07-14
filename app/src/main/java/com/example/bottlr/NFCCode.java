@@ -15,6 +15,7 @@ import java.io.IOException;
 public class NFCCode {
     public static void writeToTag(Tag tag, Context context) {
         // Adjust as needed, placeholder text for now
+        Log.d("NFC Code", "WriteToTag Called");
         NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{NdefRecord.createTextRecord(null, "Test Data")});
 
         try {
