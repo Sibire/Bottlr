@@ -292,7 +292,7 @@ public class SharedUtils {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Cocktail")
                 .setMessage("Are you sure you want to delete this cocktail?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteBottle(cocktail, context))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteCocktail(cocktail, context))
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();

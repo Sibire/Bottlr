@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String storedData = sharedPreferences.getString("CurrentBottle", "defaultValue");
             if (!storedData.isEmpty()) {
                 currentBottle = storedData;
-                Bottle checker = getMostRecentBottle();
+                Bottle checker = getMostRecentBottle(); //TODO: setup for cocktail
                 if (checker != null) {
                     TextView tbottleName = findViewById(R.id.tvBottleName);
                     tbottleName.setText(currentBottle);
@@ -412,25 +412,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleName.setText(cocktailName);
 
         //fill empty data
-        /*if(bottleName.isEmpty()) { bottleName = "Name"; }
-        if(bottleDistillery.isEmpty()) { bottleDistillery = "No Distillery"; }
-        if(bottleType.isEmpty()) { bottleType = "No Type"; }
-        if(bottleABV.isEmpty()) { bottleABV = "N/A"; }
-        if(bottleAge.isEmpty()) { bottleAge = "No"; }
-        if(bottleNotes.isEmpty()) { bottleNotes = "No Notes"; }
-        if(bottleRegion.isEmpty()) { bottleRegion = "No Region"; }
-        if(bottleRating.isEmpty()) { bottleRating = "No Rating"; }
-        if(bottleKeywords.isEmpty()) { bottleKeywords = "None"; }*/
+        if(cocktailName.isEmpty()) { cocktailName = "Name"; }
+        if(cocktailBase.isEmpty()) { cocktailBase = "N/A"; }
+        if(cocktailMixer.isEmpty()) { cocktailMixer = ""; }
+        if(cocktailJuice.isEmpty()) { cocktailJuice = ""; }
+        if(cocktailLiqueur.isEmpty()) { cocktailLiqueur = ""; }
+        if(cocktailGarnish.isEmpty()) { cocktailGarnish = ""; }
+        if(cocktailExtra.isEmpty()) { cocktailExtra = ""; }
+        if(cocktailNotes.isEmpty()) { cocktailNotes = "No Notes"; }
+        if(cocktailRating.isEmpty()) { cocktailRating = "No Rating"; }
+        if(cocktailKeywords.isEmpty()) { cocktailKeywords = "None"; }
 
         // Find the views
-        /*ImageView bottleImage = findViewById(R.id.detailImageView);
+        ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
         TextView tbottleName = findViewById(R.id.tvBottleName);
         TextView tbottleDistillery = findViewById(R.id.tvDistillery);
         TextView tbottleRating = findViewById(R.id.tvRating);
         TextView tbottleDetails = findViewById(R.id.tvBottleDetails);
         TextView tbottleNotes = findViewById(R.id.tvNotes);
-        TextView tbottleKeywords = findViewById(R.id.tvKeywords);*/
+        TextView tbottleKeywords = findViewById(R.id.tvKeywords);
 
         //add data to layout
         /*String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
