@@ -190,30 +190,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d("NFCDebug", "onNewIntent called with action: " + intent.getAction());
-        // Check for NFC related actions
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()) ||
-                NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) ||
-                NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
-            Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            if (detectedTag != null) {
-                Log.d("NFCDebug", "Tag detected");
+        String action = intent.getAction();
+        Log.d("NFCDebug", "onNewIntent called. Action: " + action);
 
-                if (isNfcWriteMode) {
-                    writeToTag(detectedTag, this);
-                    Log.d("NFCDebug", "Write mode, attempting to write to tag");
-                } else if (isNfcReadMode) {
-                    readFromTag(detectedTag, this);
-                    Log.d("NFCDebug", "Read mode, attempting to read from tag");
-                }
+        if (action == null) {
+            Log.d("NFCDebug", "Received intent with null action. Ignoring.");
+            return; // Ignore intents with null actions
+        }
 
-                if (nfcDialog != null && nfcDialog.isShowing()) {
-                    nfcDialog.dismiss(); // Dismiss the dialog when a tag is tapped
-                    Log.d("NFCDebug", "Dialog dismissed");
+        switch (action) {
+            case NfcAdapter.ACTION_TAG_DISCOVERED:
+            case NfcAdapter.ACTION_NDEF_DISCOVERED:
+            case NfcAdapter.ACTION_TECH_DISCOVERED:
+                Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                if (detectedTag != null) {
+                    Log.d("NFCDebug", "NFC Tag detected");
+                    // Handle NFC tag
+                    if (isNfcWriteMode) {
+                        writeToTag(detectedTag, this);
+                    } else if (isNfcReadMode) {
+                        readFromTag(detectedTag, this);
+                    }
+                    if (nfcDialog != null && nfcDialog.isShowing()) {
+                        nfcDialog.dismiss();
+                        Log.d("NFCDebug", "NFC dialog dismissed");
+                    }
+                } else {
+                    Log.d("NFCDebug", "No NFC Tag detected in NFC intent");
                 }
-            } else {
-                Log.d("NFCDebug", "No Tag detected");
-            }
+                break;
+            default:
+                Log.d("NFCDebug", "Received non-NFC related intent action: " + action);
+                // Handle other intents if necessary
+                break;
         }
     }
     //endregion
