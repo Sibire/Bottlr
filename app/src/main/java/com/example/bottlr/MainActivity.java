@@ -118,14 +118,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
+
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+        IntentFilter techDiscovered = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
         try {
-            ndef.addDataType("*/*");
+            ndef.addDataType("*/*");    // Handles all MIME based dispatches. You should specify only the ones that you need.
         } catch (IntentFilter.MalformedMimeTypeException e) {
             throw new RuntimeException("Failed to add MIME type", e);
         }
-        intentFiltersArray = new IntentFilter[]{ndef};
-        techListsArray = new String[][]{new String[]{android.nfc.tech.Ndef.class.getName()}};
+        intentFiltersArray = new IntentFilter[]{ndef, tagDetected, techDiscovered};
+        techListsArray = new String[][]{new String[]{android.nfc.tech.Ndef.class.getName(), android.nfc.tech.NfcA.class.getName(), android.nfc.tech.NfcF.class.getName(), android.nfc.tech.NfcV.class.getName(), android.nfc.tech.NfcB.class.getName(), android.nfc.tech.IsoDep.class.getName(), android.nfc.tech.MifareClassic.class.getName(), android.nfc.tech.MifareUltralight.class.getName()}};
     }
 
     private void enableForegroundDispatch() {
@@ -161,13 +164,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        enableForegroundDispatch();
+        if (nfcAdapter != null) {
+            Intent intent = new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            IntentFilter[] intentFiltersArray = new IntentFilter[]{};
+            String[][] techList = new String[][]{
+                    new String[] {
+                            android.nfc.tech.Ndef.class.getName(),
+                            android.nfc.tech.NfcA.class.getName(),
+                            // Add other techs you support
+                    }
+            };
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techList);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        disableForegroundDispatch();
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
     }
 
     @Override
