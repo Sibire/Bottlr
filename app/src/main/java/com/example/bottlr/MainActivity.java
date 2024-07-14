@@ -10,14 +10,17 @@ import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -78,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
-    private Tag currentTag = null;
+    private boolean isNfcReadMode = false;
+    private boolean isNfcWriteMode = false;
     //endregion
 
     //region onCreate Code
@@ -101,43 +105,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     // Region NFC Code
-    private void nfcWriteListener(){
-        Log.d("Write Listener", "Initiated");
-        CharSequence[] writeListener = {"Cancel"}; // Do not extract yet
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+
+    //Foreground Listener Code
+    private void enableForegroundDispatch() {
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter != null) {
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
+            IntentFilter[] intentFilters = new IntentFilter[] {};
+            String[][] techList = new String[][] {};
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, techList);
+        }
+    }
+
+    private void disableForegroundDispatch() {
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    // Read/Write Listeners
+    private void nfcWriteListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan NFC Tag To Write");
-        builder.setItems(writeListener, (dialog, which) -> {
-            if (writeListener[which].equals("Cancel")) {
-                // Disable Listening
-                Toast.makeText(this, "NFC Write Cancelled", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-            // Enable Listening
-            // Pass tag to Write Function if detected
-            // Be sure to notify user of Write
-            // 10 Second Timeout
-            // Disable Listening
-            Toast.makeText(this, "NFC Write Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
-        });
+        // Set dialog message and cancel action
+        builder.setMessage("Tap your device to a tag to write to.")
+                .setCancelable(true)
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    isNfcWriteMode = false;
+                    disableForegroundDispatch();
+                    Toast.makeText(MainActivity.this, "NFC Write Cancelled", Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+        enableForegroundDispatch();
+        Log.d("Foreground Dispatch", "Enabled");
     }
     private void nfcReadListener(){
         Log.d("Read Listener", "Initiated");
+        isNfcReadMode = true;
         CharSequence[] writeListener = {"Cancel"}; // Do not extract yet
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Scan NFC Tag To Read");
+        enableForegroundDispatch(); // Enable listener
+        Log.d("Read Listener", "Listener Enabled");
         builder.setItems(writeListener, (dialog, which) -> {
             if (writeListener[which].equals("Cancel")) {
-                // Disable Listening
+                isNfcReadMode = false;
+                disableForegroundDispatch(); // Disable listening
+                Log.d("Read Listener", "Listener Disabled");
                 Toast.makeText(this, "NFC Read Cancelled", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
-            // Enable Listening
-            // Pass tag to Read Function if detected
-            // Be sure to notify user of Read
-            // 10 Second Timeout
-            // Disable Listening
-            Toast.makeText(this, "NFC Read Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> {
+                isNfcReadMode = false;
+                disableForegroundDispatch();
+                dialog.dismiss();
+                Toast.makeText(this, "NFC Read Timed Out. Try Again.", Toast.LENGTH_SHORT).show();
+            }, 10000); // 10 seconds
         });
+    }
+
+    // Intent Overrides
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String action = intent.getAction();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            // Handle NDEF discovered intent
+        } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
+            // Handle TECH discovered intent
+        } else if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
+            // Handle any discovered tag
+        } else {
+            // Log or handle unexpected intent action, including null
+            Log.d("NFCIntent", "Received Intent with unexpected action: " + action);
+        }
     }
     //endregion
 

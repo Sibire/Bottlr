@@ -2,6 +2,11 @@
 <resources>
     <tech-list>
         <tech>android.nfc.tech.Ndef</tech>
-        <!-- Add any additional NFC Forms -->
+        <!-- Existing support for NDEF formatted tags -->
     </tech-list>
+    <tech-list>
+        <tech>android.nfc.tech.NfcA</tech>
+        <!-- Added support for NFC-A (ISO 14443-3A) tags -->
+    </tech-list>
+    <!-- Add more tech-list blocks for other NFC technologies as needed -->
 </resources>
