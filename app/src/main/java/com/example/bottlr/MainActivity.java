@@ -876,9 +876,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Adjust header text if editing
             Toolbar toolbar = findViewById(R.id.toolbar);
             if (editor == 1) {
-                /*Bottle bottleToEdit = getMostRecentBottle(); //TODO
+                Cocktail cocktailToEdit = getMostRecentCocktail();
                 toolbar.setTitle("Edit Cocktail");
-                popFields(bottleToEdit);*/
+                popFieldsCocktail(cocktailToEdit);
                 editor = 0;
             } else {
                 toolbar.setTitle("Add A Cocktail");
@@ -1095,16 +1095,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (bottle != null) {
             // Imports any existing data, but marks empty fields.
             bottleNameField.setText(bottle.getName() != null && !bottle.getName().isEmpty() ? bottle.getName() : "No Name Saved");
-            distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "No Distiller Saved");
-            spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "No Type Saved");
-            abvField.setText(bottle.getAbv() != null && !bottle.getAbv().isEmpty() ? bottle.getAbv() : "No ABV (%) Saved");
-            ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "No Age (Years) Saved");
+            distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "");
+            spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "");
+            abvField.setText(bottle.getAbv() != null && !bottle.getAbv().isEmpty() ? bottle.getAbv() : "");
+            ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "");
             tastingNotesField.setText(bottle.getNotes() != null && !bottle.getNotes().isEmpty() ? bottle.getNotes() : "No Notes Saved");
-            regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
+            regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "");
             keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? bottle.getKeywords() : "No Keywords Saved");
-            ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
+            ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating");
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
+                ImageView imagePreview = findViewById(R.id.imagePreview);
+                imagePreview.setImageURI(photoUri);
+            }
+        }
+    }
+
+    private void popFieldsCocktail(Cocktail cocktail) {
+        if (cocktail != null) {
+            // Imports any existing data, but marks empty fields.
+            cocktailNameField.setText(cocktail.getName() != null && !cocktail.getName().isEmpty() ? cocktail.getName() : "No Name Saved");
+            baseField.setText(cocktail.getBase() != null && !cocktail.getBase().isEmpty() ? cocktail.getBase() : "No Base Saved");
+            mixerField.setText(cocktail.getMixer() != null && !cocktail.getMixer().isEmpty() ? cocktail.getMixer() : "");
+            juiceField.setText(cocktail.getJuice() != null && !cocktail.getJuice().isEmpty() ? cocktail.getJuice() : "");
+            liqueurField.setText(cocktail.getLiqueur() != null && !cocktail.getLiqueur().isEmpty() ? cocktail.getLiqueur() : "");
+            garnishField.setText(cocktail.getGarnish() != null && !cocktail.getGarnish().isEmpty() ? cocktail.getGarnish() : "");
+            extraField.setText(cocktail.getExtra() != null && !cocktail.getExtra().isEmpty() ? cocktail.getExtra() : "");
+            tastingNotesField.setText(cocktail.getNotes() != null && !cocktail.getNotes().isEmpty() ? cocktail.getNotes() : "No Notes Saved");
+            keywordsField.setText(cocktail.getKeywords() != null && !cocktail.getKeywords().isEmpty() ? cocktail.getKeywords() : "");
+            ratingField.setText(cocktail.getRating() != null && !cocktail.getRating().isEmpty() ? cocktail.getRating() : "No Rating");
+            if (cocktail.getPhotoUri() != null && !cocktail.getPhotoUri().toString().equals("No photo")) {
+                photoUri = Uri.parse(cocktail.getPhotoUri().toString());
                 ImageView imagePreview = findViewById(R.id.imagePreview);
                 imagePreview.setImageURI(photoUri);
             }
