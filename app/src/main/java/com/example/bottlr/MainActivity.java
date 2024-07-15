@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);
+            if (!drinkFlag) { cocktailCabinetSearch(); }
         } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
             filterSearch();
             KeyboardVanish(view);
@@ -1170,8 +1171,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize adapter and set it to the RecyclerView
-        searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
+        if (drinkFlag) {
+            searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
+        } else {
+            searchResultsAdapter2 = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
+        }
     }
 
     private void performSearch() {
@@ -1188,33 +1194,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String keywords = keywordsField.getText().toString().toLowerCase();
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
-        List<Bottle> allBottles = SharedUtils.loadBottles(this);
-        Log.d("SearchFragment", "All bottles: " + allBottles);
-
-        // Filter the list based on search criteria
-        List<Bottle> filteredList = allBottles.stream()
-                .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
-                .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
-                .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
-                .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
-                .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
-                .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
-                .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
-                .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
-                .collect(Collectors.toList());
-        Log.d("SearchFragment", "Filtered list: " + filteredList);
-        // Check if the filtered list is empty and display a toast message if it is
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+        if (drinkFlag) {
+            List<Bottle> allBottles = SharedUtils.loadBottles(this);
+            Log.d("SearchFragment", "All bottles: " + allBottles);
+            // Filter the list based on search criteria
+            List<Bottle> filteredList = allBottles.stream()
+                    .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
+                    .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
+                    .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
+                    .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
+                    .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
+                    .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
+                    .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
+                    .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
+                    .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
+                    .collect(Collectors.toList());
+            Log.d("SearchFragment", "Filtered list: " + filteredList);
+            // Check if the filtered list is empty and display a toast message if it is
+            if (filteredList.isEmpty()) {
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+            }
+            // Keep this outside any if/else so that it clears the search results if there are none
+            updateSearchResults(filteredList);
+        } else {
+            List<Cocktail> allCocktails = SharedUtils.loadCocktails(this);
+            Log.d("SearchFragment", "All cocktails: " + allCocktails);
+            // Filter the list based on search criteria
+            List<Cocktail> filteredList = allCocktails.stream()
+                    .filter(cocktail -> name.isEmpty() || (cocktail.getName() != null && cocktail.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
+                    .filter(cocktail -> distillery.isEmpty() || (cocktail.getBase() != null && cocktail.getBase().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
+                    .filter(cocktail -> type.isEmpty() || (cocktail.getMixer() != null && cocktail.getMixer().trim().toLowerCase().contains(type.trim().toLowerCase())))
+                    .filter(cocktail -> abv.isEmpty() || (cocktail.getJuice() != null && cocktail.getJuice().trim().toLowerCase().contains(abv.trim().toLowerCase())))
+                    .filter(cocktail -> age.isEmpty() || (cocktail.getLiqueur() != null && cocktail.getLiqueur().trim().toLowerCase().contains(age.trim().toLowerCase())))
+                    .filter(cocktail -> notes.isEmpty() || (cocktail.getNotes() != null && cocktail.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
+                    .filter(cocktail -> region.isEmpty() || (cocktail.getGarnish() != null && cocktail.getGarnish().trim().toLowerCase().contains(region.trim().toLowerCase())))
+                    .filter(cocktail -> rating.isEmpty() || (cocktail.getRating() != null && cocktail.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
+                    .filter(cocktail -> keywords.isEmpty() || (cocktail.getKeywords() != null && cocktail.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
+                    .collect(Collectors.toList());
+            Log.d("SearchFragment", "Filtered list: " + filteredList);
+            // Check if the filtered list is empty and display a toast message if it is
+            if (filteredList.isEmpty()) {
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+            }
+            // Keep this outside any if/else so that it clears the search results if there are none
+            updateSearchResultsCocktail(filteredList);
         }
-        // Keep this outside any if/else so that it clears the search results if there are none
-        updateSearchResults(filteredList);
     }
     @SuppressLint("NotifyDataSetChanged")
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateSearchResultsCocktail(List<Cocktail> filteredList) {
+        searchResultsAdapter2.setCocktails(filteredList);
+        searchResultsAdapter2.notifyDataSetChanged();
     }
 
     public void filterSearch() {
@@ -1229,6 +1263,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchFilter.setVisibility(View.VISIBLE);
         search();
         performSearch();
+    }
+
+    public void cocktailCabinetSearch() {
+        EditText base = findViewById(R.id.search_distillery);
+        base.setHint("Base");
+        EditText mixer = findViewById(R.id.search_type);
+        mixer.setHint("Mixer");
+        EditText juice = findViewById(R.id.search_abv);
+        juice.setHint("Juice");
+        EditText liqueur = findViewById(R.id.search_age);
+        liqueur.setHint("Liqueur");
+        EditText garnish = findViewById(R.id.search_region);
+        garnish.setHint("Garnish");
     }
     //endregion
 
