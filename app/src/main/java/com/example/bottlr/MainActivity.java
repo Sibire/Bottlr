@@ -4,6 +4,7 @@ import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.parseCocktail;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
+import static com.example.bottlr.SharedUtils.saveImageToGalleryCocktail;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.shareCocktailInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirm;
@@ -25,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,9 +185,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             uploadBottlesToCloud();
             syncBottlesFromCloud();
         } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null && recentBottle.getPhotoUri() != null) {
-                saveImageToGallery(this, recentBottle);}
+            if (drinkFlag) {
+                Bottle recentBottle = getMostRecentBottle();
+                if (recentBottle != null && recentBottle.getPhotoUri() != null) {
+                    saveImageToGallery(this, recentBottle);}
+            } else {
+                Cocktail recentcocktail = getMostRecentCocktail();
+                if (recentcocktail != null && recentcocktail.getPhotoUri() != null) {
+                    saveImageToGalleryCocktail(this, recentcocktail);}
+            }
         } else if (id == R.id.backButton) { //back button bottle
             customBackButton();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
@@ -854,6 +862,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Adjust header text if editing
             Toolbar toolbar = findViewById(R.id.toolbar);
             if (editor == 1) {
+                ImageButton switcher = findViewById(R.id.switchButton);
+                switcher.setVisibility(View.GONE);
                 Bottle bottleToEdit = getMostRecentBottle();
                 toolbar.setTitle("Edit Bottle");
                 popFields(bottleToEdit);
@@ -876,6 +886,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Adjust header text if editing
             Toolbar toolbar = findViewById(R.id.toolbar);
             if (editor == 1) {
+                ImageButton switcher = findViewById(R.id.switchButton);
+                switcher.setVisibility(View.GONE);
                 Cocktail cocktailToEdit = getMostRecentCocktail();
                 toolbar.setTitle("Edit Cocktail");
                 popFieldsCocktail(cocktailToEdit);
