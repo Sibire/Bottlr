@@ -405,11 +405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
                                      String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
-        setContentView(R.layout.description_screen);
-
-        //test
-        TextView tbottleName = findViewById(R.id.tvBottleName);
-        tbottleName.setText(cocktailName);
+        setContentView(R.layout.description_cocktails);
 
         //fill empty data
         if(cocktailName.isEmpty()) { cocktailName = "Name"; }
@@ -426,35 +422,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
-        TextView tbottleName = findViewById(R.id.tvBottleName);
-        TextView tbottleDistillery = findViewById(R.id.tvDistillery);
-        TextView tbottleRating = findViewById(R.id.tvRating);
-        TextView tbottleDetails = findViewById(R.id.tvBottleDetails);
-        TextView tbottleNotes = findViewById(R.id.tvNotes);
-        TextView tbottleKeywords = findViewById(R.id.tvKeywords);
+        TextView tcocktailName = findViewById(R.id.cvCocktailName);
+        TextView tcocktailbase = findViewById(R.id.cvBase);
+        TextView tcocktailrating = findViewById(R.id.cvRating);
+        TextView tcocktaildetails = findViewById(R.id.cvCocktailDetails);
+        TextView tcocktailnotes = findViewById(R.id.cvNotes);
+        TextView tcocktailKeywords = findViewById(R.id.cvKeywords);
 
         //add data to layout
-        /*String details = bottleType + ", " + bottleRegion + ", " + bottleAge + " Year, " + bottleABV + "% ABV";
-        tbottleName.setText(bottleName);
-        tbottleDistillery.setText(bottleDistillery);
-        String rating = bottleRating + " / 10";
-        tbottleRating.setText(rating);
-        tbottleDetails.setText(details);
-        tbottleNotes.setText(bottleNotes);*/
+        String details = "Additives: " + cocktailMixer + " " + cocktailJuice + " " + cocktailLiqueur + " " + cocktailGarnish + " " + cocktailExtra;
+        tcocktailName.setText(cocktailName);
+        tcocktailbase.setText(cocktailBase);
+        String rating = cocktailRating + " / 10";
+        tcocktailrating.setText(rating);
+        tcocktaildetails.setText(details);
+        tcocktailnotes.setText(cocktailNotes);
 
-        /*String keywords = "Keywords:\n" + bottleKeywords;
-        tbottleKeywords.setText(keywords);
-        if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
+        String keywords = "Keywords:\n" + cocktailKeywords;
+        tcocktailKeywords.setText(keywords);
+        if(cocktailPhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
         } else {
-            bottleImage.setImageURI(bottlePhoto);
+            bottleImage.setImageURI(cocktailPhoto);
         }
-        currentBottle = bottleName;
+        currentBottle = cocktailName;
         //Store last viewed info as user preference for restart
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CurrentBottle", currentBottle);
-        editor.apply();*/
+        editor.apply();
     }
     //endregion
 
