@@ -140,6 +140,16 @@ public class SharedUtils {
         }
     }
 
+    public static void shareCocktailInfo(Cocktail cocktail, Context context) {
+        if (cocktail != null) {
+            String shareText = createShareTextCocktail(cocktail);
+            Uri imageUri = (cocktail.getPhotoUri() != null && !cocktail.getPhotoUri().toString().equals("No photo"))
+                    ? cacheImage(cocktail.getPhotoUri(), context)
+                    : null;
+            shareBottleContent(shareText, imageUri, context); //should still work
+        }
+    }
+
     //endregion
 
     //region cacheImage
@@ -246,6 +256,21 @@ public class SharedUtils {
         return shareText.toString();
     }
 
+    public static String createShareTextCocktail(Cocktail cocktail) { //copied from bottle
+        StringBuilder shareText = new StringBuilder("I'm drinking a ");
+        shareText.append(cocktail.getName());
+        shareText.append(".\n\n");
+        shareText.append("Thanks Bottlr!");
+
+        // Finalize string. Should look like this:
+        //
+        // I'm drinking a Gin and Tonic.
+        //
+        // Thanks Bottlr!
+
+        return shareText.toString();
+    }
+
     //endregion
 
     //endregion
@@ -263,6 +288,16 @@ public class SharedUtils {
                 .show();
     }
 
+    public static void showDeleteConfirmCocktail(final Cocktail cocktail, Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Cocktail")
+                .setMessage("Are you sure you want to delete this cocktail?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteCocktail(cocktail, context))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     // Deletion Code
     public static void deleteBottle(Bottle bottle, Context context) {
         String filename = "bottle_" + bottle.getName() + ".txt";
@@ -272,6 +307,17 @@ public class SharedUtils {
             Toast.makeText(context, "Bottle Deleted.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Failed To Delete Bottle.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void deleteCocktail(Cocktail cocktail, Context context) {
+        String filename = "cocktail_" + cocktail.getName() + ".txt";
+        File file = new File(context.getFilesDir(), filename);
+        boolean deleted = file.delete();
+        if (deleted) {
+            Toast.makeText(context, "Cocktail Deleted.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed To Delete Cocktail.", Toast.LENGTH_SHORT).show();
         }
     }
     //endregion

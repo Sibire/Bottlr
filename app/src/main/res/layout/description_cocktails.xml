@@ -74,7 +74,7 @@
         app:srcCompat="@drawable/cloud_empty" />
 
     <TextView
-        android:id="@+id/tvBottleName"
+        android:id="@+id/cvCocktailName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -92,7 +92,7 @@
         app:layout_constraintWidth_percent="1" />
 
     <TextView
-        android:id="@+id/tvDistillery"
+        android:id="@+id/cvBase"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="572dp"
@@ -103,27 +103,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvBottleName"
+        app:layout_constraintTop_toBottomOf="@+id/cvCocktailName"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
-        android:id="@+id/tvRating"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="549dp"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDistillery"
-        app:layout_constraintWidth_percent="1" />
-
-    <TextView
-        android:id="@+id/tvBottleDetails"
+        android:id="@+id/cvCocktailDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -135,11 +119,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRating"
+        app:layout_constraintTop_toBottomOf="@+id/cvRating"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
-        android:id="@+id/tvNotes"
+        android:id="@+id/cvRating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -147,14 +132,29 @@
         android:textAlignment="center"
         android:textIsSelectable="true"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/tvKeywords"
+        app:layout_constraintBottom_toTopOf="@+id/cvKeywords"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvBottleDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/cvCocktailDetails"
+        app:layout_constraintVertical_bias="0.8" />
 
     <TextView
-        android:id="@+id/tvKeywords"
+        android:id="@+id/cvNotes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:scrollbars="vertical"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/cvKeywords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cvCocktailDetails"
+        app:layout_constraintVertical_bias="0.152" />
+
+    <TextView
+        android:id="@+id/cvKeywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -219,25 +219,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buyButton"
-        app:layout_constraintTop_toBottomOf="@+id/detailImageView"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageButton
-        android:id="@+id/buyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="50dp"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="Buy"
-        android:onClick="onClick"
-        android:src="@drawable/shopping_cart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/editButton"
-        app:layout_constraintStart_toEndOf="@+id/saveImageButton"
         app:layout_constraintTop_toBottomOf="@+id/detailImageView"
         app:layout_constraintVertical_bias="0.0" />
 
