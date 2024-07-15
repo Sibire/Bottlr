@@ -297,7 +297,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String storedData = sharedPreferences.getString("CurrentBottle", "defaultValue");
             if (!storedData.isEmpty()) {
                 currentBottle = storedData;
-                Bottle checker = getMostRecentBottle(); //TODO: setup for cocktail
+                Bottle checker = getMostRecentBottle();
+                Cocktail checker2 = getMostRecentCocktail();
                 if (checker != null) {
                     TextView tbottleName = findViewById(R.id.tvBottleName);
                     tbottleName.setText(currentBottle);
@@ -306,6 +307,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         bottleImage.setImageResource(R.drawable.nodrinkimg);
                     } else {
                         bottleImage.setImageURI(checker.getPhotoUri());
+                    }
+                } else if (checker2 != null) {
+                    TextView tbottleName = findViewById(R.id.tvBottleName);
+                    tbottleName.setText(currentBottle);
+                    ImageView bottleImage = findViewById(R.id.detailImageView);
+                    if(checker2.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
+                        bottleImage.setImageResource(R.drawable.nodrinkimg);
+                    } else {
+                        bottleImage.setImageURI(checker2.getPhotoUri());
                     }
                 } else {
                     TextView tbottleName = findViewById(R.id.tvBottleName);
