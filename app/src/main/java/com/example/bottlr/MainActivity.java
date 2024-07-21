@@ -584,19 +584,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
     }
-    private void secondFirebase() {
+    private void masterListDownloadSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApiKey("AIzaSyAiINYEjqR0EfU75lt7WnkjiFURtZhHA10")
                 .setApplicationId("1:253260300629:android:04dfd4b83fef99c9ca6fdc")
                 .setDatabaseUrl("https://myapp.firebaseio.com")
                 .build();
+
         FirebaseApp secondApp = FirebaseApp.initializeApp(getApplicationContext(), options, "second app");
         FirebaseStorage secondStorage = FirebaseStorage.getInstance(secondApp);
-        StorageReference dataFileRef = secondStorage.getReference()
+        StorageReference userStorageRef = secondStorage.getReference()
                 .child("list")
-                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                .child("drinks")
-                .child(dataFileName);
+                //.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("drinks");
+
+        // List all the files in the user's bottles directory in Firebase Storage
+        userStorageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        // Get the file name
+                        String fileName = fileRef.getName();
+
+                        // Check if a file with the same name exists in the local storage
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            // If a file with the same name does not exist in the local storage, download the file from Firebase Storage
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        // Handle successful downloads
+                                        Log.d("SettingsActivity", "Download successful for drink: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        // Handle failed downloads
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("SettingsActivity", "Download failed for bottle: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    Toast.makeText(this, "Bottles Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
     }
     private void signOut() {
         if (mAuth.getCurrentUser() == null) {
