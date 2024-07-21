@@ -47,6 +47,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.AuthCredential;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_search_button) { //nav search screen click
+            drinkFlag = true;
             setContentView(R.layout.fragment_search);
             search();
         } else if (id == R.id.search_button) { //search activate button
@@ -581,6 +583,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(this, "Sign-In Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void secondFirebase() {
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApiKey("AIzaSyAiINYEjqR0EfU75lt7WnkjiFURtZhHA10")
+                .setApplicationId("1:253260300629:android:04dfd4b83fef99c9ca6fdc")
+                .setDatabaseUrl("https://myapp.firebaseio.com")
+                .build();
+        FirebaseApp secondApp = FirebaseApp.initializeApp(getApplicationContext(), options, "second app");
+        FirebaseStorage secondStorage = FirebaseStorage.getInstance(secondApp);
+        StorageReference dataFileRef = secondStorage.getReference()
+                .child("list")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("drinks")
+                .child(dataFileName);
     }
     private void signOut() {
         if (mAuth.getCurrentUser() == null) {
