@@ -69,10 +69,11 @@ import java.util.stream.Collectors;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //region Initializations
-    private List<Bottle> bottles, allBottles;
-    private List<Cocktail> cocktails, allCocktails;
+    private List<Bottle> bottles, allBottles ,masterBottles, masterAllBottles;
+    private List<Cocktail> cocktails, allCocktails, masterCocktails, masterAllCocktails;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
+    private FirebaseApp secondApp;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
@@ -98,11 +99,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
         firebaseAppCheck.installAppCheckProviderFactory(PlayIntegrityAppCheckProviderFactory.getInstance());
 
+        // master list
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApiKey("AIzaSyAiINYEjqR0EfU75lt7WnkjiFURtZhHA10")
+                .setApplicationId("1:253260300629:android:04dfd4b83fef99c9ca6fdc")
+                //.setDatabaseUrl("https://myapp.firebaseio.com")
+                .build();
+        secondApp = FirebaseApp.initializeApp(getApplicationContext(), options, "second app");
+
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+        masterBottles = new ArrayList<>();
+        masterAllBottles = new ArrayList<>();
         cocktails = new ArrayList<>();
         allCocktails = new ArrayList<>();
+        masterCocktails = new ArrayList<>();
+        masterAllCocktails = new ArrayList<>();
     }
     //endregion
 
@@ -186,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
             uploadBottlesToCloud();
             syncBottlesFromCloud();
+            masterListDownloadSync();
         } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
             if (drinkFlag) {
                 Bottle recentBottle = getMostRecentBottle();
@@ -585,13 +599,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
     private void masterListDownloadSync() {
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApiKey("AIzaSyAiINYEjqR0EfU75lt7WnkjiFURtZhHA10")
-                .setApplicationId("1:253260300629:android:04dfd4b83fef99c9ca6fdc")
-                .setDatabaseUrl("https://myapp.firebaseio.com")
-                .build();
-
-        FirebaseApp secondApp = FirebaseApp.initializeApp(getApplicationContext(), options, "second app");
         FirebaseStorage secondStorage = FirebaseStorage.getInstance(secondApp);
         StorageReference userStorageRef = secondStorage.getReference()
                 .child("list")
@@ -1221,13 +1228,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize adapter and set it to the RecyclerView
-        if (drinkFlag) {
+        /*if (drinkFlag) {
             searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
             searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         } else {
             searchResultsAdapter2 = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
             searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
+        }*/
+        if (drinkFlag) {
+            searchResultsAdapter = new BottleAdapter(masterBottles, masterAllBottles, this::detailedView);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
+        } else {
+            searchResultsAdapter2 = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
         }
+
     }
 
     private void performSearch() {
