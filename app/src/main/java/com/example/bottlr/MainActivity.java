@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //.setDatabaseUrl("https://myapp.firebaseio.com")
                 .build();
         secondApp = FirebaseApp.initializeApp(getApplicationContext(), options, "second app");
+        secondApp = FirebaseApp.getInstance("secondApp");
 
         //initialize bottle storage
         bottles = new ArrayList<>();
