@@ -193,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
         }
-        else if (id == R.id.menu_locations_button) {
-            showLocations();
+        else if (id == R.id.locationsHeader) {
+            GenerateLocationRecycler();
         }else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -300,6 +300,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
         LiquorCabinetRecycler.setAdapter(liquorAdapter);
         liquorAdapter.notifyDataSetChanged();
+    }
+    void GenerateLocationRecycler() {
+        // Set Recycler
+        RecyclerView LocationRecycler = findViewById(R.id.locationsList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LocationRecycler.setLayoutManager(layoutManager);
+        // Line divider to keep things nice and neat
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
+        LocationRecycler.addItemDecoration(dividerItemDecoration);
+        // Locations listing
+        // TODO: Unfuck the load-in code.
     }
     //endregion
 
