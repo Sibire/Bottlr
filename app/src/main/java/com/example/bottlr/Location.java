@@ -11,7 +11,7 @@ public class Location {
         this.name = "Placeholder Place Name";
     }
 
-    public String getTimeDateAdded() {
+    public String getTimestamp() {
         return timeDateAdded;
     }
 

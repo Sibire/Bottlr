@@ -1,6 +1,5 @@
 package com.example.bottlr;
 
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
 
-    private List<Location> locationList; // Use Location objects instead of strings
+    private List<Location> locationList;
 
     public LocationAdapter(List<Location> locationList) {
         this.locationList = locationList;
@@ -20,14 +19,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_tag, parent, false);
         return new LocationViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locationList.get(position);
-        holder.locationName.setText(location.getName() + " - " + location.getTimeDateAdded() + " - " + location.getGpsCoordinates());
+        holder.locationName.setText(location.getName());
+        holder.locationCoordinates.setText(location.getGpsCoordinates());
+        holder.locationTimestamp.setText(location.getTimestamp());
     }
 
     @Override
@@ -36,11 +37,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     }
 
     public static class LocationViewHolder extends RecyclerView.ViewHolder {
-        TextView locationName; // Consider renaming this TextView to reflect its broader use
+        TextView locationName;
+        TextView locationCoordinates;
+        TextView locationTimestamp;
 
         public LocationViewHolder(@NonNull View itemView) {
             super(itemView);
             locationName = itemView.findViewById(R.id.locationName);
+            locationCoordinates = itemView.findViewById(R.id.locationCoordinates);
+            locationTimestamp = itemView.findViewById(R.id.locationTimestamp);
         }
     }
 }

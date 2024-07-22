@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
-    private List<Location> locationList = new ArrayList<>();
+    private final List<Location> locationList = new ArrayList<>();
     private LocationAdapter locationAdapter;
 
     //endregion
@@ -85,24 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.locations_page);
-
-        RecyclerView recyclerView = findViewById(R.id.locationsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        locationAdapter = new LocationAdapter(locationList);
-        recyclerView.setAdapter(locationAdapter);
         homeScreen();
-
-        FloatingActionButton addButton = findViewById(R.id.addLocationButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
-                } else {
-                    addLocation();
-                }
-            }
-        });
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -193,8 +176,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
         }
-        else if (id == R.id.locationsHeader) {
+        else if (id == R.id.menu_locations_button) { //nav locations screen click
+            setContentView(R.layout.locations_page);
             GenerateLocationRecycler();
+            lastLayout = R.layout.locations_page;
         }else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
@@ -938,19 +923,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Location Code
-    private void addLocation() {
-        LocationAdapter locationAdapter = (locationAdapter) getSystemService(LOCATION_SERVICE);
-        if (locationAdapter != null) {
-            android.location.Location location = locationAdapter.getLastKnownLocation(LocationAdapter.GPS_PROVIDER);
-            if (location != null) {
-                String timeDateAdded = String.valueOf(System.currentTimeMillis());
-                String gpsCoordinates = location.getLatitude() + "," + location.getLongitude();
-                Location newLocation = new Location(timeDateAdded, gpsCoordinates);
-                locationList.add(newLocation);
-                locationAdapter.notifyDataSetChanged();
-            }
-        }
-    }
+
     //endregion
 
 }
