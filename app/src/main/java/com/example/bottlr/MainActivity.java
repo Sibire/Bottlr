@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
+    private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202, LOCATION_REQUEST_CODE = 203;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField;
@@ -699,23 +699,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Camera & Image Code
-    private boolean checkCameraPermission() {
-        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                chooseImageSource();
-            } else {
-                Toast.makeText(this, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
+    // See dedicated permissions region for old permission code
 
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
@@ -930,6 +915,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Location Code
     public void addNewLocation() {
+        // Check if location permissions are granted
+        if (checkFineLocationPermission() == false){
+            // Request location permissions
+            requestFineLocationPermission();
+        } else {
+            // Permissions are already granted, add the location
+            createNewLocation();
+        }
+    }
+
+    private void createNewLocation() {
         // Create a new Location object
         Location newLocation = new Location(this);
         Log.d("MainActivity", "New Location: " + newLocation + " created.");
@@ -941,6 +937,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Notify the adapter that the data set has changed
         locationAdapter.notifyDataSetChanged();
         Log.d("MainActivity", "Adapter notified.");
+    }
+
+    // region Permissions Handling
+
+    // Camera
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+    }
+
+    // Location, Coarse
+    //private boolean checkCoarseLocationPermission() {
+        //return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    //}
+    //private void requestCoarseLocationPermission() {
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, CAMERA_REQUEST_CODE);
+    //}
+
+    // Location, Fine
+    private boolean checkFineLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestFineLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CAMERA_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Camera permissions are granted, you can perform your camera related task here
+                } else {
+                    // Camera permissions are denied, show a message to the user
+                    Toast.makeText(this, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case LOCATION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Location permissions are granted, you can perform your location related task here
+                    createNewLocation();
+                } else {
+                    // Location permissions are denied, show a message to the user
+                    Toast.makeText(this, "Location permission is required to use this feature.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
     }
     //endregion
 
