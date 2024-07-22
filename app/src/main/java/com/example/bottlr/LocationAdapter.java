@@ -27,7 +27,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locationList.get(position);
-        holder.locationName.setText(location.getTimeDateAdded() + " - " + location.getGpsCoordinates()); // Display time/date and GPS coordinates
+        holder.locationName.setText(location.getName() + " - " + location.getTimeDateAdded() + " - " + location.getGpsCoordinates());
     }
 
     @Override

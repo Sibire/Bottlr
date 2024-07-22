@@ -40,6 +40,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
@@ -74,13 +75,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
+    private List<Location> locationList = new ArrayList<>();
+    private LocationAdapter locationAdapter;
+
     //endregion
 
     //region onCreate Code
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.locations_page);
+
+        RecyclerView recyclerView = findViewById(R.id.locationsList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        locationAdapter = new LocationAdapter(locationList);
+        recyclerView.setAdapter(locationAdapter);
         homeScreen();
+
+        FloatingActionButton addButton = findViewById(R.id.addLocationButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
+                } else {
+                    addLocation();
+                }
+            }
+        });
 
         // AppCheck Code
         FirebaseApp.initializeApp(this);
@@ -170,7 +192,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
-        } else {
+        }
+        else if (id == R.id.menu_locations_button) {
+            showLocations();
+        }else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
     }
@@ -898,6 +923,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchFilter.setVisibility(View.VISIBLE);
         search();
         performSearch();
+    }
+    //endregion
+
+    //region Location Code
+    private void addLocation() {
+        LocationAdapter locationAdapter = (locationAdapter) getSystemService(LOCATION_SERVICE);
+        if (locationAdapter != null) {
+            android.location.Location location = locationAdapter.getLastKnownLocation(LocationAdapter.GPS_PROVIDER);
+            if (location != null) {
+                String timeDateAdded = String.valueOf(System.currentTimeMillis());
+                String gpsCoordinates = location.getLatitude() + "," + location.getLongitude();
+                Location newLocation = new Location(timeDateAdded, gpsCoordinates);
+                locationList.add(newLocation);
+                locationAdapter.notifyDataSetChanged();
+            }
+        }
     }
     //endregion
 
