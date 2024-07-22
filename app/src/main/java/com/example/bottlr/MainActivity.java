@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.locations_page);
         homeScreen();
 
         // AppCheck Code
@@ -181,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.locations_page;
         }
         else if (id == R.id.addLocationButton) { // add location
+            Log.d("MainActivity", "Add Location Button Clicked"); // Add this line
             addNewLocation();
         }
             else {
@@ -298,6 +298,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LocationRecycler.addItemDecoration(dividerItemDecoration);
         // Locations listing
+        locationAdapter = new LocationAdapter(locationList);
+        LocationRecycler.setAdapter(locationAdapter);
+        locationAdapter.notifyDataSetChanged();
         // TODO: Unfuck the load-in code.
     }
     //endregion
@@ -929,12 +932,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void addNewLocation() {
         // Create a new Location object
         Location newLocation = new Location(this);
+        Log.d("MainActivity", "New Location: " + newLocation + " created.");
 
         // Add the new Location object to the locationList array
         locationList.add(newLocation);
+        Log.d("MainActivity", newLocation + " added to list.");
 
         // Notify the adapter that the data set has changed
         locationAdapter.notifyDataSetChanged();
+        Log.d("MainActivity", "Adapter notified.");
     }
     //endregion
 
