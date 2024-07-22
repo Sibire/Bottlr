@@ -40,7 +40,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
@@ -180,7 +179,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(R.layout.locations_page);
             GenerateLocationRecycler();
             lastLayout = R.layout.locations_page;
-        }else {
+        }
+        else if (id == R.id.addLocationButton) { // add location
+            addNewLocation();
+        }
+            else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
     }
@@ -923,7 +926,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Location Code
+    public void addNewLocation() {
+        // Create a new Location object
+        Location newLocation = new Location(this);
 
+        // Add the new Location object to the locationList array
+        locationList.add(newLocation);
+
+        // Notify the adapter that the data set has changed
+        locationAdapter.notifyDataSetChanged();
+    }
     //endregion
 
 }
