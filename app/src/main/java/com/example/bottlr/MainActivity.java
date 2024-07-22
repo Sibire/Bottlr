@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     void GenerateLocationRecycler() {
         // Set Recycler
-        RecyclerView LocationRecycler = findViewById(R.id.locationsList);
+        RecyclerView LocationRecycler = findViewById(R.id.LocationAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LocationRecycler.setLayoutManager(layoutManager);
         // Line divider to keep things nice and neat
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         locationAdapter = new LocationAdapter(locationList);
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();
-        // TODO: Unfuck the load-in code.
+        // TODO: Get this to display properly
     }
     //endregion
 
