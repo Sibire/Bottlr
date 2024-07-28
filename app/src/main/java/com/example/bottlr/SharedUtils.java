@@ -222,8 +222,8 @@ public class SharedUtils {
 
     //region Deletion Handling
 
-    // Confirmation Popup
-    public static void showDeleteConfirm(final Bottle bottle, Context context) {
+    // Bottle Confirmation Popup
+    public static void showBottleDeleteConfirm(final Bottle bottle, Context context) {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Bottle")
                 .setMessage("Are you sure you want to delete this bottle?")
@@ -233,7 +233,7 @@ public class SharedUtils {
                 .show();
     }
 
-    // Deletion Code
+    // Bottle Deletion Code
     public static void deleteBottle(Bottle bottle, Context context) {
         String filename = "bottle_" + bottle.getName() + ".txt";
         File file = new File(context.getFilesDir(), filename);
@@ -245,6 +245,18 @@ public class SharedUtils {
         }
     }
 
+    // Location Confirmation Popup
+    public static void showLocationDeleteConfirm(final Location location, Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Location")
+                .setMessage("Are you sure you want to delete this location?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteLocation(location, context))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    // Location Deletion Code
     public static void deleteLocation(Location location, Context context) {
         String filename = "location_" + location.getName() + ".txt";
         File file = new File(context.getFilesDir(), filename);

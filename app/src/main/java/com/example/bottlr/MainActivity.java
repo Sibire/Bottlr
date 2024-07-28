@@ -4,7 +4,7 @@ import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
-import static com.example.bottlr.SharedUtils.showDeleteConfirm;
+import static com.example.bottlr.SharedUtils.showBottleDeleteConfirm;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
-            showDeleteConfirm(getMostRecentBottle(), this);
+            showBottleDeleteConfirm(getMostRecentBottle(), this);
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
@@ -689,10 +689,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("MainActivity", "Location Upload: Not Signed In");
             return;
         }
-
+        List<Location> locationList = SharedUtils.loadLocations(this);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Log.d("MainActivity", "Location Upload: Stepped Past getInstance()");
-        for (Location location : allLocations) {
+        for (Location location : locationList) {
             String dataFileName = "location_" + location.getName() + ".txt";
             Log.d("MainActivity", "Location Queued for Upload: " + dataFileName);
             File localFile = new File(getFilesDir(), dataFileName);
