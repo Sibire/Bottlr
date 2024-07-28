@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -299,6 +300,7 @@ public class SharedUtils {
             if (file.isFile() && file.getName().startsWith("location_")) {
                 Location location = parseLocation(file);
                 locations.add(location); // Add the location to the list
+                Log.d("SharedUtils", "Location with name " + location.getName() + " loaded successfully.");
             }
         }
         return locations;
@@ -318,6 +320,7 @@ public class SharedUtils {
             String gpsCoordinates = readValueSafe(br);
             String name = readValueSafe(br);
 
+            Log.d("SharedUtils", "Location with name " + name + " parsed successfully.");
             return new Location(timeDateAdded, gpsCoordinates, name);
 
             // Exception handling
