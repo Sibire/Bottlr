@@ -305,10 +305,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void GenerateLocationRecycler() {
         // Set Recycler
         RecyclerView LocationRecycler = findViewById(R.id.LocationAdapter);
-        if (LocationRecycler == null) {
-            Log.d("MainActivity", "LocationRecycler is null");
-            return;
-        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LocationRecycler.setLayoutManager(layoutManager);
         // Line divider to keep things nice and neat
