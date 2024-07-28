@@ -9,7 +9,6 @@ import static com.example.bottlr.SharedUtils.saveImageToGalleryCocktail;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showBottleDeleteConfirm;
 import static com.example.bottlr.SharedUtils.shareCocktailInfo;
-import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import static com.example.bottlr.SharedUtils.showDeleteConfirmCocktail;
 
 import android.Manifest;
@@ -84,9 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
     private CocktailAdapter searchResultsAdapter2;
-    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
-    private boolean drinkFlag; //true = bottle, false = cocktail
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
+    private boolean drinkFlag; //true = bottle, false = cocktail
     private String currentBottle;
     private LocationAdapter locationAdapter;
 
@@ -134,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
             drinkFlag = false;
+            editor = 0;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -149,22 +148,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
-            editor = 0;
-            drinkFlag = true;
-            addBottle();
+            if(editor == 3) {
+                Log.d("MainActivity", "Add Location Button Clicked");
+                addNewLocation();
+            } else {
+                editor = 0;
+                drinkFlag = true;
+                addBottle();
+            }
         } else if (id == R.id.addPhotoButton) { //add photo button bottle
             drinkFlag = true;
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
             drinkFlag = false;
-            if(editor == 3) {
-                Log.d("MainActivity", "Add Location Button Clicked");
-                addNewLocation();
-            } else {
-                editor = 0;
-                addBottle();
-            }
+            editor = 0;
+            addBottle();
         } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
@@ -179,9 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
-            if (drinkFlag) { showDeleteConfirm(getMostRecentBottle(), this); }
+            if (drinkFlag) { showBottleDeleteConfirm(getMostRecentBottle(), this); }
             else { showDeleteConfirmCocktail(getMostRecentCocktail(), this); }
-            showBottleDeleteConfirm(getMostRecentBottle(), this);
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
@@ -238,16 +236,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor = 3;
             setContentView(R.layout.fragment_gallery);
             GenerateLocationRecycler();
-        }
-        else if (id == R.id.upload_locations_Button) { // add location
-            Log.d("MainActivity", "Upload Locations Button Clicked");
-            uploadLocationsToCloud();
-        }
-        else if (id == R.id.download_locations_Button) { // add location
-            Log.d("MainActivity", "Download Locations Button Clicked");
-            syncLocationsFromCloud();
-        }
-            else {
         } else if (id == R.id.switchButton) { //switch add bottle type
             if (drinkFlag) {
                 drinkFlag = false;
