@@ -19,7 +19,7 @@ public class Bottle implements Parcelable {
     private String notes;
     private String region;
     private String keywords;
-    private final String rating;
+    private String rating;
 
     private String bottleID;
 
@@ -27,7 +27,8 @@ public class Bottle implements Parcelable {
 
     //region Constructor
     // Bottle constructor
-    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri, String notes, String region, /*Set<String> keywords*/String keywords, String rating) {
+    public Bottle(String name, String distillery, String type, String abv, String age, Uri photoUri,
+                  String notes, String region, String keywords, String rating) {
         this.name = name;
         this.distillery = distillery;
         this.type = type;
@@ -83,7 +84,7 @@ public class Bottle implements Parcelable {
 
     // Rating
     public String getRating() { return rating; }
-    public void setRating(String rating) { this.region = rating; }
+    public void setRating(String rating) { this.rating = rating; }
 
     public String getBottleID() { return bottleID; }
     public void setBottleID(String ID) { this.bottleID = ID; }

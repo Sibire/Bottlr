@@ -25,7 +25,7 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
     private final OnBottleCheckListener onBottleClick;
     public BottleAdapter(List<Bottle> bottles, List<Bottle> allBottles, @NonNull OnBottleCheckListener onBottleCheckListener) {
         this.bottles = bottles != null ? bottles : new ArrayList<>(); // Ensure bottles is not null
-        this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allBottles is not null
+        this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allCocktails is not null
         this.onBottleClick = onBottleCheckListener;
     }
     public static class BottleViewHolder extends RecyclerView.ViewHolder {

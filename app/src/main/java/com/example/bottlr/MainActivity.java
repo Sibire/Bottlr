@@ -2,10 +2,16 @@ package com.example.bottlr;
 
 import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
+import static com.example.bottlr.SharedUtils.parseCocktail;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
+import static com.example.bottlr.SharedUtils.saveImageToGalleryCocktail;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showBottleDeleteConfirm;
+import static com.example.bottlr.SharedUtils.shareCocktailInfo;
+import static com.example.bottlr.SharedUtils.showDeleteConfirm;
+import static com.example.bottlr.SharedUtils.showDeleteConfirmCocktail;
+
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -22,6 +28,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,15 +72,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Initializations
     private List<Bottle> bottles, allBottles;
     private List<Location> locations, allLocations;
+    private List<Cocktail> cocktails, allCocktails;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202, LOCATION_REQUEST_CODE = 203;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
-            nameField, distilleryField, typeField, notesField;
+            nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
+            mixerField, juiceField, liqueurField, garnishField, extraField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
+    private CocktailAdapter searchResultsAdapter2;
+    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private boolean drinkFlag; //true = bottle, false = cocktail
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
     private String currentBottle;
     private LocationAdapter locationAdapter;
@@ -98,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize location storage
         locations = new ArrayList<>();
         allLocations = new ArrayList<>();
+        cocktails = new ArrayList<>();
+        allCocktails = new ArrayList<>();
     }
     //endregion
 
@@ -114,6 +128,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.menu_home_button) { //nav home screen click
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
+            drinkFlag = true;
+            setContentView(R.layout.fragment_gallery);
+            GenerateLiquorRecycler();
+            lastLayout = R.layout.fragment_gallery;
+        } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
+            drinkFlag = false;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -129,6 +149,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
+            editor = 0;
+            drinkFlag = true;
+            addBottle();
+        } else if (id == R.id.addPhotoButton) { //add photo button bottle
+            drinkFlag = true;
+            if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
+            KeyboardVanish(view);
+        } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
+            drinkFlag = false;
             if(editor == 3) {
                 Log.d("MainActivity", "Add Location Button Clicked");
                 addNewLocation();
@@ -140,16 +169,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
+            drinkFlag = true;
+            saveEntryToFile();
+            customBackButton();
+        } else if (id == R.id.saveButtonCocktail) { //save cocktail button
+            drinkFlag = false;
             saveEntryToFile();
             customBackButton();
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
+            if (drinkFlag) { showDeleteConfirm(getMostRecentBottle(), this); }
+            else { showDeleteConfirmCocktail(getMostRecentCocktail(), this); }
             showBottleDeleteConfirm(getMostRecentBottle(), this);
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
         } else if (id == R.id.shareButton) { //share bottle
-            shareBottleInfo(getMostRecentBottle(), this);
+            if(drinkFlag) {
+                shareBottleInfo(getMostRecentBottle(), this);
+            } else {
+                shareCocktailInfo(getMostRecentCocktail(), this);
+            }
         } else if (id == R.id.buyButton) { //buy bottle
             String url = "https://www.google.com/search?tbm=shop&q=" + Uri.encode(queryBuilder(getMostRecentBottle()));
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -166,9 +206,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             uploadLocationsToCloud();
             syncLocationsFromCloud();
         } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
-            Bottle recentBottle = getMostRecentBottle();
-            if (recentBottle != null && recentBottle.getPhotoUri() != null) {
-                saveImageToGallery(this, recentBottle);}
+            if (drinkFlag) {
+                Bottle recentBottle = getMostRecentBottle();
+                if (recentBottle != null && recentBottle.getPhotoUri() != null) {
+                    saveImageToGallery(this, recentBottle);}
+            } else {
+                Cocktail recentcocktail = getMostRecentCocktail();
+                if (recentcocktail != null && recentcocktail.getPhotoUri() != null) {
+                    saveImageToGalleryCocktail(this, recentcocktail);}
+            }
         } else if (id == R.id.backButton) { //back button bottle
             customBackButton();
         } else if (id == R.id.sign_in_button_home) { //sign in home button
@@ -178,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);
+            if (!drinkFlag) { cocktailCabinetSearch(); }
         } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
             filterSearch();
             KeyboardVanish(view);
@@ -201,6 +248,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             syncLocationsFromCloud();
         }
             else {
+        } else if (id == R.id.switchButton) { //switch add bottle type
+            if (drinkFlag) {
+                drinkFlag = false;
+                addBottle();
+            } else {
+                drinkFlag = true;
+                addBottle();
+            }
+        } else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
         }
     }
@@ -249,6 +305,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return mostRecentBottle;
     }
 
+    private Cocktail getMostRecentCocktail() {
+        File directory = this.getFilesDir();
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("cocktail_") && name.endsWith(".txt"));
+        Cocktail mostRecentCocktail = null;
+        if (files != null) {
+            for (File file : files) {
+                Cocktail cocktail = parseCocktail(file);
+                assert cocktail != null;
+                if (currentBottle.equals(cocktail.getName())) {
+                    mostRecentCocktail = cocktail;
+                }
+            }
+        }
+        return mostRecentCocktail;
+    }
+
     @SuppressLint("SetTextI18n")
     public void SignInChecker(int layout) {
         Button signIn = findViewById(R.id.sign_in_button_home);
@@ -264,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!storedData.isEmpty()) {
                 currentBottle = storedData;
                 Bottle checker = getMostRecentBottle();
+                Cocktail checker2 = getMostRecentCocktail();
                 if (checker != null) {
                     TextView tbottleName = findViewById(R.id.tvBottleName);
                     tbottleName.setText(currentBottle);
@@ -272,6 +345,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         bottleImage.setImageResource(R.drawable.nodrinkimg);
                     } else {
                         bottleImage.setImageURI(checker.getPhotoUri());
+                    }
+                } else if (checker2 != null) {
+                    TextView tbottleName = findViewById(R.id.tvBottleName);
+                    tbottleName.setText(currentBottle);
+                    ImageView bottleImage = findViewById(R.id.detailImageView);
+                    if(checker2.getPhotoUri() == null && !bottleImage.toString().equals("No photo")) {
+                        bottleImage.setImageResource(R.drawable.nodrinkimg);
+                    } else {
+                        bottleImage.setImageURI(checker2.getPhotoUri());
                     }
                 } else {
                     TextView tbottleName = findViewById(R.id.tvBottleName);
@@ -300,11 +382,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);
         // Bottle listing
-        BottleAdapter liquorAdapter;
-        bottles = SharedUtils.loadBottles(this);
-        liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        LiquorCabinetRecycler.setAdapter(liquorAdapter);
-        liquorAdapter.notifyDataSetChanged();
+        if (drinkFlag) {
+            BottleAdapter liquorAdapter;
+            bottles = SharedUtils.loadBottles(this);
+            liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        } else {
+            CocktailAdapter liquorAdapter;
+            cocktails = SharedUtils.loadCocktails(this);
+            liquorAdapter = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            LiquorCabinetRecycler.setAdapter(liquorAdapter);
+            liquorAdapter.notifyDataSetChanged();
+        }
+
     }
     void GenerateLocationRecycler() {
         // Set Recycler
@@ -426,6 +517,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bottleImage.setImageURI(bottlePhoto);
         }
         currentBottle = bottleName;
+        //Store last viewed info as user preference for restart
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CurrentBottle", currentBottle);
+        editor.apply();
+    }
+
+    public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
+                                     String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
+        setContentView(R.layout.description_cocktails);
+
+        //fill empty data
+        if(cocktailName.isEmpty()) { cocktailName = "Name"; }
+        if(cocktailBase.isEmpty()) { cocktailBase = "N/A"; }
+        if(cocktailMixer.isEmpty()) { cocktailMixer = ""; }
+        if(cocktailJuice.isEmpty()) { cocktailJuice = ""; }
+        if(cocktailLiqueur.isEmpty()) { cocktailLiqueur = ""; }
+        if(cocktailGarnish.isEmpty()) { cocktailGarnish = ""; }
+        if(cocktailExtra.isEmpty()) { cocktailExtra = ""; }
+        if(cocktailNotes.isEmpty()) { cocktailNotes = "No Notes"; }
+        if(cocktailRating.isEmpty()) { cocktailRating = "No Rating"; }
+        if(cocktailKeywords.isEmpty()) { cocktailKeywords = "None"; }
+
+        // Find the views
+        ImageView bottleImage = findViewById(R.id.detailImageView);
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        TextView tcocktailName = findViewById(R.id.cvCocktailName);
+        TextView tcocktailbase = findViewById(R.id.cvBase);
+        TextView tcocktailrating = findViewById(R.id.cvRating);
+        TextView tcocktaildetails = findViewById(R.id.cvCocktailDetails);
+        TextView tcocktailnotes = findViewById(R.id.cvNotes);
+        TextView tcocktailKeywords = findViewById(R.id.cvKeywords);
+
+        //add data to layout
+        String details = "Additives: " + cocktailMixer + " " + cocktailJuice + " " + cocktailLiqueur + " " + cocktailGarnish + " " + cocktailExtra;
+        tcocktailName.setText(cocktailName);
+        tcocktailbase.setText(cocktailBase);
+        String rating = cocktailRating + " / 10";
+        tcocktailrating.setText(rating);
+        tcocktaildetails.setText(details);
+        tcocktailnotes.setText(cocktailNotes);
+
+        String keywords = "Keywords:\n" + cocktailKeywords;
+        tcocktailKeywords.setText(keywords);
+        if(cocktailPhoto == null && !bottleImage.toString().equals("No photo")) {
+            bottleImage.setImageResource(R.drawable.nodrinkimg);
+        } else {
+            bottleImage.setImageURI(cocktailPhoto);
+        }
+        currentBottle = cocktailName;
         //Store last viewed info as user preference for restart
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -643,6 +784,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
             }
         }
+        //copy of bottle, but for cocktails
+        List<Cocktail> cocktailList = SharedUtils.loadCocktails(this);
+        for (Cocktail cocktail : cocktailList) {
+            String dataFileName = "cocktail_" + cocktail.getName() + ".txt";
+            StorageReference dataFileRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("cocktails")
+                    .child(dataFileName);
+            dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
+                    .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Upload successful for cocktail data: " + dataFileName))
+                    .addOnFailureListener(uploadException -> Log.d("SettingsActivity", "Upload failed for cocktail data: " + dataFileName, uploadException));
+            Uri imageUri = cocktail.getPhotoUri();
+            if (imageUri != null) {
+                try {
+                    InputStream stream = getContentResolver().openInputStream(imageUri);
+                    String imageName = imageUri.getLastPathSegment();
+                    assert imageName != null;
+                    StorageReference imageFileRef = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails")
+                            .child(imageName);
+                    assert stream != null;
+                    imageFileRef.putStream(stream)
+                            .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Upload successful for cocktail image: " + imageName))
+                            .addOnFailureListener(uploadException -> Log.d("SettingsActivity", "Upload failed for cocktail image: " + imageName, uploadException));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.d("SettingsActivity", "No photo URI for cocktail: " + cocktail.getName());
+            }
+        }
         Toast.makeText(this, "Bottles Uploaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
     }
     private void syncBottlesFromCloud() {
@@ -660,6 +835,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .child("users")
                 .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                 .child("bottles");
+        StorageReference userStorageRef2 = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("cocktails");
 
         // List all the files in the user's bottles directory in Firebase Storage
         userStorageRef.listAll()
@@ -684,6 +863,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
                                         } else {
                                             Log.d("SettingsActivity", "Download failed for bottle: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    //Toast.makeText(this, "Bottles Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                });
+        userStorageRef2.listAll() //copy of bottle, but for cocktails
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        String fileName = fileRef.getName();
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> Log.d("SettingsActivity", "Download successful for cocktail: " + fileName))
+                                    .addOnFailureListener(downloadException -> {
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("SettingsActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("SettingsActivity", "Download failed for cocktail: " + fileName, downloadException);
                                         }
                                     });
                         }
@@ -797,9 +1000,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .child("users")
                             .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                             .child("bottles");
-
+                    StorageReference userStorageRef2 = storage.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                            .child("cocktails");
                     // List all the files in the user's bottles directory in Firebase Storage
                     userStorageRef.listAll()
+                            .addOnSuccessListener(listResult -> {
+                                for (StorageReference fileRef : listResult.getItems()) {
+                                    // Delete the file from Firebase Storage
+                                    fileRef.delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Handle successful deletions
+                                                Log.d("SettingsActivity", "Delete successful for file: " + fileRef.getName());
+                                            })
+                                            .addOnFailureListener(deleteException -> {
+                                                // Handle failed deletions
+                                                Log.d("SettingsActivity", "Delete failed for file: " + fileRef.getName(), deleteException);
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                // Handle errors in listing files
+                                Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
+                            });
+                    userStorageRef2.listAll()
                             .addOnSuccessListener(listResult -> {
                                 for (StorageReference fileRef : listResult.getItems()) {
                                     // Delete the file from Firebase Storage
@@ -826,25 +1051,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Add Bottle
     public void addBottle() {
-        setContentView(R.layout.addbottlewindow);
-        bottleNameField = findViewById(R.id.bottleNameField);
-        distillerField = findViewById(R.id.distillerField);
-        spiritTypeField = findViewById(R.id.spiritTypeField);
-        abvField = findViewById(R.id.abvField);
-        ageField = findViewById(R.id.ageField);
-        tastingNotesField = findViewById(R.id.tastingNotesField);
-        regionField = findViewById(R.id.regionField);
-        keywordsField = findViewById(R.id.keywordsField);
-        ratingField = findViewById(R.id.ratingField);
-        // Adjust header text if editing
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        if (editor == 1) {
-            Bottle bottleToEdit = getMostRecentBottle();
-            toolbar.setTitle("Edit Bottle");
-            popFields(bottleToEdit);
-            editor = 0;
-        } else {
-            toolbar.setTitle("Add A Bottle");
+        if(drinkFlag) {
+            setContentView(R.layout.addbottlewindow);
+            bottleNameField = findViewById(R.id.bottleNameField);
+            distillerField = findViewById(R.id.distillerField);
+            spiritTypeField = findViewById(R.id.spiritTypeField);
+            abvField = findViewById(R.id.abvField);
+            ageField = findViewById(R.id.ageField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            regionField = findViewById(R.id.regionField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                ImageButton switcher = findViewById(R.id.switchButton);
+                switcher.setVisibility(View.GONE);
+                Bottle bottleToEdit = getMostRecentBottle();
+                toolbar.setTitle("Edit Bottle");
+                popFields(bottleToEdit);
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Bottle");
+            }
+        } else{
+            setContentView(R.layout.addcocktailwindow);
+            cocktailNameField = findViewById(R.id.cocktailNameField);
+            baseField = findViewById(R.id.baseField);
+            mixerField = findViewById(R.id.mixerField);
+            juiceField = findViewById(R.id.juiceField);
+            liqueurField = findViewById(R.id.liqueurField);
+            garnishField = findViewById(R.id.garnishField);
+            extraField = findViewById(R.id.extraField);
+            tastingNotesField = findViewById(R.id.tastingNotesField);
+            keywordsField = findViewById(R.id.keywordsField);
+            ratingField = findViewById(R.id.ratingField);
+            // Adjust header text if editing
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (editor == 1) {
+                ImageButton switcher = findViewById(R.id.switchButton);
+                switcher.setVisibility(View.GONE);
+                Cocktail cocktailToEdit = getMostRecentCocktail();
+                toolbar.setTitle("Edit Cocktail");
+                popFieldsCocktail(cocktailToEdit);
+                editor = 0;
+            } else {
+                toolbar.setTitle("Add A Cocktail");
+            }
         }
     }
 
@@ -863,10 +1116,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
     private void chooseImageSource() {
-        String bottleName = bottleNameField.getText().toString();
-        if (bottleName.isEmpty()) {
-            Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
-            return;
+        if(drinkFlag) {
+            String bottleName = bottleNameField.getText().toString();
+            if (bottleName.isEmpty()) {
+                Toast.makeText(this, "Bottle Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else {
+            String cocktailName = cocktailNameField.getText().toString();
+            if (cocktailName.isEmpty()) {
+                Toast.makeText(this, "Cocktail Name Required To Add Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -886,7 +1147,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Launching camera
     private void launchCameraIntent() {
-        String bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString() + "_BottlrCameraImage";
+        } else {
+            bottleName = cocktailNameField.getText().toString() + "_BottlrCameraImage";
+        }
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, bottleName);
         values.put(MediaStore.Images.Media.DESCRIPTION, "Taken in the Bottlr App using the Camera");
@@ -902,7 +1168,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Not needed for photos taken with the camera, but this is related to how that saves to the user's gallery, too.
     private Uri copyImageToAppDir(Uri imageUri) throws IOException {
         InputStream is = getContentResolver().openInputStream(imageUri);
-        String bottleName = bottleNameField.getText().toString();
+        String bottleName;
+        if (drinkFlag) {
+            bottleName = bottleNameField.getText().toString();
+        } else {
+            bottleName = cocktailNameField.getText().toString();
+        }
         String filename = bottleName + "_BottlrImage.jpg";
         FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
         byte[] buffer = new byte[1024];
@@ -922,49 +1193,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //region Bottle Saving
     // Saves bottle to a file
     private void saveEntryToFile() {
+        if(drinkFlag) {
+            String name = bottleNameField.getText().toString();
 
-        String name = bottleNameField.getText().toString();
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the bottle has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
 
-        // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
-        // Check if the bottle has a name
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
-            return; // Do not proceed with saving if there's no name
+            String distillery = distillerField.getText().toString();
+            String type = spiritTypeField.getText().toString();
+            String abv = abvField.getText().toString();
+            String age = ageField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddABottle", "Image URI: " + photoUri);
+            String region = regionField.getText().toString();
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Distiller: " + distillery + "\n" +
+                    "Type: " + type + "\n" +
+                    "ABV: " + abv + "\n" +
+                    "Age: " + age + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Region: " + region + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
+        } else { //cocktail inclusion
+            String name = cocktailNameField.getText().toString();
+
+            // TODO: Copy fixed code which turned this into a bool to keep it open if a failed save happens
+            // Check if the cocktail has a name
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                return; // Do not proceed with saving if there's no name
+            }
+
+            String base = baseField.getText().toString();
+            String mixer = mixerField.getText().toString();
+            String juice = juiceField.getText().toString();
+            String liqueur = liqueurField.getText().toString();
+            String garnish = garnishField.getText().toString();
+            String extra = extraField.getText().toString();
+            String notes = tastingNotesField.getText().toString();
+            String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
+            Log.d("AddACocktail", "Image URI: " + photoUri);
+            String rating = ratingField.getText().toString();
+            String keywords = keywordsField.getText().toString();
+
+            String filename = "cocktail_" + cocktailNameField.getText().toString() + ".txt";
+            String fileContents = "Name: " + name + "\n" +
+                    "Base: " + base + "\n" +
+                    "Mixer: " + mixer + "\n" +
+                    "Juice: " + juice + "\n" +
+                    "Liqueur: " + liqueur + "\n" +
+                    "Garnish: " + garnish + "\n" +
+                    "Extra: " + extra + "\n" +
+                    "Notes: " + notes + "\n" +
+                    "Keywords: " + keywords + "\n" +
+                    "Rating: " + rating + "\n" +
+                    "Photo: " + photoPath;
+
+            try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+                fos.write(fileContents.getBytes());
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            }
+
+            // Exception handling
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        String distillery = distillerField.getText().toString();
-        String type = spiritTypeField.getText().toString();
-        String abv = abvField.getText().toString();
-        String age = ageField.getText().toString();
-        String notes = tastingNotesField.getText().toString();
-        String photoPath = (photoUri != null ? photoUri.toString() : "No photo");
-        Log.d("AddABottle", "Image URI: " + photoUri);
-        String region = regionField.getText().toString();
-        String rating = ratingField.getText().toString();
-        String keywords = keywordsField.getText().toString();
-
-        String filename = "bottle_" + bottleNameField.getText().toString() + ".txt";
-        String fileContents = "Name: " + name + "\n" +
-                "Distiller: " + distillery + "\n" +
-                "Type: " + type + "\n" +
-                "ABV: " + abv + "\n" +
-                "Age: " + age + "\n" +
-                "Notes: " + notes + "\n" +
-                "Region: " + region + "\n" +
-                "Keywords: " + keywords + "\n" +
-                "Rating: " + rating + "\n" +
-                "Photo: " + photoPath;
-
-        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
-            fos.write(fileContents.getBytes());
-            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
-        }
-
-        // Exception handling
-        catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
-        }
         // Automatic Upload (If Applicable)
         // TODO: This
         // uploadBottleToCloud(bottle);
@@ -977,16 +1295,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (bottle != null) {
             // Imports any existing data, but marks empty fields.
             bottleNameField.setText(bottle.getName() != null && !bottle.getName().isEmpty() ? bottle.getName() : "No Name Saved");
-            distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "No Distiller Saved");
-            spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "No Type Saved");
-            abvField.setText(bottle.getAbv() != null && !bottle.getAbv().isEmpty() ? bottle.getAbv() : "No ABV (%) Saved");
-            ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "No Age (Years) Saved");
+            distillerField.setText(bottle.getDistillery() != null && !bottle.getDistillery().isEmpty() ? bottle.getDistillery() : "");
+            spiritTypeField.setText(bottle.getType() != null && !bottle.getType().isEmpty() ? bottle.getType() : "");
+            abvField.setText(bottle.getAbv() != null && !bottle.getAbv().isEmpty() ? bottle.getAbv() : "");
+            ageField.setText(bottle.getAge() != null && !bottle.getAge().isEmpty() ? bottle.getAge() : "");
             tastingNotesField.setText(bottle.getNotes() != null && !bottle.getNotes().isEmpty() ? bottle.getNotes() : "No Notes Saved");
-            regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "No Data Saved");
+            regionField.setText(bottle.getRegion() != null && !bottle.getRegion().isEmpty() ? bottle.getRegion() : "");
             keywordsField.setText(bottle.getKeywords() != null && !bottle.getKeywords().isEmpty() ? bottle.getKeywords() : "No Keywords Saved");
-            ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating ( / 10) Saved");
+            ratingField.setText(bottle.getRating() != null && !bottle.getRating().isEmpty() ? bottle.getRating() : "No Rating");
             if (bottle.getPhotoUri() != null && !bottle.getPhotoUri().toString().equals("No photo")) {
                 photoUri = Uri.parse(bottle.getPhotoUri().toString());
+                ImageView imagePreview = findViewById(R.id.imagePreview);
+                imagePreview.setImageURI(photoUri);
+            }
+        }
+    }
+
+    private void popFieldsCocktail(Cocktail cocktail) {
+        if (cocktail != null) {
+            // Imports any existing data, but marks empty fields.
+            cocktailNameField.setText(cocktail.getName() != null && !cocktail.getName().isEmpty() ? cocktail.getName() : "No Name Saved");
+            baseField.setText(cocktail.getBase() != null && !cocktail.getBase().isEmpty() ? cocktail.getBase() : "No Base Saved");
+            mixerField.setText(cocktail.getMixer() != null && !cocktail.getMixer().isEmpty() ? cocktail.getMixer() : "");
+            juiceField.setText(cocktail.getJuice() != null && !cocktail.getJuice().isEmpty() ? cocktail.getJuice() : "");
+            liqueurField.setText(cocktail.getLiqueur() != null && !cocktail.getLiqueur().isEmpty() ? cocktail.getLiqueur() : "");
+            garnishField.setText(cocktail.getGarnish() != null && !cocktail.getGarnish().isEmpty() ? cocktail.getGarnish() : "");
+            extraField.setText(cocktail.getExtra() != null && !cocktail.getExtra().isEmpty() ? cocktail.getExtra() : "");
+            tastingNotesField.setText(cocktail.getNotes() != null && !cocktail.getNotes().isEmpty() ? cocktail.getNotes() : "No Notes Saved");
+            keywordsField.setText(cocktail.getKeywords() != null && !cocktail.getKeywords().isEmpty() ? cocktail.getKeywords() : "");
+            ratingField.setText(cocktail.getRating() != null && !cocktail.getRating().isEmpty() ? cocktail.getRating() : "No Rating");
+            if (cocktail.getPhotoUri() != null && !cocktail.getPhotoUri().toString().equals("No photo")) {
+                photoUri = Uri.parse(cocktail.getPhotoUri().toString());
                 ImageView imagePreview = findViewById(R.id.imagePreview);
                 imagePreview.setImageURI(photoUri);
             }
@@ -1009,8 +1348,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set LayoutManager
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Initialize adapter and set it to the RecyclerView
-        searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
+        if (drinkFlag) {
+            searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
+        } else {
+            searchResultsAdapter2 = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
+        }
     }
 
     private void performSearch() {
@@ -1027,33 +1371,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String keywords = keywordsField.getText().toString().toLowerCase();
 
         // getBottlesToSearch() should retrieve the full list of Bottle objects
-        List<Bottle> allBottles = SharedUtils.loadBottles(this);
-        Log.d("SearchFragment", "All bottles: " + allBottles);
-
-        // Filter the list based on search criteria
-        List<Bottle> filteredList = allBottles.stream()
-                .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
-                .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
-                .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
-                .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
-                .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
-                .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
-                .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
-                .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
-                .collect(Collectors.toList());
-        Log.d("SearchFragment", "Filtered list: " + filteredList);
-        // Check if the filtered list is empty and display a toast message if it is
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+        if (drinkFlag) {
+            List<Bottle> allBottles = SharedUtils.loadBottles(this);
+            Log.d("SearchFragment", "All bottles: " + allBottles);
+            // Filter the list based on search criteria
+            List<Bottle> filteredList = allBottles.stream()
+                    .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
+                    .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
+                    .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
+                    .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
+                    .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
+                    .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
+                    .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
+                    .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
+                    .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
+                    .collect(Collectors.toList());
+            Log.d("SearchFragment", "Filtered list: " + filteredList);
+            // Check if the filtered list is empty and display a toast message if it is
+            if (filteredList.isEmpty()) {
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+            }
+            // Keep this outside any if/else so that it clears the search results if there are none
+            updateSearchResults(filteredList);
+        } else {
+            List<Cocktail> allCocktails = SharedUtils.loadCocktails(this);
+            Log.d("SearchFragment", "All cocktails: " + allCocktails);
+            // Filter the list based on search criteria
+            List<Cocktail> filteredList = allCocktails.stream()
+                    .filter(cocktail -> name.isEmpty() || (cocktail.getName() != null && cocktail.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
+                    .filter(cocktail -> distillery.isEmpty() || (cocktail.getBase() != null && cocktail.getBase().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
+                    .filter(cocktail -> type.isEmpty() || (cocktail.getMixer() != null && cocktail.getMixer().trim().toLowerCase().contains(type.trim().toLowerCase())))
+                    .filter(cocktail -> abv.isEmpty() || (cocktail.getJuice() != null && cocktail.getJuice().trim().toLowerCase().contains(abv.trim().toLowerCase())))
+                    .filter(cocktail -> age.isEmpty() || (cocktail.getLiqueur() != null && cocktail.getLiqueur().trim().toLowerCase().contains(age.trim().toLowerCase())))
+                    .filter(cocktail -> notes.isEmpty() || (cocktail.getNotes() != null && cocktail.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
+                    .filter(cocktail -> region.isEmpty() || (cocktail.getGarnish() != null && cocktail.getGarnish().trim().toLowerCase().contains(region.trim().toLowerCase())))
+                    .filter(cocktail -> rating.isEmpty() || (cocktail.getRating() != null && cocktail.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
+                    .filter(cocktail -> keywords.isEmpty() || (cocktail.getKeywords() != null && cocktail.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
+                    .collect(Collectors.toList());
+            Log.d("SearchFragment", "Filtered list: " + filteredList);
+            // Check if the filtered list is empty and display a toast message if it is
+            if (filteredList.isEmpty()) {
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
+            }
+            // Keep this outside any if/else so that it clears the search results if there are none
+            updateSearchResultsCocktail(filteredList);
         }
-        // Keep this outside any if/else so that it clears the search results if there are none
-        updateSearchResults(filteredList);
     }
     @SuppressLint("NotifyDataSetChanged")
     private void updateSearchResults(List<Bottle> filteredList) {
         searchResultsAdapter.setBottles(filteredList);
         searchResultsAdapter.notifyDataSetChanged();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateSearchResultsCocktail(List<Cocktail> filteredList) {
+        searchResultsAdapter2.setCocktails(filteredList);
+        searchResultsAdapter2.notifyDataSetChanged();
     }
 
     public void filterSearch() {
@@ -1068,6 +1440,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchFilter.setVisibility(View.VISIBLE);
         search();
         performSearch();
+    }
+
+    public void cocktailCabinetSearch() {
+        EditText base = findViewById(R.id.search_distillery);
+        base.setHint("Base");
+        EditText mixer = findViewById(R.id.search_type);
+        mixer.setHint("Mixer");
+        EditText juice = findViewById(R.id.search_abv);
+        juice.setHint("Juice");
+        EditText liqueur = findViewById(R.id.search_age);
+        liqueur.setHint("Liqueur");
+        EditText garnish = findViewById(R.id.search_region);
+        garnish.setHint("Garnish");
     }
     //endregion
 
