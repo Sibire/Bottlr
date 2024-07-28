@@ -1,13 +1,14 @@
 package com.example.bottlr;
 
+import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.parseCocktail;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.saveImageToGalleryCocktail;
 import static com.example.bottlr.SharedUtils.shareBottleInfo;
+import static com.example.bottlr.SharedUtils.showBottleDeleteConfirm;
 import static com.example.bottlr.SharedUtils.shareCocktailInfo;
-import static com.example.bottlr.SharedUtils.showDeleteConfirm;
 import static com.example.bottlr.SharedUtils.showDeleteConfirmCocktail;
 
 import android.Manifest;
@@ -69,11 +70,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Initializations
     private List<Bottle> bottles, allBottles;
+    private List<Location> locations, allLocations;
     private List<Cocktail> cocktails, allCocktails;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202;
+    private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202, LOCATION_REQUEST_CODE = 203;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
             ageField, tastingNotesField, regionField, keywordsField, ratingField,
             nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
@@ -81,9 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
     private CocktailAdapter searchResultsAdapter2;
-    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
     private boolean drinkFlag; //true = bottle, false = cocktail
     private String currentBottle;
+    private LocationAdapter locationAdapter;
+
     //endregion
 
     //region onCreate Code
@@ -100,6 +104,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+
+        //initialize location storage
+        locations = new ArrayList<>();
+        allLocations = new ArrayList<>();
         cocktails = new ArrayList<>();
         allCocktails = new ArrayList<>();
     }
@@ -124,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_cocktail_button) { //nav cocktail screen click
             drinkFlag = false;
+            editor = 0;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -139,15 +148,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
-            editor = 0;
-            drinkFlag = true;
-            addBottle();
+            if(editor == 3) {
+                Log.d("MainActivity", "Add Location Button Clicked");
+                addNewLocation();
+            } else {
+                editor = 0;
+                drinkFlag = true;
+                addBottle();
+            }
         } else if (id == R.id.addPhotoButton) { //add photo button bottle
             drinkFlag = true;
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
             drinkFlag = false;
+            editor = 0;
+            addBottle();
+        } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
@@ -161,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.homescreen) { //fragment home
             homeScreen();
         } else if (id == R.id.deleteButton) { //delete bottle //TODO: screen changes before deletion selection
-            if (drinkFlag) { showDeleteConfirm(getMostRecentBottle(), this); }
+            if (drinkFlag) { showBottleDeleteConfirm(getMostRecentBottle(), this); }
             else { showDeleteConfirmCocktail(getMostRecentCocktail(), this); }
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
@@ -184,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
             uploadBottlesToCloud();
             syncBottlesFromCloud();
+            uploadLocationsToCloud();
+            syncLocationsFromCloud();
         } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
             if (drinkFlag) {
                 Bottle recentBottle = getMostRecentBottle();
@@ -211,6 +230,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.GONE);
             KeyboardVanish(view);
+        }
+        else if (id == R.id.menu_locations_button) { //nav locations screen click
+            //setContentView(R.layout.locations_page);
+            editor = 3;
+            setContentView(R.layout.fragment_gallery);
+            GenerateLocationRecycler();
         } else if (id == R.id.switchButton) { //switch add bottle type
             if (drinkFlag) {
                 drinkFlag = false;
@@ -360,6 +385,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+    void GenerateLocationRecycler() {
+        // Set Recycler
+        RecyclerView LocationRecycler = findViewById(R.id.liquorRecycler);
+        if (LocationRecycler == null) {
+            Log.d("MainActivity", "LocationRecycler is null");
+            return;
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LocationRecycler.setLayoutManager(layoutManager);
+        // Line divider to keep things nice and neat
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
+        LocationRecycler.addItemDecoration(dividerItemDecoration);
+        // Locations listing
+        locations = loadLocations(this);
+        LocationAdapter locationAdapter;
+        locationAdapter = new LocationAdapter(locations, allLocations, this::detailedLocationView); // Initialize locationAdapter
+        LocationRecycler.setAdapter(locationAdapter);
+        locationAdapter.notifyDataSetChanged();
+        Log.d("MainActivity", "LocationRecycler and locationAdapter initialized");
+        // TODO: Get this to display properly
+    }
     //endregion
 
     //region animateObject Code
@@ -368,6 +414,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ObjectAnimator animator = ObjectAnimator.ofFloat(navMenu, "translationX", (float) 0.0, finish * navMenu.getWidth());
         animator.setDuration(time);
         animator.start();
+    }
+    //endregion
+
+    // region Permissions Handling
+
+    // Camera
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+    }
+
+    // Location, Fine
+    private boolean checkFineLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestFineLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CAMERA_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Camera permissions are granted, continue
+                } else {
+                    // Camera permissions are denied, show a message to the user
+                    Toast.makeText(this, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case LOCATION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Location permissions are granted, you can perform your location related task here
+                    createNewLocation();
+                } else {
+                    // Location permissions are denied, show a message to the user
+                    Toast.makeText(this, "Location permission is required to use this feature.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
     }
     //endregion
 
@@ -470,6 +560,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CurrentBottle", currentBottle);
         editor.apply();
+    }
+
+    public void detailedLocationView(String name, String coordinates, String date) {
+        //do what you want when you click it
+
+        Toast.makeText(this, "Action Complete", Toast.LENGTH_SHORT).show();
+
     }
     //endregion
 
@@ -789,6 +886,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
                 });
     }
+
+    private void uploadLocationsToCloud() {
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            Log.d("MainActivity", "Location Upload: Not Signed In");
+            return;
+        }
+        List<Location> locationList = loadLocations(this);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        Log.d("MainActivity", "Location Upload: Stepped Past getInstance()");
+        for (Location location : locationList) {
+            String dataFileName = "location_" + location.getName() + ".txt";
+            Log.d("MainActivity", "Location Queued for Upload: " + dataFileName);
+            File localFile = new File(getFilesDir(), dataFileName);
+
+            if (!localFile.exists()) {
+                Log.d("MainActivity", "File does not exist: " + dataFileName);
+                continue;
+            }
+
+            StorageReference dataFileRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("locations")
+                    .child(dataFileName);
+
+            dataFileRef.putFile(Uri.fromFile(localFile))
+                    .addOnSuccessListener(taskSnapshot -> Log.d("MainActivity", "Upload successful for location data: " + dataFileName))
+                    .addOnFailureListener(uploadException -> Log.d("MainActivity", "Upload failed for location data: " + dataFileName, uploadException));
+        }
+        Toast.makeText(this, "Locations Uploaded", Toast.LENGTH_SHORT).show();
+    }
+
+    private void syncLocationsFromCloud() {
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Get a reference to the Firebase Storage instance
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a reference to the user's locations directory in Firebase Storage
+        StorageReference userStorageRef = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("locations");
+
+        // List all the files in the user's locations directory in Firebase Storage
+        userStorageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        // Get the file name
+                        String fileName = fileRef.getName();
+
+                        // Check if a file with the same name exists in the local storage
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            // If a file with the same name does not exist in the local storage, download the file from Firebase Storage
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        // Handle successful downloads
+                                        Log.d("MainActivity", "Download successful for location: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        // Handle failed downloads
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("MainActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("MainActivity", "Download failed for location: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    Toast.makeText(this, "Locations Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("MainActivity", "Failed to list files in Firebase Storage", e);
+                });
+    }
+
     private void eraseCloudStorage() {
         if (mAuth.getCurrentUser() == null) {
             // Sign-In Check
@@ -918,23 +1098,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //endregion
 
     //region Camera & Image Code
-    private boolean checkCameraPermission() {
-        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                chooseImageSource();
-            } else {
-                Toast.makeText(this, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
+    // See dedicated permissions region for old permission code
 
     // Method for choosing images for a bottle
     // Pops up after ONLY AFTER checking and/or requesting (and getting) permission
@@ -1279,76 +1444,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //endregion
 
-    //region Auto-Save/Load
-    // TODO: Implement Automatic Save/Load
-//    private void uploadSingleBottleToCloud(Bottle bottle) {
-//        if (mAuth.getCurrentUser() == null) {
-//            // Sign-In Check
-//            return;
-//        }
-//        // Get a reference to the Firebase Storage instance
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//
-//        // Get the file name for the bottle data
-//        String dataFileName = "bottle_" + bottle.getName() + ".txt";
-//
-//        // Create a reference for the bottle data file
-//        StorageReference dataFileRef = storage.getReference()
-//                .child("users")
-//                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-//                .child("bottles")
-//                .child(dataFileName);
-//
-//        // Upload the bottle data file
-//        dataFileRef.putFile(Uri.fromFile(new File(getFilesDir(), dataFileName)))
-//                .addOnSuccessListener(taskSnapshot -> {
-//                    // Handle successful uploads
-//                    Log.d("SettingsActivity", "Upload successful for bottle data: " + dataFileName);
-//                })
-//                .addOnFailureListener(uploadException -> {
-//                    // Handle failed uploads
-//                    Log.d("SettingsActivity", "Upload failed for bottle data: " + dataFileName, uploadException);
-//                });
-//
-//        // Get the Uri for the bottle image
-//        Uri imageUri = bottle.getPhotoUri();
-//
-//        // Check if the Uri is not null
-//        // This can happen if no image is uploaded for the bottle, thus using default image
-//        if (imageUri != null) {
-//            try {
-//                InputStream stream = getContentResolver().openInputStream(imageUri);
-//
-//                // Get the file name from the Uri
-//                String imageName = imageUri.getLastPathSegment();
-//
-//                // Create a storage reference for the image
-//                assert imageName != null;
-//                StorageReference imageFileRef = storage.getReference()
-//                        .child("users")
-//                        .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-//                        .child("bottles")
-//                        .child(imageName);
-//
-//                // Upload the image file
-//                assert stream != null;
-//                imageFileRef.putStream(stream)
-//                        .addOnSuccessListener(taskSnapshot -> {
-//                            // Handle successful uploads
-//                            Log.d("SettingsActivity", "Upload successful for bottle image: " + imageName);
-//                        })
-//                        .addOnFailureListener(uploadException -> {
-//                            // Handle failed uploads
-//                            Log.d("SettingsActivity", "Upload failed for bottle image: " + imageName, uploadException);
-//                        });
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            // Handle the case where the Uri is null
-//            Log.d("SettingsActivity", "No photo URI for bottle: " + bottle.getName());
-//        }
-//    }
+    //region Location Code
+    public void addNewLocation() {
+        // Check if location permissions are granted
+        if (!checkFineLocationPermission()) {
+            requestFineLocationPermission();
+            Log.d("MainActivity", "Location permission requested.");
+        } else {
+            Log.d("MainActivity", "createNewLocation() called.");
+            createNewLocation();
+        }
+    }
+
+    private void createNewLocation() {
+        // Create a new Location object
+        Location newLocation = new Location(this);
+        newLocation.setName(newLocation.getLocationTimeStamp());
+        newLocation.setGpsCoordinates(newLocation.getLocationCoordinates());
+        newLocation.setTimeDateAdded(newLocation.getLocationTimeStamp());
+
+        // Add the new Location object to the locationList array
+        allLocations.add(newLocation);
+        Log.d("MainActivity", newLocation + "added to locationList.");
+
+        // Save the new Location object to a file
+        saveLocationToFile(newLocation);
+
+        // Notify the adapter that the data set has changed
+        //locationAdapter.notifyDataSetChanged();
+    }
+
+    // Refined saveLocationToFile method
+    private void saveLocationToFile(Location location) {
+        String name = location.getName();
+        String coords = location.getGpsCoordinates();
+        String timestamp = location.getTimeDateAdded();
+
+        String filename = "location_" + name + ".txt";
+        String fileContents = "Name: " + name + "\n" +
+                "Coordinates: " + coords + "\n" +
+                "Timestamp: " + timestamp + "\n";
+
+        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+            fos.write(fileContents.getBytes());
+            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + filename, Toast.LENGTH_LONG).show();
+            Log.d("MainActivity", filename + "saved.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
+            Log.d("MainActivity", "Error saving location.");
+        }
+    }
+
+
     //endregion
 
 }

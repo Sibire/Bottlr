@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -277,8 +278,8 @@ public class SharedUtils {
 
     //region Deletion Handling
 
-    // Confirmation Popup
-    public static void showDeleteConfirm(final Bottle bottle, Context context) {
+    // Bottle Confirmation Popup
+    public static void showBottleDeleteConfirm(final Bottle bottle, Context context) {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Bottle")
                 .setMessage("Are you sure you want to delete this bottle?")
@@ -299,6 +300,7 @@ public class SharedUtils {
     }
 
     // Deletion Code
+    // Bottle Deletion Code
     public static void deleteBottle(Bottle bottle, Context context) {
         String filename = "bottle_" + bottle.getName() + ".txt";
         File file = new File(context.getFilesDir(), filename);
@@ -318,6 +320,29 @@ public class SharedUtils {
             Toast.makeText(context, "Cocktail Deleted.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Failed To Delete Cocktail.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Location Confirmation Popup
+    public static void showLocationDeleteConfirm(final Location location, Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Location")
+                .setMessage("Are you sure you want to delete this location?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteLocation(location, context))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    // Location Deletion Code
+    public static void deleteLocation(Location location, Context context) {
+        String filename = "location_" + location.getName() + ".txt";
+        File file = new File(context.getFilesDir(), filename);
+        boolean deleted = file.delete();
+        if (deleted) {
+            Toast.makeText(context, "Location Deleted.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed To Delete Location.", Toast.LENGTH_SHORT).show();
         }
     }
     //endregion
@@ -355,6 +380,48 @@ public class SharedUtils {
             }
         }
         return cocktails;
+    }
+    //endregion
+
+    //region Location List Loading
+    public static List<Location> loadLocations(Context context) {
+        List<Location> locations = new ArrayList<>();
+        File directory = context.getFilesDir();
+        File[] files = directory.listFiles();
+
+        assert files != null;
+        for (File file : files) {
+            if (file.isFile() && file.getName().startsWith("location_")) {
+                Location location = parseLocation(file);
+                locations.add(location); // Add the location to the list
+                Log.d("SharedUtils", "Location with name " + location.getName() + " loaded successfully.");
+            }
+        }
+        return locations;
+    }
+    //endregion
+
+    //region Parse Location from Save
+    public static Location parseLocation(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String timeDateAdded = readValueSafe(br);
+
+            if (timeDateAdded.isEmpty()) {
+                return null;
+                // Make sure the location is a valid entry
+            }
+            String gpsCoordinates = readValueSafe(br);
+            String name = readValueSafe(br);
+
+            Log.d("SharedUtils", "Location with name " + name + " parsed successfully.");
+            return new Location(timeDateAdded, gpsCoordinates, name);
+
+            // Exception handling
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     //endregion
 

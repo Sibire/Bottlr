@@ -85,8 +85,8 @@
         android:id="@+id/logout_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="396dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="492dp"
         android:text="@string/log_out"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -120,6 +120,28 @@
         android:text="@string/erase_cloud_storage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/upload_locations_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="372dp"
+        android:text="Upload Locations"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/download_locations_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="436dp"
+        android:text="Download Locations"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="onClick"/>
 
     <TextView
         android:id="@+id/signed_in_user"
@@ -319,6 +341,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_search_24" />
+
+        <Button
+            android:id="@+id/menu_locations_button"
+            android:layout_width="214dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="75dp"
+            android:background="@color/transparent"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:paddingStart="34sp"
+            android:text="Locations"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/menu_settings_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        <ImageView
+            android:id="@+id/menu_locations_icon"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/settings_nav_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/baseline_attractions_24" />
 
         <Button
             android:id="@+id/menu_settings_button"
