@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
     private boolean drinkFlag; //true = bottle, false = cocktail
     private String currentBottle;
-    private LocationAdapter locationAdapter;
 
     //endregion
 
@@ -605,9 +604,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Button logoutButton = findViewById(R.id.logout_Button);
             logoutButton.setOnClickListener(v -> signOut());
             Button uploadButton = findViewById(R.id.upload_Button);
-            uploadButton.setOnClickListener(v -> uploadBottlesToCloud());
+            uploadButton.setOnClickListener(v -> uploadData());
             Button syncButton = findViewById(R.id.sync_Button);
-            syncButton.setOnClickListener(v -> syncBottlesFromCloud());
+            syncButton.setOnClickListener(v -> downloadData());
             Button eraseButton = findViewById(R.id.erase_Button);
             eraseButton.setOnClickListener(v -> eraseCloudStorage());
             editor = 0;
@@ -1035,6 +1034,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
+
+    private void uploadData(){
+        uploadBottlesToCloud();
+        uploadLocationsToCloud();
+    }
+    private void downloadData(){
+        syncBottlesFromCloud();
+        syncLocationsFromCloud();
+    }
+
     //endregion
 
     //region Add Bottle

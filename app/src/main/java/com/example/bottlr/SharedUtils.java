@@ -322,29 +322,6 @@ public class SharedUtils {
             Toast.makeText(context, "Failed To Delete Cocktail.", Toast.LENGTH_SHORT).show();
         }
     }
-
-    // Location Confirmation Popup
-    public static void showLocationDeleteConfirm(final Location location, Context context) {
-        new AlertDialog.Builder(context)
-                .setTitle("Delete Location")
-                .setMessage("Are you sure you want to delete this location?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteLocation(location, context))
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    // Location Deletion Code
-    public static void deleteLocation(Location location, Context context) {
-        String filename = "location_" + location.getName() + ".txt";
-        File file = new File(context.getFilesDir(), filename);
-        boolean deleted = file.delete();
-        if (deleted) {
-            Toast.makeText(context, "Location Deleted.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Failed To Delete Location.", Toast.LENGTH_SHORT).show();
-        }
-    }
     //endregion
 
     //region Bottle List Loading
@@ -496,5 +473,56 @@ public class SharedUtils {
     }
     //endregion
 
+    //region Location Dialogue
+    // Location
+
+    // Location Main Dialog
+    public static void showLocationDialog(final Location location, Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Location Options")
+                .setItems(new CharSequence[]{"View", "Delete", "Close"}, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // View
+                            Uri gmmIntentUri = Uri.parse("geo:" + location.getGpsCoordinates());
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                                context.startActivity(mapIntent);
+                            } else {
+                                Toast.makeText(context, "Google Maps application not found", Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                        case 1: // Delete
+                            showLocationDeleteConfirm(location, context);
+                            break;
+                        case 2: // Close
+                            dialog.dismiss();
+                            break;
+                    }
+                });
+        builder.create().show();
+    }
+
+    public static void showLocationDeleteConfirm(final Location location, Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Location")
+                .setMessage("Are you sure you want to delete this location?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> deleteLocation(location, context))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    // Location Deletion Code
+    public static void deleteLocation(Location location, Context context) {
+        String filename = "location_" + location.getName() + ".txt";
+        File file = new File(context.getFilesDir(), filename);
+        boolean deleted = file.delete();
+        if (deleted) {
+            Toast.makeText(context, "Location Deleted.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed To Delete Location.", Toast.LENGTH_SHORT).show();
+        }
+    }
     //endregion
 }

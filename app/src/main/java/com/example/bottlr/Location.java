@@ -1,14 +1,7 @@
 package com.example.bottlr;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -68,24 +61,17 @@ public class Location {
 
     public String getLocationCoordinates() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        final String[] coordinates = new String[1];
-        coordinates[0] = "Not available";
-
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(android.location.Location location) {
-                coordinates[0] = location.getLatitude() + ", " + location.getLongitude();
+        try {
+            android.location.Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                return "Lat: " + latitude + ", Lon: " + longitude;
+            } else {
+                return "Location not available";
             }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            public void onProviderEnabled(@NonNull String provider) {}
-            public void onProviderDisabled(@NonNull String provider) {}
-        };
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        } catch (SecurityException e) {
+            return "Permissions not granted";
         }
-
-        return coordinates[0];
     }
 }

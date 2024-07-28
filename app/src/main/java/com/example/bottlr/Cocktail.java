@@ -21,7 +21,6 @@ public class Cocktail implements Parcelable {
     private String notes;
     private String keywords;
     private String rating;
-
     private String bottleID;
 
     //endregion

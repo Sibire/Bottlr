@@ -95,9 +95,9 @@
         android:id="@+id/upload_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="228dp"
-        android:text="@string/upload_bottles_to_cloud"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="232dp"
+        android:text="Upload Data To Cloud"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,9 +105,9 @@
         android:id="@+id/sync_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="96dp"
         android:layout_marginTop="312dp"
-        android:text="@string/sync_bottles_from_cloud"
+        android:text="Pull Data From Cloud"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,28 +120,6 @@
         android:text="@string/erase_cloud_storage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/upload_locations_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="372dp"
-        android:text="Upload Locations"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onClick"/>
-
-    <Button
-        android:id="@+id/download_locations_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="436dp"
-        android:text="Download Locations"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onClick"/>
 
     <TextView
         android:id="@+id/signed_in_user"
