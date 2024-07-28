@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Initializations
     private List<Bottle> bottles, allBottles;
+    private List<Location> locations, allLocations;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottleAdapter searchResultsAdapter;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
     private String currentBottle;
-    private final List<Location> locationList = new ArrayList<>();
     private LocationAdapter locationAdapter;
 
     //endregion
@@ -93,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initialize bottle storage
         bottles = new ArrayList<>();
         allBottles = new ArrayList<>();
+
+        //initialize location storage
+        locations = new ArrayList<>();
+        allLocations = new ArrayList<>();
     }
     //endregion
 
@@ -180,8 +184,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.locations_page;
         }
         else if (id == R.id.addLocationButton) { // add location
-            Log.d("MainActivity", "Add Location Button Clicked"); // Add this line
+            Log.d("MainActivity", "Add Location Button Clicked");
             addNewLocation();
+        }
+        else if (id == R.id.upload_locations_Button) { // add location
+            Log.d("MainActivity", "Upload Locations Button Clicked");
+            uploadLocationsToCloud();
+        }
+        else if (id == R.id.download_locations_Button) { // add location
+            Log.d("MainActivity", "Download Locations Button Clicked");
+            syncLocationsFromCloud();
         }
             else {
             Toast.makeText(this, "Button Not Working", Toast.LENGTH_SHORT).show();
@@ -292,15 +304,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void GenerateLocationRecycler() {
         // Set Recycler
         RecyclerView LocationRecycler = findViewById(R.id.LocationAdapter);
+        if (LocationRecycler == null) {
+            Log.d("MainActivity", "LocationRecycler is null");
+            return;
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LocationRecycler.setLayoutManager(layoutManager);
         // Line divider to keep things nice and neat
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LocationRecycler.addItemDecoration(dividerItemDecoration);
         // Locations listing
-        locationAdapter = new LocationAdapter(locationList);
+        locationAdapter = new LocationAdapter(allLocations); // Initialize locationAdapter
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();
+        Log.d("MainActivity", "LocationRecycler and locationAdapter initialized");
         // TODO: Get this to display properly
     }
     //endregion
@@ -664,6 +681,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("SettingsActivity", "Failed to list files in Firebase Storage", e);
                 });
     }
+
+    private void uploadLocationsToCloud() {
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            Log.d("MainActivity", "Location Upload: Not Signed In");
+            return;
+        }
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        Log.d("MainActivity", "Location Upload: Stepped Past getInstance()");
+        for (Location location : allLocations) {
+            String dataFileName = "location_" + location.getName() + ".txt";
+            Log.d("MainActivity", "Location Queued for Upload: " + dataFileName);
+            File localFile = new File(getFilesDir(), dataFileName);
+
+            if (!localFile.exists()) {
+                Log.d("MainActivity", "File does not exist: " + dataFileName);
+                continue;
+            }
+
+            StorageReference dataFileRef = storage.getReference()
+                    .child("users")
+                    .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                    .child("locations")
+                    .child(dataFileName);
+
+            dataFileRef.putFile(Uri.fromFile(localFile))
+                    .addOnSuccessListener(taskSnapshot -> Log.d("MainActivity", "Upload successful for location data: " + dataFileName))
+                    .addOnFailureListener(uploadException -> Log.d("MainActivity", "Upload failed for location data: " + dataFileName, uploadException));
+        }
+        Toast.makeText(this, "Locations Uploaded", Toast.LENGTH_SHORT).show();
+    }
+
+    private void syncLocationsFromCloud() {
+        if (mAuth.getCurrentUser() == null) {
+            // Sign-In Check
+            Toast.makeText(this, "Sign-In Required For This Feature", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Get a reference to the Firebase Storage instance
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a reference to the user's locations directory in Firebase Storage
+        StorageReference userStorageRef = storage.getReference()
+                .child("users")
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child("locations");
+
+        // List all the files in the user's locations directory in Firebase Storage
+        userStorageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        // Get the file name
+                        String fileName = fileRef.getName();
+
+                        // Check if a file with the same name exists in the local storage
+                        File localFile = new File(getFilesDir(), fileName);
+                        if (!localFile.exists()) {
+                            // If a file with the same name does not exist in the local storage, download the file from Firebase Storage
+                            fileRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        // Handle successful downloads
+                                        Log.d("MainActivity", "Download successful for location: " + fileName);
+                                    })
+                                    .addOnFailureListener(downloadException -> {
+                                        // Handle failed downloads
+                                        if (downloadException instanceof com.google.firebase.storage.StorageException
+                                                && ((com.google.firebase.storage.StorageException) downloadException).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                            Log.d("MainActivity", "File does not exist in Firebase Storage: " + fileName);
+                                        } else {
+                                            Log.d("MainActivity", "Download failed for location: " + fileName, downloadException);
+                                        }
+                                    });
+                        }
+                    }
+                    Toast.makeText(this, "Locations Downloaded", Toast.LENGTH_SHORT).show(); // TODO: Make this only show if it's successful.
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors in listing files
+                    Log.d("MainActivity", "Failed to list files in Firebase Storage", e);
+                });
+    }
+
     private void eraseCloudStorage() {
         if (mAuth.getCurrentUser() == null) {
             // Sign-In Check
@@ -972,12 +1072,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void createNewLocation() {
         // Create a new Location object
         Location newLocation = new Location(this);
-        newLocation.setName(newLocation.getLocationName());
+        newLocation.setName(newLocation.getLocationTimeStamp());
         newLocation.setGpsCoordinates(newLocation.getLocationCoordinates());
         newLocation.setTimeDateAdded(newLocation.getLocationTimeStamp());
 
         // Add the new Location object to the locationList array
-        locationList.add(newLocation);
+        allLocations.add(newLocation);
         Log.d("MainActivity", newLocation + "added to locationList.");
 
         // Save the new Location object to a file

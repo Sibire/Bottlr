@@ -11,6 +11,7 @@ import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
     private List<Location> locations;
+    private List<Location> allLocations;
 
     public LocationAdapter(List<Location> locations) {
         this.locations = locations != null ? locations : new ArrayList<>(); // Ensure locations is not null
