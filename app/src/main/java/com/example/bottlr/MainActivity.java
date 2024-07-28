@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LocationRecycler.addItemDecoration(dividerItemDecoration);
         // Locations listing
+        locations = SharedUtils.loadLocations(this);
         locationAdapter = new LocationAdapter(allLocations); // Initialize locationAdapter
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();

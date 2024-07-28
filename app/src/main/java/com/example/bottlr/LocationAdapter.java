@@ -10,37 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
-    private List<Location> locations;
-    private List<Location> allLocations;
+    private final List<Location> locations;
 
     public LocationAdapter(List<Location> locations) {
-        this.locations = locations != null ? locations : new ArrayList<>(); // Ensure locations is not null
-    }
-
-    public static class LocationViewHolder extends RecyclerView.ViewHolder {
-        TextView locationName, locationCoordinates, locationTimestamp;
-
-        public LocationViewHolder(@NonNull View itemView) {
-            super(itemView);
-            locationName = itemView.findViewById(R.id.locationName);
-            locationCoordinates = itemView.findViewById(R.id.locationCoordinates);
-            locationTimestamp = itemView.findViewById(R.id.locationTimestamp);
-        }
+        this.locations = locations;
     }
 
     @NonNull
     @Override
-    public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_tag, viewGroup, false);
+    public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_item, parent, false);
         return new LocationViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final LocationViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locations.get(position);
-        holder.locationName.setText(location.getName());
-        holder.locationCoordinates.setText(location.getGpsCoordinates());
-        holder.locationTimestamp.setText(location.getTimeDateAdded());
+        holder.bind(location);
     }
 
     @Override
@@ -48,8 +34,22 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         return locations.size();
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = new ArrayList<>(locations);
-        notifyDataSetChanged();
+    static class LocationViewHolder extends RecyclerView.ViewHolder {
+        private final TextView locationName;
+        private final TextView locationCoordinates;
+        private final TextView locationTimestamp;
+
+        public LocationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            locationName = itemView.findViewById(R.id.location_name);
+            locationCoordinates = itemView.findViewById(R.id.location_coordinates);
+            locationTimestamp = itemView.findViewById(R.id.location_timestamp);
+        }
+
+        public void bind(Location location) {
+            locationName.setText(location.getName());
+            locationCoordinates.setText(location.getGpsCoordinates());
+            locationTimestamp.setText(location.getTimeDateAdded());
+        }
     }
 }
