@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             nameField, distilleryField, typeField, notesField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
-    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access
+    private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
     private String currentBottle;
     private LocationAdapter locationAdapter;
 
@@ -129,8 +129,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastLayout = R.layout.activity_settings;
             settings();
         } else if (id == R.id.fab) { //add bottle
-            editor = 0;
-            addBottle();
+            if(editor == 3) {
+                Log.d("MainActivity", "Add Location Button Clicked");
+                addNewLocation();
+            } else {
+                editor = 0;
+                addBottle();
+            }
         } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
@@ -158,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             settings();
             uploadBottlesToCloud();
             syncBottlesFromCloud();
+            uploadLocationsToCloud();
+            syncLocationsFromCloud();
         } else if (id == R.id.saveImageButton) { // Save the image to the user's gallery
             Bottle recentBottle = getMostRecentBottle();
             if (recentBottle != null && recentBottle.getPhotoUri() != null) {
@@ -180,13 +187,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             KeyboardVanish(view);
         }
         else if (id == R.id.menu_locations_button) { //nav locations screen click
-            setContentView(R.layout.locations_page);
+            //setContentView(R.layout.locations_page);
+            editor = 3;
+            setContentView(R.layout.fragment_gallery);
             GenerateLocationRecycler();
-            lastLayout = R.layout.locations_page;
-        }
-        else if (id == R.id.addLocationButton) { // add location
-            Log.d("MainActivity", "Add Location Button Clicked");
-            addNewLocation();
         }
         else if (id == R.id.upload_locations_Button) { // add location
             Log.d("MainActivity", "Upload Locations Button Clicked");
@@ -304,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     void GenerateLocationRecycler() {
         // Set Recycler
-        RecyclerView LocationRecycler = findViewById(R.id.LocationAdapter);
+        RecyclerView LocationRecycler = findViewById(R.id.liquorRecycler);
         if (LocationRecycler == null) {
             Log.d("MainActivity", "LocationRecycler is null");
             return;
@@ -316,7 +320,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LocationRecycler.addItemDecoration(dividerItemDecoration);
         // Locations listing
         locations = loadLocations(this);
-        locationAdapter = new LocationAdapter(allLocations); // Initialize locationAdapter
+        LocationAdapter locationAdapter;
+        locationAdapter = new LocationAdapter(locations, allLocations, this::detailedLocationView); // Initialize locationAdapter
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();
         Log.d("MainActivity", "LocationRecycler and locationAdapter initialized");
@@ -426,6 +431,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CurrentBottle", currentBottle);
         editor.apply();
+    }
+
+    public void detailedLocationView(String name, String coordinates, String date) {
+        //do what you want when you click it
+
+        Toast.makeText(this, "Action Complete", Toast.LENGTH_SHORT).show();
+
     }
     //endregion
 
@@ -1086,7 +1098,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         saveLocationToFile(newLocation);
 
         // Notify the adapter that the data set has changed
-        locationAdapter.notifyDataSetChanged();
+        //locationAdapter.notifyDataSetChanged();
     }
 
     // Refined saveLocationToFile method
