@@ -244,6 +244,17 @@ public class SharedUtils {
             Toast.makeText(context, "Failed To Delete Bottle.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public static void deleteLocation(Location location, Context context) {
+        String filename = "location_" + location.getName() + ".txt";
+        File file = new File(context.getFilesDir(), filename);
+        boolean deleted = file.delete();
+        if (deleted) {
+            Toast.makeText(context, "Location Deleted.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed To Delete Location.", Toast.LENGTH_SHORT).show();
+        }
+    }
     //endregion
 
     //region Bottle List Loading
@@ -262,6 +273,46 @@ public class SharedUtils {
             }
         }
         return bottles;
+    }
+    //endregion
+
+    //region Location List Loading
+    public static List<Location> loadLocations(Context context) {
+        List<Location> locations = new ArrayList<>();
+        File directory = context.getFilesDir();
+        File[] files = directory.listFiles();
+
+        assert files != null;
+        for (File file : files) {
+            if (file.isFile() && file.getName().startsWith("location_")) {
+                Location location = parseLocation(file);
+                locations.add(location); // Add the location to the list
+            }
+        }
+        return locations;
+    }
+    //endregion
+
+    //region Parse Location from Save
+    public static Location parseLocation(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String timeDateAdded = readValueSafe(br);
+
+            if (timeDateAdded.isEmpty()) {
+                return null;
+                // Make sure the location is a valid entry
+            }
+            String gpsCoordinates = readValueSafe(br);
+            String name = readValueSafe(br);
+
+            return new Location(timeDateAdded, gpsCoordinates, name);
+
+            // Exception handling
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     //endregion
 

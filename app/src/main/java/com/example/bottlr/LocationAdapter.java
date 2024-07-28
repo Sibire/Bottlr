@@ -6,13 +6,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
-    private List<Location> locationList;
+    private List<Location> locations;
 
-    public LocationAdapter(List<Location> locationList) {
-        this.locationList = locationList;
+    public LocationAdapter(List<Location> locations) {
+        this.locations = locations != null ? locations : new ArrayList<>(); // Ensure locations is not null
     }
 
     public static class LocationViewHolder extends RecyclerView.ViewHolder {
@@ -28,21 +29,26 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
     @NonNull
     @Override
-    public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_tag, parent, false);
+    public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_tag, viewGroup, false);
         return new LocationViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
-        Location location = locationList.get(position);
+    public void onBindViewHolder(@NonNull final LocationViewHolder holder, int position) {
+        Location location = locations.get(position);
         holder.locationName.setText(location.getName());
         holder.locationCoordinates.setText(location.getGpsCoordinates());
-        holder.locationTimestamp.setText(location.getTimestamp());
+        holder.locationTimestamp.setText(location.getTimeDateAdded());
     }
 
     @Override
     public int getItemCount() {
-        return locationList.size();
+        return locations.size();
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = new ArrayList<>(locations);
+        notifyDataSetChanged();
     }
 }
