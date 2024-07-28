@@ -1,5 +1,6 @@
 package com.example.bottlr;
 
+import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
@@ -314,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         LocationRecycler.addItemDecoration(dividerItemDecoration);
         // Locations listing
-        locations = SharedUtils.loadLocations(this);
+        locations = loadLocations(this);
         locationAdapter = new LocationAdapter(allLocations); // Initialize locationAdapter
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();
@@ -689,7 +690,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("MainActivity", "Location Upload: Not Signed In");
             return;
         }
-        List<Location> locationList = SharedUtils.loadLocations(this);
+        List<Location> locationList = loadLocations(this);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Log.d("MainActivity", "Location Upload: Stepped Past getInstance()");
         for (Location location : locationList) {

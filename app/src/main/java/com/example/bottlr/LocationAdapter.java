@@ -6,14 +6,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
-    private final List<Location> locations;
+    private List<Location> locations;
 
     public LocationAdapter(List<Location> locations) {
         this.locations = locations;
+    }
+
+    public static class LocationViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewName, textViewCoordinates, textViewTimestamp;
+
+        public LocationViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textViewName = itemView.findViewById(R.id.textViewName);
+            textViewCoordinates = itemView.findViewById(R.id.textViewCoordinates);
+            textViewTimestamp = itemView.findViewById(R.id.textViewTimestamp);
+        }
     }
 
     @NonNull
@@ -26,7 +36,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locations.get(position);
-        holder.bind(location);
+        holder.textViewName.setText(location.getName());
+        holder.textViewCoordinates.setText(location.getGpsCoordinates());
+        holder.textViewTimestamp.setText(location.getTimeDateAdded());
     }
 
     @Override
@@ -34,22 +46,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         return locations.size();
     }
 
-    static class LocationViewHolder extends RecyclerView.ViewHolder {
-        private final TextView locationName;
-        private final TextView locationCoordinates;
-        private final TextView locationTimestamp;
-
-        public LocationViewHolder(@NonNull View itemView) {
-            super(itemView);
-            locationName = itemView.findViewById(R.id.location_name);
-            locationCoordinates = itemView.findViewById(R.id.location_coordinates);
-            locationTimestamp = itemView.findViewById(R.id.location_timestamp);
-        }
-
-        public void bind(Location location) {
-            locationName.setText(location.getName());
-            locationCoordinates.setText(location.getGpsCoordinates());
-            locationTimestamp.setText(location.getTimeDateAdded());
-        }
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+        notifyDataSetChanged();
     }
 }

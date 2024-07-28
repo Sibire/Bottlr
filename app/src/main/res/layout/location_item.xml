@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/location_name"
+        android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location Name"
@@ -14,16 +14,14 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/location_coordinates"
+        android:id="@+id/textViewCoordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Coordinates"
-        android:textSize="14sp" />
+        android:text="Coordinates" />
 
     <TextView
-        android:id="@+id/location_timestamp"
+        android:id="@+id/textViewTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Timestamp"
-        android:textSize="14sp" />
+        android:text="Timestamp" />
 </LinearLayout>
