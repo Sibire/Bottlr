@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for (File file : files) {
                 Location location = parseLocation(file);
                 assert location != null;
-                if (currentLocation.equals(location.getName())) {
+                if (currentLocation.equals(location.getTimeDateAdded())) {
                     mostRecentLocation = location;
                 }
             }
@@ -575,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void detailedLocationView(String name, String coordinates, String date) {
         //Toast.makeText(this, "Action Complete", Toast.LENGTH_SHORT).show();
-        currentLocation = name;
+        currentLocation = date;
         Location location = getMostRecentLocation();
         showLocationDialog(location, this);
     }

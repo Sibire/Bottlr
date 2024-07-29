@@ -486,11 +486,7 @@ public class SharedUtils {
                             Uri gmmIntentUri = Uri.parse("geo:" + location.getGpsCoordinates());
                             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                             mapIntent.setPackage("com.google.android.apps.maps");
-                            if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                                context.startActivity(mapIntent);
-                            } else {
-                                Toast.makeText(context, "Google Maps application not found", Toast.LENGTH_SHORT).show();
-                            }
+                            context.startActivity(mapIntent);
                             break;
                         case 1: // Delete
                             showLocationDeleteConfirm(location, context);
