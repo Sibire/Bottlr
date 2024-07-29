@@ -66,7 +66,7 @@ public class Location {
             if (location != null) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                return "Lat: " + latitude + ", Lon: " + longitude;
+                return latitude + ", " + longitude;
             } else {
                 return "Location not available";
             }
