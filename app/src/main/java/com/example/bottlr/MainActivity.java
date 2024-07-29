@@ -3,6 +3,7 @@ package com.example.bottlr;
 import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.parseCocktail;
+import static com.example.bottlr.SharedUtils.parseLocation;
 import static com.example.bottlr.SharedUtils.queryBuilder;
 import static com.example.bottlr.SharedUtils.saveImageToGallery;
 import static com.example.bottlr.SharedUtils.saveImageToGalleryCocktail;
@@ -10,6 +11,7 @@ import static com.example.bottlr.SharedUtils.shareBottleInfo;
 import static com.example.bottlr.SharedUtils.showBottleDeleteConfirm;
 import static com.example.bottlr.SharedUtils.shareCocktailInfo;
 import static com.example.bottlr.SharedUtils.showDeleteConfirmCocktail;
+import static com.example.bottlr.SharedUtils.showLocationDialog;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CocktailAdapter searchResultsAdapter2;
     private int editor, lastLayout; //0 = no edits, 1 = bottle editor, 2 = setting access, 3 = locations
     private boolean drinkFlag; //true = bottle, false = cocktail
-    private String currentBottle;
+    private String currentBottle, currentLocation;
 
     //endregion
 
@@ -308,6 +310,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return mostRecentCocktail;
     }
 
+    private Location getMostRecentLocation() {
+        File directory = this.getFilesDir();
+        File[] files = directory.listFiles((dir, name) -> name.startsWith("location_") && name.endsWith(".txt"));
+        Location mostRecentLocation = null;
+        if (files != null) {
+            for (File file : files) {
+                Location location = parseLocation(file);
+                assert location != null;
+                if (currentLocation.equals(location.getName())) {
+                    mostRecentLocation = location;
+                }
+            }
+        }
+        return mostRecentLocation;
+    }
+
     @SuppressLint("SetTextI18n")
     public void SignInChecker(int layout) {
         Button signIn = findViewById(R.id.sign_in_button_home);
@@ -387,10 +405,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void GenerateLocationRecycler() {
         // Set Recycler
         RecyclerView LocationRecycler = findViewById(R.id.liquorRecycler);
-        if (LocationRecycler == null) {
-            Log.d("MainActivity", "LocationRecycler is null");
-            return;
-        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LocationRecycler.setLayoutManager(layoutManager);
         // Line divider to keep things nice and neat
@@ -402,8 +416,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         locationAdapter = new LocationAdapter(locations, allLocations, this::detailedLocationView); // Initialize locationAdapter
         LocationRecycler.setAdapter(locationAdapter);
         locationAdapter.notifyDataSetChanged();
-        Log.d("MainActivity", "LocationRecycler and locationAdapter initialized");
-        // TODO: Get this to display properly
     }
     //endregion
 
@@ -562,10 +574,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void detailedLocationView(String name, String coordinates, String date) {
-        //do what you want when you click it
-
-        Toast.makeText(this, "Action Complete", Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(this, "Action Complete", Toast.LENGTH_SHORT).show();
+        currentLocation = name;
+        Location location = getMostRecentLocation();
+        showLocationDialog(location, this);
     }
     //endregion
 
