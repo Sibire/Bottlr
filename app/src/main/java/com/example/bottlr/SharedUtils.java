@@ -483,10 +483,10 @@ public class SharedUtils {
                 .setItems(new CharSequence[]{"View", "Delete", "Close"}, (dialog, which) -> {
                     switch (which) {
                         case 0: // View
-                            Uri gmmIntentUri = Uri.parse("geo:" + location.getGpsCoordinates());
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            context.startActivity(mapIntent);
+                            String url = "https://www.google.com/maps?tbm=map&q=" + Uri.encode(location.getGpsCoordinates());
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(url));
+                            context.startActivity(intent);
                             break;
                         case 1: // Delete
                             showLocationDeleteConfirm(location, context);
