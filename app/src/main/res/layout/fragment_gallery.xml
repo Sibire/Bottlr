@@ -258,7 +258,7 @@
             android:layout_height="751dp"
             android:layout_marginStart="250dp"
             android:elevation="-10dp"
-            android:backgroundTint="@color/supertransparent_black"
+            android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
@@ -532,5 +532,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_location_pin_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

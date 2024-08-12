@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/exodemibold"
             android:text="Location Name"
+            android:textColor="@color/black"
             android:textSize="23sp"
             android:textStyle="bold" />
 
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/nunitosansregular"
             android:text="Coordinates"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
@@ -61,6 +63,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/nunitosansregular"
             android:text="Timestamp"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
     </LinearLayout>

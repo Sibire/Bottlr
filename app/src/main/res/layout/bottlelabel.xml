@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/exodemibold"
             android:text="Bottle Name"
+            android:textColor="@color/black"
             android:textSize="23sp"
             android:textStyle="bold" />
 
@@ -49,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Distillery"
+            android:textColor="@color/black"
             android:fontFamily="@font/nunitosansregular"
             android:textSize="18sp" />
 

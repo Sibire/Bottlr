@@ -205,7 +205,7 @@
             android:layout_height="751dp"
             android:layout_marginStart="250dp"
             android:elevation="-10dp"
-            android:backgroundTint="@color/supertransparent_black"
+            android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
