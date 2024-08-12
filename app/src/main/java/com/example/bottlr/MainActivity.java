@@ -383,9 +383,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView LiquorCabinetRecycler = findViewById(R.id.liquorRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LiquorCabinetRecycler.setLayoutManager(layoutManager);
-        // Line divider to keep things nice and neat
+        /*// Line divider to keep things nice and neat
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);
+        LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);*/
         // Bottle listing
         if (drinkFlag) {
             BottleAdapter liquorAdapter;
@@ -408,8 +408,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LocationRecycler.setLayoutManager(layoutManager);
         // Line divider to keep things nice and neat
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        LocationRecycler.addItemDecoration(dividerItemDecoration);
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
+        LocationRecycler.addItemDecoration(dividerItemDecoration);*/
         // Locations listing
         locations = loadLocations(this);
         LocationAdapter locationAdapter;
