@@ -9,4 +9,7 @@
     <font
         app:fontStyle="normal"
         app:font="@font/exodemibold" />
+    <font
+        app:fontStyle="normal"
+        app:font="@font/cormorantregular" />
 </font-family>
