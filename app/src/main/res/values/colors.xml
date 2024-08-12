@@ -4,9 +4,13 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
+    <color name="light_blue">#FF82dde3</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="Nearblack">#FF202020</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="Nearwhite">#FFf8f8f8</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#80000000</color>
+    <color name="supertransparent_black">#33000000</color>
 </resources>
