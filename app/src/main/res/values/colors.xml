@@ -12,4 +12,5 @@
     <color name="Nearwhite">#FFf8f8f8</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#80000000</color>
+    <color name="supertransparent_black">#33000000</color>
 </resources>
