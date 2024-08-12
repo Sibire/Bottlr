@@ -116,6 +116,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //endregion
 
+    // TODO: Move this to onClick
+    public void onFeedbackButtonClick(View view) {
+        String url = "https://forms.gle/f9bkcs2JjTuyDywn9";
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
     //region onClick Code
     @Override //Used for on click section in layout button attribute to switch layouts.
     public void onClick(View view) //add button with an else-if statement
@@ -239,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor = 3;
             setContentView(R.layout.fragment_gallery);
             GenerateLocationRecycler();
-        } else if (id == R.id.switchButton) { //switch add bottle type
+        }else if (id == R.id.switchButton) { //switch add bottle type
             if (drinkFlag) {
                 drinkFlag = false;
                 addBottle();
@@ -494,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
         bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+
         TextView tbottleName = findViewById(R.id.tvBottleName);
         TextView tbottleDistillery = findViewById(R.id.tvDistillery);
         TextView tbottleRating = findViewById(R.id.tvRating);
