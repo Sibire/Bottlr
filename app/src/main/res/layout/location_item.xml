@@ -2,44 +2,66 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="6sp">
 
     <Button
         android:id="@+id/locationsinglebutton"
         android:layout_width="match_parent"
-        android:layout_height="109dp"
-        android:layout_weight="1"
-        android:background="@color/transparent"
-        android:clickable="true"  />
+        android:layout_height="120dp"
+        android:backgroundTint="@color/light_blue"
+        android:clickable="true"
+        android:elevation="0dp"
+        app:cornerRadius="10dp" />
+
+    <ImageView
+        android:id="@+id/imageLocation"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
+        android:elevation="3dp"
+        android:scaleType="centerCrop"
+        android:scaleX=".8"
+        android:scaleY=".8"
+        android:src="@drawable/baseline_location_pin_24" />
 
     <LinearLayout
         android:layout_width="273dp"
-        android:layout_height="58dp"
-        android:layout_weight="1"
+        android:layout_height="80dp"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="13dp"
+        android:layout_weight="1"
+        android:elevation="3dp"
         android:orientation="vertical"
-        >
+        android:paddingStart="8dp">
 
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Location Name"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/exodemibold"
+            android:text="Location Name"
+            android:textSize="23sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textViewCoordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coordinates" />
+        <TextView
+            android:id="@+id/textViewCoordinates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunitosansregular"
+            android:text="Coordinates"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/textViewTimestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Timestamp" />
+        <TextView
+            android:id="@+id/textViewTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunitosansregular"
+            android:text="Timestamp"
+            android:textSize="18sp" />
 
     </LinearLayout>
 </RelativeLayout>

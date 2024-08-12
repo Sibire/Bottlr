@@ -39,8 +39,9 @@
             android:id="@+id/textViewBottleName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/exodemibold"
             android:text="Bottle Name"
-            android:textSize="18sp"
+            android:textSize="23sp"
             android:textStyle="bold" />
 
         <TextView
@@ -48,7 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Distillery"
-            android:textSize="14sp" />
+            android:fontFamily="@font/nunitosansregular"
+            android:textSize="18sp" />
 
     </LinearLayout>
 </RelativeLayout>
