@@ -88,12 +88,12 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137"
+        app:layout_constraintVertical_bias="0.148"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
         android:id="@+id/tvDistillery"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunitosansregular"
         android:textAlignment="center"
@@ -101,15 +101,15 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.204"
+        app:layout_constraintVertical_bias="0.231"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
         android:id="@+id/tvRating"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunitosansregular"
         android:textAlignment="center"
@@ -117,15 +117,15 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.366"
+        app:layout_constraintVertical_bias="0.396"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
         android:id="@+id/tvBottleDetails"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunitosansregular"
         android:textAlignment="center"
@@ -133,10 +133,10 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.262"
+        app:layout_constraintVertical_bias="0.311"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
@@ -153,7 +153,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.513" />
+        app:layout_constraintVertical_bias="0.528" />
 
     <TextView
         android:id="@+id/tvKeywords"
@@ -175,8 +175,8 @@
 
     <ImageView
         android:id="@+id/detailImageView"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="45dp"
         android:layout_marginBottom="160dp"
@@ -186,7 +186,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.286"
+        app:layout_constraintVertical_bias="0.34"
         app:layout_constraintWidth_percent="1" />
 
     <ImageButton
@@ -195,10 +195,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginEnd="20dp"
-        android:background="?attr/selectableItemBackground"
+        android:backgroundTint="@color/light_blue"
         android:contentDescription="Back"
         android:onClick="onClick"
-        android:src="@android:drawable/ic_menu_revert"
+        android:src="@drawable/baseline_arrow_back_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"
@@ -210,19 +210,18 @@
         android:id="@+id/editButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="67dp"
-        android:background="?attr/selectableItemBackground"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/light_blue"
         android:contentDescription="Edit"
         android:onClick="onClick"
-        android:src="@android:drawable/ic_menu_edit"
+        android:src="@drawable/baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.955"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintStart_toEndOf="@+id/tvBottleName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.045" />
+        app:layout_constraintVertical_bias="0.134" />
 
     <ImageButton
         android:id="@+id/buyButton"
@@ -272,23 +271,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.975" />
 
-    <ImageButton
-        android:id="@+id/saveImageButton"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_gravity="end"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="65dp"
-        android:background="@color/transparent"
-        android:contentDescription="Save Image"
-        android:onClick="onClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162" />
-
     <!--<ImageButton
         android:id="@+id/nfcButton"
         android:layout_width="wrap_content"
@@ -306,6 +288,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.632" />-->
+
+    <ImageButton
+        android:id="@+id/saveImageButton"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="end"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:background="@color/transparent"
+        android:contentDescription="Save Image"
+        android:elevation="5dp"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.195" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nav_window"
