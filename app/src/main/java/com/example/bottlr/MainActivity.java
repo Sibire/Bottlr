@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         allLocations = new ArrayList<>();
         cocktails = new ArrayList<>();
         allCocktails = new ArrayList<>();
-    }
+        }
     //endregion
 
     // TODO: Move this to onClick
