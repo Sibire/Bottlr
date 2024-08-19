@@ -138,46 +138,53 @@
                 android:id="@+id/bottleNameField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Bottle Name" />
+                android:hint="Bottle Name"
+                android:maxLength="64" />
 
             <EditText
                 android:id="@+id/distillerField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Distiller" />
+                android:hint="Distiller"
+                android:maxLength="64" />
 
             <EditText
                 android:id="@+id/spiritTypeField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Spirit Type" />
+                android:hint="Spirit Type"
+                android:maxLength="64" />
 
             <EditText
                 android:id="@+id/regionField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Region" />
+                android:hint="Region"
+                android:maxLength="32" />
 
             <EditText
                 android:id="@+id/ageField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Age (Years)"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="16"/>
 
             <EditText
                 android:id="@+id/abvField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="ABV (%)"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8" />
 
             <EditText
                 android:id="@+id/ratingField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Rating (1-10)"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="8" />
 
             <EditText
                 android:id="@+id/tastingNotesField"
@@ -186,14 +193,16 @@
                 android:gravity="top"
                 android:hint="Tasting Notes"
                 android:inputType="textMultiLine"
-                android:minLines="3" />
+                android:minLines="3"
+                android:maxLength="256" />
 
             <EditText
                 android:id="@+id/keywordsField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Keywords (Comma-Separated)"
-                android:inputType="text" />
+                android:inputType="text"
+                android:maxLength="256" />
 
             <Button
                 android:id="@+id/addPhotoButton"
