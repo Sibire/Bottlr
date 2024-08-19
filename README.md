@@ -120,7 +120,7 @@ Developers:
 
 Users:
 
-- Download the app from https://github.com/Sibire/Bottlr/blob/master/app/release/Bottlr_0.17.apk
+- Download the app from https://github.com/Sibire/Bottlr/blob/master/app/release/Bottlr_0.18.apk
 
 - Install it from your downloads folder.
 
