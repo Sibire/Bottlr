@@ -89,46 +89,50 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.202" />
 
+
     <Button
         android:id="@+id/logout_Button"
         android:layout_width="186dp"
         android:layout_height="69dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="608dp"
-        android:text="@string/log_out"
         android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
         android:fontFamily="@font/exodemibold"
+        android:text="@string/log_out"
+        android:textColor="@color/black"
         android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.945" />
 
     <Button
         android:id="@+id/upload_Button"
         android:layout_width="186dp"
         android:layout_height="150dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="224dp"
         android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
         android:fontFamily="@font/exodemibold"
-        android:textSize="25dp"
         android:text="Upload Data To Cloud"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <Button
         android:id="@+id/sync_Button"
         android:layout_width="186dp"
         android:layout_height="150dp"
-        android:layout_marginStart="208dp"
-        android:layout_marginTop="220dp"
-        android:text="Pull Data From Cloud"
+        android:layout_marginTop="224dp"
         android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
         android:fontFamily="@font/exodemibold"
+        android:text="Pull Data From Cloud"
+        android:textColor="@color/black"
         android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.928"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -136,15 +140,17 @@
         android:id="@+id/erase_Button"
         android:layout_width="186dp"
         android:layout_height="150dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="384dp"
-        android:text="@string/erase_cloud_storage"
         android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
         android:fontFamily="@font/exodemibold"
+        android:text="@string/erase_cloud_storage"
+        android:textColor="@color/black"
         android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.66" />
 
     <Button
         android:id="@+id/feedback_Button"
@@ -163,20 +169,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.66" />
 
+
     <TextView
         android:id="@+id/signed_in_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="128dp"
-        android:layout_marginTop="100dp"
         android:layout_marginEnd="135dp"
         android:fontFamily="@font/exodemibold"
         android:text="@string/not_signed_in"
         android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.137" />
 
     <TextView
         android:id="@+id/versionText"
