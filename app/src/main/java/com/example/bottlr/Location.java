@@ -2,6 +2,9 @@ package com.example.bottlr;
 
 import android.content.Context;
 import android.location.LocationManager;
+import android.util.Log;
+
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -64,8 +67,12 @@ public class Location {
         try {
             android.location.Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
+                double latitude = truncateCoordinate(location.getLatitude());
+                Log.d("Location Coords", "Raw Latitude: " + location.getLatitude());
+                Log.d("Location Coords", "Truncated Latitude: " + latitude);
+                double longitude = truncateCoordinate(location.getLongitude());
+                Log.d("Location Coords", "Raw Longitude: " + location.getLongitude());
+                Log.d("Location Coords", "Truncated Longitude: " + longitude);
                 return latitude + ", " + longitude;
             } else {
                 return "Location not available";
@@ -73,5 +80,9 @@ public class Location {
         } catch (SecurityException e) {
             return "Permissions not granted";
         }
+    }
+    private double truncateCoordinate(double coordinate) {
+        DecimalFormat df = new DecimalFormat("#.#####");
+        return Double.parseDouble(df.format(coordinate));
     }
 }
