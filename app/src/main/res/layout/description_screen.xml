@@ -7,12 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/titleBG"
+        android:layout_width="446dp"
+        android:layout_height="81dp"
+        android:scaleX="6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg1" />
+
     <TextView
         android:textIsSelectable="true"
         android:id="@+id/Title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bottlr"
+        android:textColor="@color/black"
         android:textSize="48sp"
         android:fontFamily="@font/downhill"
         android:letterSpacing=".05"
@@ -78,17 +89,16 @@
         android:id="@+id/tvBottleName"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:fontFamily="@font/exodemibold"
         android:textAlignment="center"
         android:textIsSelectable="true"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.148"
+        app:layout_constraintVertical_bias="0.137"
         app:layout_constraintWidth_percent="1" />
 
     <TextView
@@ -153,7 +163,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.528" />
+        app:layout_constraintVertical_bias="0.543" />
 
     <TextView
         android:id="@+id/tvKeywords"
@@ -189,13 +199,13 @@
         app:layout_constraintVertical_bias="0.34"
         app:layout_constraintWidth_percent="1" />
 
-    <ImageButton
+    <!--<ImageButton
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/light_blue"
+        android:backgroundTint="@color/gold"
         android:contentDescription="Back"
         android:onClick="onClick"
         android:src="@drawable/baseline_arrow_back_24"
@@ -204,7 +214,7 @@
         app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.135" />-->
 
     <ImageButton
         android:id="@+id/editButton"
@@ -212,16 +222,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/light_blue"
+        android:backgroundTint="@color/gold"
         android:contentDescription="Edit"
         android:onClick="onClick"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toEndOf="@+id/tvBottleName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.134" />
+        app:layout_constraintVertical_bias="0.131" />
 
     <ImageButton
         android:id="@+id/buyButton"
@@ -229,47 +239,16 @@
         android:layout_height="85dp"
         android:layout_gravity="end"
         android:layout_marginTop="66dp"
+        android:backgroundTint="@color/gold"
         android:contentDescription="Buy"
-        android:backgroundTint="@color/light_blue"
         android:onClick="onClick"
         android:src="@drawable/shopping_cart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.972" />
-
-    <ImageButton
-        android:id="@+id/shareButton"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_gravity="end"
-        android:contentDescription="Share"
-        android:onClick="onClick"
-        android:backgroundTint="@color/light_blue"
-        android:src="@drawable/baseline_share_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
-
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_gravity="end"
-        android:contentDescription="Delete"
-        android:onClick="onClick"
-        android:backgroundTint="@color/light_blue"
-        android:src="@drawable/baseline_delete_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.904"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
 
     <!--<ImageButton
         android:id="@+id/nfcButton"
@@ -288,6 +267,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.632" />-->
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/gold"
+        android:contentDescription="Share"
+        android:onClick="onClick"
+        android:src="@drawable/baseline_share_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.975" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="61dp"
+        android:layout_height="63dp"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/red"
+        android:contentDescription="Delete"
+        android:onClick="onClick"
+        android:scaleX=".7"
+        android:scaleY=".7"
+        android:src="@drawable/baseline_delete_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.028"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75" />
 
     <ImageButton
         android:id="@+id/saveImageButton"
@@ -337,15 +350,14 @@
             android:id="@+id/nav_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="180dp"
-            android:scaleX=".8"
-            android:scaleY="1.1"
+            android:layout_marginEnd="280dp"
             android:elevation="2dp"
+            android:scaleY="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/nav_bar2" />
+            app:srcCompat="@drawable/bg2" />
 
         <ImageView
             android:id="@+id/nav_menu_logo"

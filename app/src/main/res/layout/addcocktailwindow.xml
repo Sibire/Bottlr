@@ -7,6 +7,16 @@
     android:onClick="onClick"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/titleBG"
+        android:layout_width="446dp"
+        android:layout_height="81dp"
+        android:scaleX="6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg1" />
+
     <TextView
         android:id="@+id/Title_text"
         android:layout_width="wrap_content"
@@ -15,6 +25,7 @@
         android:textSize="48sp"
         android:fontFamily="@font/downhill"
         android:letterSpacing=".05"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,11 +107,11 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
+                    android:background="@color/gold"
                     app:title="Add A Cocktail"
-                    app:titleTextColor="@android:color/white">
+                    app:titleTextColor="@android:color/black">
 
-                    <ImageButton
+                    <!--<ImageButton
                         android:id="@+id/backButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -108,9 +119,9 @@
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="Back"
                         android:onClick="onClick"
-                        android:src="@android:drawable/ic_menu_revert" />
+                        android:src="@android:drawable/ic_menu_revert" />-->
 
-                    <ImageButton
+                    <!--<ImageButton
                         android:id="@+id/nfcButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -118,7 +129,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:onClick="onClick"
                         android:src="@drawable/baseline_nfc_24"
-                        android:translationX="60sp" />
+                        android:translationX="60sp" />-->
 
                     <ImageButton
                         android:id="@+id/switchButton"
@@ -126,6 +137,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:visibility="visible"
+                        android:scaleX="2"
+                        android:scaleY="2"
                         android:background="?attr/selectableItemBackground"
                         android:onClick="onClick"
                         android:src="@drawable/switch_clip"
@@ -213,14 +226,18 @@
                 android:id="@+id/addPhotoButtonCocktail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/gold"
                 android:onClick="onClick"
+                android:textColor="@color/black"
                 android:text="Add Cocktail Photo" />
 
             <Button
                 android:id="@+id/saveButtonCocktail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/gold"
                 android:onClick="onClick"
+                android:textColor="@color/black"
                 android:text="Save Cocktail" />
 
             <ImageView
@@ -251,7 +268,7 @@
             android:layout_height="751dp"
             android:layout_marginStart="250dp"
             android:elevation="-10dp"
-            android:backgroundTint="@color/supertransparent_black"
+            android:background="@color/transparent"
             android:onClick="onClick"
             android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
@@ -263,15 +280,14 @@
             android:id="@+id/nav_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="180dp"
-            android:scaleX=".8"
-            android:scaleY="1.1"
+            android:layout_marginEnd="280dp"
             android:elevation="2dp"
+            android:scaleY="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/nav_bar2" />
+            app:srcCompat="@drawable/bg2" />
 
         <ImageView
             android:id="@+id/nav_menu_logo"

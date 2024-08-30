@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/titleBG"
+        android:layout_width="446dp"
+        android:layout_height="81dp"
+        android:scaleX="6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg1" />
+
     <TextView
         android:id="@+id/Title_text"
         android:layout_width="wrap_content"
@@ -13,6 +23,7 @@
         android:text="Bottlr"
         android:textSize="48sp"
         android:fontFamily="@font/downhill"
+        android:textColor="@color/black"
         android:letterSpacing=".05"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +89,7 @@
         android:layout_height="74dp"
         android:layout_marginTop="10dp"
         android:text="@string/log_in"
-        android:backgroundTint="@color/light_blue"
+        android:backgroundTint="@color/gold"
         android:textColor="@color/black"
         android:fontFamily="@font/exodemibold"
         android:textSize="25dp"
@@ -89,17 +100,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.202" />
 
+
     <Button
         android:id="@+id/logout_Button"
         android:layout_width="186dp"
         android:layout_height="69dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="608dp"
-        android:text="@string/log_out"
-        android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
+        android:layout_marginTop="612dp"
+        android:backgroundTint="@color/gold"
         android:fontFamily="@font/exodemibold"
+        android:text="@string/log_out"
+        android:textColor="@color/black"
         android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,61 +120,66 @@
         android:id="@+id/upload_Button"
         android:layout_width="186dp"
         android:layout_height="150dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="220dp"
-        android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
+        android:backgroundTint="@color/gold"
         android:fontFamily="@font/exodemibold"
-        android:textSize="25dp"
         android:text="Upload Data To Cloud"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/sync_Button"
-        android:layout_width="186dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="208dp"
-        android:layout_marginTop="220dp"
-        android:text="Pull Data From Cloud"
-        android:backgroundTint="@color/light_blue"
         android:textColor="@color/black"
-        android:fontFamily="@font/exodemibold"
-        android:textSize="25dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/erase_Button"
-        android:layout_width="186dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="384dp"
-        android:text="@string/erase_cloud_storage"
-        android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
-        android:fontFamily="@font/exodemibold"
-        android:textSize="25dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/feedback_Button"
-        android:layout_width="186dp"
-        android:layout_height="150dp"
-        android:onClick="onFeedbackButtonClick"
-        android:text="Feedback Survey"
-        android:backgroundTint="@color/light_blue"
-        android:textColor="@color/black"
-        android:fontFamily="@font/exodemibold"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.928"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.66" />
+        app:layout_constraintVertical_bias="0.378" />
+
+    <Button
+        android:id="@+id/sync_Button"
+        android:layout_width="186dp"
+        android:layout_height="150dp"
+        android:backgroundTint="@color/gold"
+        android:fontFamily="@font/exodemibold"
+        android:text="Pull Data From Cloud"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.378" />
+
+    <Button
+        android:id="@+id/erase_Button"
+        android:layout_width="186dp"
+        android:layout_height="150dp"
+        android:backgroundTint="@color/gold"
+        android:fontFamily="@font/exodemibold"
+        android:text="@string/erase_cloud_storage"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.667" />
+
+    <Button
+        android:id="@+id/feedback_Button"
+        android:layout_width="186dp"
+        android:layout_height="150dp"
+        android:backgroundTint="@color/gold"
+        android:fontFamily="@font/exodemibold"
+        android:onClick="onFeedbackButtonClick"
+        android:text="Feedback Survey"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.928"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.667" />
 
     <TextView
         android:id="@+id/signed_in_user"
@@ -224,15 +242,14 @@
             android:id="@+id/nav_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="180dp"
-            android:scaleX=".8"
-            android:scaleY="1.1"
+            android:layout_marginEnd="280dp"
             android:elevation="2dp"
+            android:scaleY="2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/nav_bar2" />
+            app:srcCompat="@drawable/bg2" />
 
         <ImageView
             android:id="@+id/nav_menu_logo"

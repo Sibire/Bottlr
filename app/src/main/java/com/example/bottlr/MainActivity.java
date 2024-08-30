@@ -225,12 +225,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (recentcocktail != null && recentcocktail.getPhotoUri() != null) {
                     saveImageToGalleryCocktail(this, recentcocktail);}
             }
-        } else if (id == R.id.backButton) { //back button bottle
-            customBackButton();
+        /*} else if (id == R.id.backButton) { //back button bottle
+            customBackButton();*/
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker(id);
-        } else if (id == R.id.nfcButton) { //nfc button info
-            nfcShare();
+        /*} else if (id == R.id.nfcButton) { //nfc button info
+            nfcShare();*/
         } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
             FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
             filterFrame.setVisibility(View.VISIBLE);

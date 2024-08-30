@@ -10,7 +10,7 @@
         android:id="@+id/locationsinglebutton"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:backgroundTint="@color/light_blue"
+        android:backgroundTint="@color/white"
         android:clickable="true"
         android:elevation="0dp"
         app:cornerRadius="10dp" />
