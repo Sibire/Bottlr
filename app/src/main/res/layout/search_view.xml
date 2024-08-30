@@ -10,7 +10,7 @@
         android:id="@+id/search_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bottle Search"
+        android:text="Gallery Search"
         android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,4 +63,4 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout><?xml version="1.0" encoding="utf-8"?>
+</androidx.constraintlayout.widget.ConstraintLayout>

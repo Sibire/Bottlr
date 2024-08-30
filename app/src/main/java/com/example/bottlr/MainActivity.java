@@ -84,8 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202, LOCATION_REQUEST_CODE = 203;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
-            ageField, tastingNotesField, regionField, keywordsField, ratingField,
-            nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
+            ageField, tastingNotesField, regionField, keywordsField, ratingField, cocktailNameField, baseField,
             mixerField, juiceField, liqueurField, garnishField, extraField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
@@ -376,14 +375,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Recycler Code
     @SuppressLint("NotifyDataSetChanged")
+    // Update the method call in GenerateLiquorRecycler
     void GenerateLiquorRecycler() {
         // Set Recycler
         RecyclerView LiquorCabinetRecycler = findViewById(R.id.liquorRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LiquorCabinetRecycler.setLayoutManager(layoutManager);
-        /*// Line divider to keep things nice and neat
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);*/
+
         // Bottle listing
         if (drinkFlag) {
             BottleAdapter liquorAdapter;
@@ -398,7 +396,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             LiquorCabinetRecycler.setAdapter(liquorAdapter);
             liquorAdapter.notifyDataSetChanged();
         }
-
     }
     void GenerateLocationRecycler() {
         // Set Recycler
@@ -522,8 +519,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.apply();
     }
 
-    public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
-                                     String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
+    public void detailedViewCocktail(Cocktail cocktail) {
+        String cocktailName = cocktail.getName();
+        String cocktailBase = cocktail.getBase();
+        String cocktailMixer = cocktail.getMixer();
+        String cocktailJuice = cocktail.getJuice();
+        String cocktailLiqueur = cocktail.getLiqueur();
+        String cocktailGarnish = cocktail.getGarnish();
+        String cocktailExtra = cocktail.getExtra();
+        Uri cocktailPhoto = cocktail.getPhotoUri();
+        String cocktailNotes = cocktail.getNotes();
+        String cocktailRating = cocktail.getRating();
+        String cocktailKeywords = cocktail.getKeywords();
         setContentView(R.layout.description_cocktails);
 
         //fill empty data
@@ -1391,26 +1398,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         searchButton.setOnClickListener(v -> {
             String selectedField = fieldSelectorSpinner.getSelectedItem().toString();
-            String query = queryField.getText().toString().trim();
-
-            if (selectedField.isEmpty() || query.isEmpty()) {
-                Toast.makeText(this, "Please select a field and enter a query", Toast.LENGTH_SHORT).show();
-            } else {
+            String query = queryField.getText().toString();
+            if (!selectedField.isEmpty() && !query.isEmpty()) {
                 if (searchingCocktails) {
                     performCocktailSearch(selectedField, query);
                 } else {
                     performBottleSearch(selectedField, query);
                 }
+            } else {
+                Toast.makeText(this, "Please select a field and enter a query", Toast.LENGTH_SHORT).show();
             }
         });
 
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (searchingCocktails) {
-            searchResultsAdapter = new CocktailAdapter(new ArrayList<>());
+            searchResultsAdapter2 = new CocktailAdapter(new ArrayList<>(), allCocktails, this::detailedViewCocktail);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
         } else {
-            searchResultsAdapter = new BottleAdapter(new ArrayList<>());
+            searchResultsAdapter = new BottleAdapter(new ArrayList<>(), allBottles, this::detailedView);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         }
-        searchResultsRecyclerView.setAdapter(searchResultsAdapter);
     }
 
     private void performBottleSearch(String selectedField, String query) {
@@ -1529,7 +1536,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        searchResultsAdapter.updateData(filteredCocktails);
+        searchResultsAdapter2.updateData(filteredCocktails);
     }
     //endregion
 

@@ -19,8 +19,7 @@ public class CocktailAdapter extends RecyclerView.Adapter<CocktailAdapter.Cockta
     private List<Cocktail> allCocktails;
 
     public interface OnCocktailCheckListener {
-        void onButtonClick(String cocktailName, String cocktailId, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
-                           Uri cocktailPhoto, String cocktailGarnish, String cocktailExtra, String cocktailNotes, String cocktailRating, String cocktailKeywords);
+        void onButtonClick(Cocktail cocktail);
     }
 
     @NonNull
@@ -66,8 +65,7 @@ public class CocktailAdapter extends RecyclerView.Adapter<CocktailAdapter.Cockta
         } else {
             holder.imageViewCocktail.setImageResource(R.drawable.nodrinkimg);
         }
-        holder.cocktailButton.setOnClickListener(v -> onCocktailClick.onButtonClick(cocktail.getName(), cocktail.getCocktailID(), cocktail.getBase(), cocktail.getMixer(),
-                cocktail.getJuice(), cocktail.getLiqueur(), cocktail.getPhotoUri(), cocktail.getGarnish(), cocktail.getExtra(), cocktail.getNotes(), cocktail.getRating(), cocktail.getKeywords()));
+        holder.cocktailButton.setOnClickListener(v -> onCocktailClick.onButtonClick(cocktail));
     }
 
     @Override
