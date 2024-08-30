@@ -15,23 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleViewHolder> {
-    public List<Bottle> bottles;
-    public List<Bottle> allBottles;
-    interface OnBottleCheckListener {
+    private List<Bottle> bottles;
+    private List<Bottle> allBottles;
+
+    public interface OnBottleCheckListener {
         void onButtonClick(String bottleName, String bottleId, String bottleDistillery, String bottleType, String bottleABV, String bottleAge,
                            Uri bottlePhoto, String bottleNotes, String bottleRegion, String bottleRating, String bottleKeywords);
     }
+
     @NonNull
     private final OnBottleCheckListener onBottleClick;
+
     public BottleAdapter(List<Bottle> bottles, List<Bottle> allBottles, @NonNull OnBottleCheckListener onBottleCheckListener) {
         this.bottles = bottles != null ? bottles : new ArrayList<>(); // Ensure bottles is not null
         this.allBottles = allBottles != null ? allBottles : new ArrayList<>(); // Ensure allCocktails is not null
         this.onBottleClick = onBottleCheckListener;
     }
+
     public static class BottleViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewBottle;
         TextView textViewBottleName, textViewDistillery;
         Button bottleButton;
+
         public BottleViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewBottle = itemView.findViewById(R.id.imageViewBottle);
@@ -40,12 +45,14 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
             bottleButton = itemView.findViewById(R.id.bottlesinglebutton);
         }
     }
+
     @NonNull
     @Override
     public BottleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bottlelabel, viewGroup, false);
         return new BottleViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull final BottleViewHolder holder, int position) {
         Bottle bottle = bottles.get(position);
@@ -59,11 +66,20 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         } else {
             holder.imageViewBottle.setImageResource(R.drawable.nodrinkimg);
         }
-        (holder).bottleButton.setOnClickListener(v -> onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
+        holder.bottleButton.setOnClickListener(v -> onBottleClick.onButtonClick(bottle.getName(), bottle.getBottleID(), bottle.getDistillery(), bottle.getType(),
                 bottle.getAbv(), bottle.getAge(), bottle.getPhotoUri(), bottle.getNotes(), bottle.getRegion(), bottle.getRating(), bottle.getKeywords()));
     }
+
     @Override
-    public int getItemCount() { return bottles.size(); }
+    public int getItemCount() {
+        return bottles.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<Bottle> newBottles) {
+        this.bottles = newBottles;
+        notifyDataSetChanged();
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setBottles(List<Bottle> bottles) {
