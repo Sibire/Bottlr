@@ -1,5 +1,7 @@
 package com.example.bottlr;
 
+import static com.example.bottlr.SharedUtils.loadBottles;
+import static com.example.bottlr.SharedUtils.loadCocktails;
 import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.parseCocktail;
@@ -385,13 +387,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Bottle listing
         if (drinkFlag) {
             BottleAdapter liquorAdapter;
-            bottles = SharedUtils.loadBottles(this);
+            bottles = loadBottles(this);
             liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
             LiquorCabinetRecycler.setAdapter(liquorAdapter);
             liquorAdapter.notifyDataSetChanged();
         } else {
             CocktailAdapter liquorAdapter;
-            cocktails = SharedUtils.loadCocktails(this);
+            cocktails = loadCocktails(this);
             liquorAdapter = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
             LiquorCabinetRecycler.setAdapter(liquorAdapter);
             liquorAdapter.notifyDataSetChanged();
@@ -733,7 +735,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Get a reference to the Firebase Storage instance
         FirebaseStorage storage = FirebaseStorage.getInstance();
         // Use the loadBottles() method to get all the bottles
-        List<Bottle> bottleList = SharedUtils.loadBottles(this);
+        List<Bottle> bottleList = loadBottles(this);
         // Loop through the bottles in the bottle list
         for (Bottle bottle : bottleList) {
             // Get the file name for the bottle data
@@ -790,7 +792,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         //copy of bottle, but for cocktails
-        List<Cocktail> cocktailList = SharedUtils.loadCocktails(this);
+        List<Cocktail> cocktailList = loadCocktails(this);
         for (Cocktail cocktail : cocktailList) {
             String dataFileName = "cocktail_" + cocktail.getName() + ".txt";
             StorageReference dataFileRef = storage.getReference()
@@ -1382,6 +1384,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button searchButton = findViewById(R.id.search_button);
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
 
+        // Load bottles before setting up the search view
+        allBottles = loadBottles(this);
+        allCocktails = loadCocktails(this);
+
         if (!searchingCocktails) {
             header.setText("Bottle Search");
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -1399,6 +1405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchButton.setOnClickListener(v -> {
             String selectedField = fieldSelectorSpinner.getSelectedItem().toString();
             String query = queryField.getText().toString();
+            Log.d("Search", "Search button clicked with field: " + selectedField + " and query: " + query);
             if (!selectedField.isEmpty() && !query.isEmpty()) {
                 if (searchingCocktails) {
                     performCocktailSearch(selectedField, query);
@@ -1423,12 +1430,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void performBottleSearch(String selectedField, String query) {
         List<Bottle> filteredBottles = new ArrayList<>();
         query = query.toLowerCase();
+        Log.d("Search", "Performing bottle search for field: " + selectedField + " with query: " + query);
+        Log.d("Search", "Total bottles available: " + allBottles.size());
 
         for (Bottle bottle : allBottles) {
             switch (selectedField) {
                 case "Name":
                     if (bottle.getName().toLowerCase().contains(query)) {
                         filteredBottles.add(bottle);
+                        Log.d("Search", "Bottle matched: " + bottle.getName());
                     }
                     break;
                 case "Distillery":
@@ -1473,7 +1483,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
         }
-
+        Log.d("Search", "Bottle search results: " + filteredBottles.size() + " items found");
         searchResultsAdapter.updateData(filteredBottles);
     }
 

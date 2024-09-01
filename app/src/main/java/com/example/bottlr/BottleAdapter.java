@@ -2,6 +2,7 @@ package com.example.bottlr;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +76,8 @@ public class BottleAdapter extends RecyclerView.Adapter<BottleAdapter.BottleView
         return bottles.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<Bottle> newBottles) {
+        Log.d("Search", "Updating bottle adapter with " + newBottles.size() + " items");
         this.bottles = newBottles;
         notifyDataSetChanged();
     }
