@@ -516,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_XY); // Set the scale type of the ImageView so it displays properly
 
         TextView tbottleName = findViewById(R.id.tvBottleName);
         TextView tbottleDistillery = findViewById(R.id.tvDistillery);
@@ -534,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleDetails.setText(details);
         tbottleNotes.setText(bottleNotes);
 
-        String keywords = "Keywords:\n" + bottleKeywords;
+        String keywords = "Keywords: " + bottleKeywords;
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
@@ -577,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_XY); // Set the scale type of the ImageView so it displays properly
         TextView tcocktailName = findViewById(R.id.cvCocktailName);
         TextView tcocktailbase = findViewById(R.id.cvBase);
         TextView tcocktailrating = findViewById(R.id.cvRating);
@@ -594,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tcocktaildetails.setText(details);
         tcocktailnotes.setText(cocktailNotes);
 
-        String keywords = "Keywords:\n" + cocktailKeywords;
+        String keywords = "Keywords: " + cocktailKeywords;
         tcocktailKeywords.setText(keywords);
         if(cocktailPhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);

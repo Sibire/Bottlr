@@ -258,6 +258,24 @@
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop" />
 
+            <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="61dp"
+                android:layout_height="63dp"
+                android:layout_gravity="end"
+                android:backgroundTint="@color/red"
+                android:contentDescription="Delete"
+                android:onClick="onClick"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:src="@drawable/baseline_delete_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.028"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.75" />
+
         </LinearLayout>
     </ScrollView>
 

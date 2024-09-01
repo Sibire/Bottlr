@@ -8,6 +8,18 @@
     tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/bggallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBG"
+        app:srcCompat="@drawable/bg3" />
+
+    <ImageView
         android:id="@+id/titleBG"
         android:layout_width="446dp"
         android:layout_height="81dp"
@@ -85,119 +97,178 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/cloud_empty" />
 
-    <TextView
-        android:id="@+id/tvBottleName"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:fontFamily="@font/exodemibold"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137"
-        app:layout_constraintWidth_percent="1" />
-
-    <TextView
-        android:id="@+id/tvDistillery"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/nunitosansregular"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.231"
-        app:layout_constraintWidth_percent="1" />
-
-    <TextView
-        android:id="@+id/tvRating"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/nunitosansregular"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.396"
-        app:layout_constraintWidth_percent="1" />
-
-    <TextView
-        android:id="@+id/tvBottleDetails"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/nunitosansregular"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.311"
-        app:layout_constraintWidth_percent="1" />
-
-    <TextView
-        android:id="@+id/tvNotes"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/nunitosansregular"
-        android:scrollbars="vertical"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="16sp"
+    <Button
+        android:id="@+id/backgroundDesc"
+        android:layout_width="383dp"
+        android:layout_height="519dp"
+        android:backgroundTint="@color/Nearwhite"
+        android:elevation="0dp"
+        android:clickable="false"
+        app:cornerRadius="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.543" />
+        app:layout_constraintVertical_bias="0.452" />
 
-    <TextView
-        android:id="@+id/tvKeywords"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginTop="200dp"
-        android:fontFamily="@font/nunitosansregular"
-        android:scrollbars="vertical"
-        android:textAlignment="center"
-        android:textIsSelectable="true"
-        android:textSize="16sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="383dp"
+        android:layout_height="519dp"
+        android:elevation="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.801" />
+        app:layout_constraintVertical_bias="0.452">
 
-    <ImageView
-        android:id="@+id/detailImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginBottom="160dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34"
-        app:layout_constraintWidth_percent="1" />
+        <TextView
+            android:id="@+id/tvBottleName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/exodemibold"
+            android:textAlignment="center"
+            android:textIsSelectable="true"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.032"
+            app:layout_constraintWidth_percent="1" />
+
+        <TextView
+            android:id="@+id/tvDistillery"
+            android:layout_width="165dp"
+            android:layout_height="55dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:textIsSelectable="true"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.958"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.136"
+            app:layout_constraintWidth_percent="1" />
+
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="165dp"
+            android:layout_height="44dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.954"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.433"
+            app:layout_constraintWidth_percent="1" />
+
+        <TextView
+            android:id="@+id/tvBottleDetails"
+            android:layout_width="166dp"
+            android:layout_height="52dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:textIsSelectable="true"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.956"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.27"
+            app:layout_constraintWidth_percent="1" />
+
+        <!--<ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="@color/light_blue"
+            android:contentDescription="Back"
+            android:onClick="onClick"
+            android:src="@drawable/baseline_arrow_back_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.027"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.135" />-->
+
+        <TextView
+            android:id="@+id/tvNotes"
+            android:layout_width="363dp"
+            android:layout_height="152dp"
+            android:layout_margin="8dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.55"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.73" />
+
+        <TextView
+            android:id="@+id/tvKeywords"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:layout_marginTop="200dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.695"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.94" />
+
+        <ImageView
+            android:id="@+id/detailImageView"
+            android:layout_width="185dp"
+            android:layout_height="185dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="160dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.139"
+            app:layout_constraintWidth_percent="1" />
+
+        <ImageButton
+            android:id="@+id/saveImageButton"
+            android:layout_width="185dp"
+            android:layout_height="185dp"
+            android:layout_gravity="end"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="65dp"
+            android:background="@color/transparent"
+            android:contentDescription="Save Image"
+            android:elevation="5dp"
+            android:onClick="onClick"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--<ImageButton
         android:id="@+id/backButton"
@@ -215,40 +286,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.135" />-->
-
-    <ImageButton
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/gold"
-        android:contentDescription="Edit"
-        android:onClick="onClick"
-        android:src="@drawable/baseline_edit_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.3"
-        app:layout_constraintStart_toEndOf="@+id/tvBottleName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.131" />
-
-    <ImageButton
-        android:id="@+id/buyButton"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="66dp"
-        android:backgroundTint="@color/gold"
-        android:contentDescription="Buy"
-        android:onClick="onClick"
-        android:src="@drawable/shopping_cart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.972" />
 
     <!--<ImageButton
         android:id="@+id/nfcButton"
@@ -269,6 +306,38 @@
         app:layout_constraintVertical_bias="0.632" />-->
 
     <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="1dp"
+        android:backgroundTint="@color/gold"
+        android:contentDescription="Edit"
+        android:onClick="onClick"
+        android:src="@drawable/baseline_edit_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.975" />
+
+    <ImageButton
+        android:id="@+id/buyButton"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="66dp"
+        android:backgroundTint="@color/gold"
+        android:contentDescription="Buy"
+        android:onClick="onClick"
+        android:src="@drawable/shopping_cart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.972" />
+
+    <ImageButton
         android:id="@+id/shareButton"
         android:layout_width="85dp"
         android:layout_height="85dp"
@@ -279,46 +348,10 @@
         android:src="@drawable/baseline_share_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.975" />
-
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="61dp"
-        android:layout_height="63dp"
-        android:layout_gravity="end"
-        android:backgroundTint="@color/red"
-        android:contentDescription="Delete"
-        android:onClick="onClick"
-        android:scaleX=".7"
-        android:scaleY=".7"
-        android:src="@drawable/baseline_delete_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.028"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75" />
-
-    <ImageButton
-        android:id="@+id/saveImageButton"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="end"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="65dp"
-        android:background="@color/transparent"
-        android:contentDescription="Save Image"
-        android:elevation="5dp"
-        android:onClick="onClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.195" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nav_window"
