@@ -109,7 +109,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/gold"
                     app:title="Add A Cocktail"
-                    app:titleTextColor="@android:color/black">
+                    app:titleTextColor="@android:color/white">
 
                     <!--<ImageButton
                         android:id="@+id/backButton"
@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/gold"
                 android:onClick="onClick"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Add Cocktail Photo" />
 
             <Button
@@ -237,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/gold"
                 android:onClick="onClick"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="Save Cocktail" />
 
             <ImageView
