@@ -1112,6 +1112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editor == 1) {
                 ImageButton switcher = findViewById(R.id.switchButton);
                 switcher.setVisibility(View.GONE);
+                ImageButton delete = findViewById(R.id.deleteButton);
+                delete.setVisibility(View.VISIBLE);
+                ImageView drink = findViewById(R.id.switchButtonImage);
+                drink.setVisibility(View.GONE);
                 Bottle bottleToEdit = getMostRecentBottle();
                 toolbar.setTitle("Edit Bottle");
                 popFields(bottleToEdit);
@@ -1136,6 +1140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editor == 1) {
                 ImageButton switcher = findViewById(R.id.switchButton);
                 switcher.setVisibility(View.GONE);
+                ImageButton delete = findViewById(R.id.deleteButton);
+                delete.setVisibility(View.VISIBLE);
+                ImageView drink = findViewById(R.id.switchButtonImage);
+                drink.setVisibility(View.GONE);
                 Cocktail cocktailToEdit = getMostRecentCocktail();
                 toolbar.setTitle("Edit Cocktail");
                 popFieldsCocktail(cocktailToEdit);
