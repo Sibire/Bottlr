@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor = 2;
             setContentView(R.layout.activity_settings);
             lastLayout = R.layout.activity_settings;
+            SignInCheckerSettings(lastLayout);
             settings();
         } else if (id == R.id.fab) { //add bottle
             if(editor == 3) {
@@ -379,6 +380,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
             if(layout != R.layout.homescreen) {
+                signIn();
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void SignInCheckerSettings(int layout) {
+        Button signIn = findViewById(R.id.login_Button);
+        Button logout = findViewById(R.id.logout_Button);
+        Button eraseStorage = findViewById(R.id.erase_Button);
+        settings();
+        if(mAuth.getCurrentUser() != null) {
+            signIn.setVisibility(View.GONE);
+            logout.setVisibility(View.VISIBLE);
+            eraseStorage.setVisibility(View.VISIBLE);
+        } else {
+            if(layout != R.layout.activity_settings) {
                 signIn();
             }
         }
@@ -630,13 +648,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 signedInUserTextView.setText("Not Signed In");
             }
             Button loginButton = findViewById(R.id.login_Button);
-            loginButton.setOnClickListener(v -> signIn());
+            loginButton.setOnClickListener(v -> { signIn(); homeScreen(); });
             Button logoutButton = findViewById(R.id.logout_Button);
-            logoutButton.setOnClickListener(v -> signOut());
-            Button uploadButton = findViewById(R.id.upload_Button);
+            logoutButton.setOnClickListener(v -> { signOut(); homeScreen(); });
+            /*Button uploadButton = findViewById(R.id.upload_Button);
             uploadButton.setOnClickListener(v -> uploadData());
             Button syncButton = findViewById(R.id.sync_Button);
-            syncButton.setOnClickListener(v -> downloadData());
+            syncButton.setOnClickListener(v -> downloadData());*/
             Button eraseButton = findViewById(R.id.erase_Button);
             eraseButton.setOnClickListener(v -> eraseCloudStorage());
             editor = 0;

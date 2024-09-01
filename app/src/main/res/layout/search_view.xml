@@ -9,30 +9,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:clickable="true"
-            android:onClick="onClick"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/titleBG"
+            android:layout_width="446dp"
+            android:layout_height="81dp"
+            android:scaleX="6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.926"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.957"
-            app:srcCompat="@android:drawable/ic_menu_add" />
+            app:srcCompat="@drawable/bg1" />
+
+        <TextView
+            android:id="@+id/Title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bottlr"
+            android:textColor="@color/black"
+            android:textSize="48sp"
+            android:fontFamily="@font/downhill"
+            android:letterSpacing=".05"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.001" />
 
         <TextView
             android:id="@+id/search_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="35dp"
             android:fontFamily="@font/downhill"
             android:letterSpacing=".05"
             android:text="Search"
-            android:textSize="48sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.55"
@@ -50,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_header"
+            app:layout_constraintTop_toBottomOf="@+id/Title_text"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/line" />
 
@@ -96,33 +107,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_image" />
 
         <EditText
             android:id="@+id/search_query"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter search query"
             android:layout_margin="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Enter search query"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_selector_spinner" />
 
         <Button
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search"
             android:layout_gravity="center"
             android:layout_margin="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Search"
+            android:backgroundTint="@color/gold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_query" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_results_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_margin="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_button"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="3dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -156,15 +177,14 @@
             android:id="@+id/nav_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="180dp"
-            android:scaleX=".8"
-            android:scaleY="1.1"
+            android:layout_marginEnd="280dp"
             android:elevation="2dp"
+            android:scaleY="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/nav_bar2" />
+            app:srcCompat="@drawable/bg2" />
 
         <ImageView
             android:id="@+id/nav_menu_logo"
@@ -418,5 +438,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_location_pin_24" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
