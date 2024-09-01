@@ -17,7 +17,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\ARDENT\\StudioProjects\\Bottlr\\keystore.jks')
+            storeFile file('C:\\Users\\Core\\AndroidStudioProjects\\Bottlr\\keystore.jks')
             storePassword 'BlackRose!8'
             keyAlias 'releasekey'
             keyPassword 'BlackRose!8'
