@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             drinkFlag = true;
+            editor = 0;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -149,6 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             drinkFlag = false;
             editor = 0;
             setContentView(R.layout.fragment_gallery);
+            FloatingActionButton addButton = findViewById(R.id.fab);
+            Drawable drawable = getResources().getDrawable(R.drawable.cocktailadd, null);
+            addButton.setForeground(drawable);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_search_button) { //nav search screen click
@@ -157,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor = 2;
             setContentView(R.layout.activity_settings);
             lastLayout = R.layout.activity_settings;
+            SignInCheckerSettings(lastLayout);
             settings();
         } else if (id == R.id.fab) { //add bottle
             if(editor == 3) {
@@ -164,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 addNewLocation();
             } else {
                 editor = 0;
-                drinkFlag = true;
                 addBottle();
             }
         } else if (id == R.id.addPhotoButton) { //add photo button bottle
@@ -224,17 +230,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (recentcocktail != null && recentcocktail.getPhotoUri() != null) {
                     saveImageToGalleryCocktail(this, recentcocktail);}
             }
-        } else if (id == R.id.backButton) { //back button bottle
-            customBackButton();
+        /*} else if (id == R.id.backButton) { //back button bottle
+            customBackButton();*/
         } else if (id == R.id.sign_in_button_home) { //sign in home button
             SignInChecker(id);
-        } else if (id == R.id.nfcButton) { //nfc button info
-            nfcShare();
+        /*} else if (id == R.id.nfcButton) { //nfc button info
+            nfcShare();*/
         }
         else if (id == R.id.menu_locations_button) { //nav locations screen click
             //setContentView(R.layout.locations_page);
             editor = 3;
             setContentView(R.layout.fragment_gallery);
+            FloatingActionButton addButton = findViewById(R.id.fab);
+            Drawable drawable = getResources().getDrawable(R.drawable.locationadd, null);
+            addButton.setForeground(drawable);
             GenerateLocationRecycler();
         }else if (id == R.id.switchButton) { //switch add bottle type
             if (drinkFlag) {
@@ -275,6 +284,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.homescreen);
         SignInChecker(R.layout.homescreen);
         lastLayout = R.layout.homescreen;
+        drinkFlag = true;
+        editor = 0;
     }
 
     private Bottle getMostRecentBottle() {
@@ -369,6 +380,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
             if(layout != R.layout.homescreen) {
+                signIn();
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void SignInCheckerSettings(int layout) {
+        Button signIn = findViewById(R.id.login_Button);
+        Button logout = findViewById(R.id.logout_Button);
+        Button eraseStorage = findViewById(R.id.erase_Button);
+        settings();
+        if(mAuth.getCurrentUser() != null) {
+            signIn.setVisibility(View.GONE);
+            logout.setVisibility(View.VISIBLE);
+            eraseStorage.setVisibility(View.VISIBLE);
+        } else {
+            if(layout != R.layout.activity_settings) {
                 signIn();
             }
         }
@@ -488,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_XY); // Set the scale type of the ImageView so it displays properly
 
         TextView tbottleName = findViewById(R.id.tvBottleName);
         TextView tbottleDistillery = findViewById(R.id.tvDistillery);
@@ -506,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tbottleDetails.setText(details);
         tbottleNotes.setText(bottleNotes);
 
-        String keywords = "Keywords:\n" + bottleKeywords;
+        String keywords = "Keywords: " + bottleKeywords;
         tbottleKeywords.setText(keywords);
         if(bottlePhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
@@ -549,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Find the views
         ImageView bottleImage = findViewById(R.id.detailImageView);
-        bottleImage.setScaleType(ImageView.ScaleType.FIT_CENTER); // Set the scale type of the ImageView so it displays properly
+        bottleImage.setScaleType(ImageView.ScaleType.FIT_XY); // Set the scale type of the ImageView so it displays properly
         TextView tcocktailName = findViewById(R.id.cvCocktailName);
         TextView tcocktailbase = findViewById(R.id.cvBase);
         TextView tcocktailrating = findViewById(R.id.cvRating);
@@ -566,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tcocktaildetails.setText(details);
         tcocktailnotes.setText(cocktailNotes);
 
-        String keywords = "Keywords:\n" + cocktailKeywords;
+        String keywords = "Keywords: " + cocktailKeywords;
         tcocktailKeywords.setText(keywords);
         if(cocktailPhoto == null && !bottleImage.toString().equals("No photo")) {
             bottleImage.setImageResource(R.drawable.nodrinkimg);
@@ -620,13 +648,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 signedInUserTextView.setText("Not Signed In");
             }
             Button loginButton = findViewById(R.id.login_Button);
-            loginButton.setOnClickListener(v -> signIn());
+            loginButton.setOnClickListener(v -> { signIn(); homeScreen(); });
             Button logoutButton = findViewById(R.id.logout_Button);
-            logoutButton.setOnClickListener(v -> signOut());
-            Button uploadButton = findViewById(R.id.upload_Button);
+            logoutButton.setOnClickListener(v -> { signOut(); homeScreen(); });
+            /*Button uploadButton = findViewById(R.id.upload_Button);
             uploadButton.setOnClickListener(v -> uploadData());
             Button syncButton = findViewById(R.id.sync_Button);
-            syncButton.setOnClickListener(v -> downloadData());
+            syncButton.setOnClickListener(v -> downloadData());*/
             Button eraseButton = findViewById(R.id.erase_Button);
             eraseButton.setOnClickListener(v -> eraseCloudStorage());
             editor = 0;
@@ -1084,6 +1112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editor == 1) {
                 ImageButton switcher = findViewById(R.id.switchButton);
                 switcher.setVisibility(View.GONE);
+                ImageButton delete = findViewById(R.id.deleteButton);
+                delete.setVisibility(View.VISIBLE);
+                ImageView drink = findViewById(R.id.switchButtonImage);
+                drink.setVisibility(View.GONE);
                 Bottle bottleToEdit = getMostRecentBottle();
                 toolbar.setTitle("Edit Bottle");
                 popFields(bottleToEdit);
@@ -1108,6 +1140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (editor == 1) {
                 ImageButton switcher = findViewById(R.id.switchButton);
                 switcher.setVisibility(View.GONE);
+                ImageButton delete = findViewById(R.id.deleteButton);
+                delete.setVisibility(View.VISIBLE);
+                ImageView drink = findViewById(R.id.switchButtonImage);
+                drink.setVisibility(View.GONE);
                 Cocktail cocktailToEdit = getMostRecentCocktail();
                 toolbar.setTitle("Edit Cocktail");
                 popFieldsCocktail(cocktailToEdit);
