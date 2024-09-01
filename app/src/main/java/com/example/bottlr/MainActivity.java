@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             homeScreen();
         } else if (id == R.id.menu_liquorcab_button) { //nav liquor cab screen click
             drinkFlag = true;
+            editor = 0;
             setContentView(R.layout.fragment_gallery);
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
@@ -283,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SignInChecker(R.layout.homescreen);
         lastLayout = R.layout.homescreen;
         drinkFlag = true;
+        editor = 0;
     }
 
     private Bottle getMostRecentBottle() {
