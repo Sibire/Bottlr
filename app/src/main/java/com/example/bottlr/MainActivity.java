@@ -1,5 +1,7 @@
 package com.example.bottlr;
 
+import static com.example.bottlr.SharedUtils.loadBottles;
+import static com.example.bottlr.SharedUtils.loadCocktails;
 import static com.example.bottlr.SharedUtils.loadLocations;
 import static com.example.bottlr.SharedUtils.parseBottle;
 import static com.example.bottlr.SharedUtils.parseCocktail;
@@ -29,11 +31,13 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -82,8 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int CAMERA_REQUEST_CODE = 201, GALLERY_REQUEST_CODE = 202, LOCATION_REQUEST_CODE = 203;
     private EditText bottleNameField, distillerField, spiritTypeField, abvField,
-            ageField, tastingNotesField, regionField, keywordsField, ratingField,
-            nameField, distilleryField, typeField, notesField, cocktailNameField, baseField,
+            ageField, tastingNotesField, regionField, keywordsField, ratingField, cocktailNameField, baseField,
             mixerField, juiceField, liqueurField, garnishField, extraField;
     private Uri photoUri, cameraImageUri;
     private BottleAdapter searchResultsAdapter;
@@ -149,11 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GenerateLiquorRecycler();
             lastLayout = R.layout.fragment_gallery;
         } else if (id == R.id.menu_search_button) { //nav search screen click
-            setContentView(R.layout.fragment_search);
-            search();
-        } else if (id == R.id.search_button) { //search activate button
-            performSearch();
-            KeyboardVanish(view);
+            showSearchPopup();
         } else if (id == R.id.menu_settings_button) { //settings area
             editor = 2;
             setContentView(R.layout.activity_settings);
@@ -231,17 +230,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SignInChecker(id);
         } else if (id == R.id.nfcButton) { //nfc button info
             nfcShare();
-        } else if (id == R.id.search_liquor_button) { //search same screen liquor cabinet
-            FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
-            filterFrame.setVisibility(View.VISIBLE);
-            if (!drinkFlag) { cocktailCabinetSearch(); }
-        } else if (id == R.id.search_button_filterClick) { //search same screen liquor cabinet button
-            filterSearch();
-            KeyboardVanish(view);
-        } else if (id == R.id.closefilterButton) { //search filter close
-            FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
-            filterFrame.setVisibility(View.GONE);
-            KeyboardVanish(view);
         }
         else if (id == R.id.menu_locations_button) { //nav locations screen click
             //setContentView(R.layout.locations_page);
@@ -389,29 +377,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region Recycler Code
     @SuppressLint("NotifyDataSetChanged")
+    // Update the method call in GenerateLiquorRecycler
     void GenerateLiquorRecycler() {
         // Set Recycler
         RecyclerView LiquorCabinetRecycler = findViewById(R.id.liquorRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         LiquorCabinetRecycler.setLayoutManager(layoutManager);
-        /*// Line divider to keep things nice and neat
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        LiquorCabinetRecycler.addItemDecoration(dividerItemDecoration);*/
+
         // Bottle listing
         if (drinkFlag) {
             BottleAdapter liquorAdapter;
-            bottles = SharedUtils.loadBottles(this);
+            bottles = loadBottles(this);
             liquorAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
             LiquorCabinetRecycler.setAdapter(liquorAdapter);
             liquorAdapter.notifyDataSetChanged();
         } else {
             CocktailAdapter liquorAdapter;
-            cocktails = SharedUtils.loadCocktails(this);
+            cocktails = loadCocktails(this);
             liquorAdapter = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
             LiquorCabinetRecycler.setAdapter(liquorAdapter);
             liquorAdapter.notifyDataSetChanged();
         }
-
     }
     void GenerateLocationRecycler() {
         // Set Recycler
@@ -535,8 +521,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.apply();
     }
 
-    public void detailedViewCocktail(String cocktailName, String cocktailBase, String cocktailMixer, String cocktailJuice, String cocktailLiqueur,
-                                     String cocktailGarnish, String cocktailExtra, Uri cocktailPhoto, String cocktailNotes, String cocktailRating, String cocktailKeywords) {
+    public void detailedViewCocktail(Cocktail cocktail) {
+        String cocktailName = cocktail.getName();
+        String cocktailBase = cocktail.getBase();
+        String cocktailMixer = cocktail.getMixer();
+        String cocktailJuice = cocktail.getJuice();
+        String cocktailLiqueur = cocktail.getLiqueur();
+        String cocktailGarnish = cocktail.getGarnish();
+        String cocktailExtra = cocktail.getExtra();
+        Uri cocktailPhoto = cocktail.getPhotoUri();
+        String cocktailNotes = cocktail.getNotes();
+        String cocktailRating = cocktail.getRating();
+        String cocktailKeywords = cocktail.getKeywords();
         setContentView(R.layout.description_cocktails);
 
         //fill empty data
@@ -739,7 +735,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Get a reference to the Firebase Storage instance
         FirebaseStorage storage = FirebaseStorage.getInstance();
         // Use the loadBottles() method to get all the bottles
-        List<Bottle> bottleList = SharedUtils.loadBottles(this);
+        List<Bottle> bottleList = loadBottles(this);
         // Loop through the bottles in the bottle list
         for (Bottle bottle : bottleList) {
             // Get the file name for the bottle data
@@ -796,7 +792,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         //copy of bottle, but for cocktails
-        List<Cocktail> cocktailList = SharedUtils.loadCocktails(this);
+        List<Cocktail> cocktailList = loadCocktails(this);
         for (Cocktail cocktail : cocktailList) {
             String dataFileName = "cocktail_" + cocktail.getName() + ".txt";
             StorageReference dataFileRef = storage.getReference()
@@ -1354,126 +1350,203 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //endregion
 
-    //region Search Code
-    public void search() {
-        nameField = findViewById(R.id.search_name);
-        distilleryField = findViewById(R.id.search_distillery);
-        typeField = findViewById(R.id.search_type);
-        abvField = findViewById(R.id.search_abv);
-        ageField = findViewById(R.id.search_age);
-        notesField = findViewById(R.id.search_notes);
-        regionField = findViewById(R.id.search_region);
-        ratingField = findViewById(R.id.search_rating);
-        keywordsField = findViewById(R.id.search_keywords);
+    //region New Search Code
+
+    private boolean searchingCocktails = false;
+
+    private void showSearchPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Search Type")
+                .setItems(new String[]{"Bottle Search", "Cocktail Search", "Cancel"}, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // Bottle Search
+                            searchingCocktails = false;
+                            goToSearchView();
+                            break;
+                        case 1: // Cocktail Search
+                            searchingCocktails = true;
+                            goToSearchView();
+                            break;
+                        case 2: // Cancel
+                            dialog.dismiss();
+                            break;
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void goToSearchView() {
+        setContentView(R.layout.search_view);
+
+        TextView header = findViewById(R.id.search_header);
+        Spinner fieldSelectorSpinner = findViewById(R.id.field_selector_spinner);
+        EditText queryField = findViewById(R.id.search_query);
+        Button searchButton = findViewById(R.id.search_button);
         RecyclerView searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview);
-        // Set LayoutManager
+
+        // Load bottles before setting up the search view
+        allBottles = loadBottles(this);
+        allCocktails = loadCocktails(this);
+
+        if (!searchingCocktails) {
+            header.setText("Bottle Search");
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                    R.array.bottle_fields, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            fieldSelectorSpinner.setAdapter(adapter);
+        } else {
+            header.setText("Cocktail Search");
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                    R.array.cocktail_fields, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            fieldSelectorSpinner.setAdapter(adapter);
+        }
+
+        searchButton.setOnClickListener(v -> {
+            String selectedField = fieldSelectorSpinner.getSelectedItem().toString();
+            String query = queryField.getText().toString();
+            Log.d("Search", "Search button clicked with field: " + selectedField + " and query: " + query);
+            if (!selectedField.isEmpty() && !query.isEmpty()) {
+                if (searchingCocktails) {
+                    performCocktailSearch(selectedField, query);
+                } else {
+                    performBottleSearch(selectedField, query);
+                }
+            } else {
+                Toast.makeText(this, "Please select a field and enter a query", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Initialize adapter and set it to the RecyclerView
-        if (drinkFlag) {
-            searchResultsAdapter = new BottleAdapter(bottles, allBottles, this::detailedView);
-            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
-        } else {
-            searchResultsAdapter2 = new CocktailAdapter(cocktails, allCocktails, this::detailedViewCocktail);
+        if (searchingCocktails) {
+            searchResultsAdapter2 = new CocktailAdapter(new ArrayList<>(), allCocktails, this::detailedViewCocktail);
             searchResultsRecyclerView.setAdapter(searchResultsAdapter2);
-        }
-    }
-
-    private void performSearch() {
-        Log.d("SearchFragment", "performSearch() called");
-        // Get search criteria from user input
-        String name = nameField.getText().toString().toLowerCase();
-        String distillery = distilleryField.getText().toString().toLowerCase();
-        String type = typeField.getText().toString().toLowerCase();
-        String abv = abvField.getText().toString().toLowerCase();
-        String age = ageField.getText().toString().toLowerCase();
-        String notes = notesField.getText().toString().toLowerCase();
-        String region = regionField.getText().toString().toLowerCase();
-        String rating = ratingField.getText().toString().toLowerCase();
-        String keywords = keywordsField.getText().toString().toLowerCase();
-
-        // getBottlesToSearch() should retrieve the full list of Bottle objects
-        if (drinkFlag) {
-            List<Bottle> allBottles = SharedUtils.loadBottles(this);
-            Log.d("SearchFragment", "All bottles: " + allBottles);
-            // Filter the list based on search criteria
-            List<Bottle> filteredList = allBottles.stream()
-                    .filter(bottle -> name.isEmpty() || (bottle.getName() != null && bottle.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
-                    .filter(bottle -> distillery.isEmpty() || (bottle.getDistillery() != null && bottle.getDistillery().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
-                    .filter(bottle -> type.isEmpty() || (bottle.getType() != null && bottle.getType().trim().toLowerCase().contains(type.trim().toLowerCase())))
-                    .filter(bottle -> abv.isEmpty() || (bottle.getAbv() != null && bottle.getAbv().trim().toLowerCase().contains(abv.trim().toLowerCase())))
-                    .filter(bottle -> age.isEmpty() || (bottle.getAge() != null && bottle.getAge().trim().toLowerCase().contains(age.trim().toLowerCase())))
-                    .filter(bottle -> notes.isEmpty() || (bottle.getNotes() != null && bottle.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
-                    .filter(bottle -> region.isEmpty() || (bottle.getRegion() != null && bottle.getRegion().trim().toLowerCase().contains(region.trim().toLowerCase())))
-                    .filter(bottle -> rating.isEmpty() || (bottle.getRating() != null && bottle.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                    .filter(bottle -> keywords.isEmpty() || (bottle.getKeywords() != null && bottle.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
-                    .collect(Collectors.toList());
-            Log.d("SearchFragment", "Filtered list: " + filteredList);
-            // Check if the filtered list is empty and display a toast message if it is
-            if (filteredList.isEmpty()) {
-                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
-            }
-            // Keep this outside any if/else so that it clears the search results if there are none
-            updateSearchResults(filteredList);
         } else {
-            List<Cocktail> allCocktails = SharedUtils.loadCocktails(this);
-            Log.d("SearchFragment", "All cocktails: " + allCocktails);
-            // Filter the list based on search criteria
-            List<Cocktail> filteredList = allCocktails.stream()
-                    .filter(cocktail -> name.isEmpty() || (cocktail.getName() != null && cocktail.getName().trim().toLowerCase().contains(name.trim().toLowerCase())))
-                    .filter(cocktail -> distillery.isEmpty() || (cocktail.getBase() != null && cocktail.getBase().trim().toLowerCase().contains(distillery.trim().toLowerCase())))
-                    .filter(cocktail -> type.isEmpty() || (cocktail.getMixer() != null && cocktail.getMixer().trim().toLowerCase().contains(type.trim().toLowerCase())))
-                    .filter(cocktail -> abv.isEmpty() || (cocktail.getJuice() != null && cocktail.getJuice().trim().toLowerCase().contains(abv.trim().toLowerCase())))
-                    .filter(cocktail -> age.isEmpty() || (cocktail.getLiqueur() != null && cocktail.getLiqueur().trim().toLowerCase().contains(age.trim().toLowerCase())))
-                    .filter(cocktail -> notes.isEmpty() || (cocktail.getNotes() != null && cocktail.getNotes().trim().toLowerCase().contains(notes.trim().toLowerCase())))
-                    .filter(cocktail -> region.isEmpty() || (cocktail.getGarnish() != null && cocktail.getGarnish().trim().toLowerCase().contains(region.trim().toLowerCase())))
-                    .filter(cocktail -> rating.isEmpty() || (cocktail.getRating() != null && cocktail.getRating().trim().toLowerCase().contains(rating.trim().toLowerCase())))
-                    .filter(cocktail -> keywords.isEmpty() || (cocktail.getKeywords() != null && cocktail.getKeywords().trim().toLowerCase().contains(keywords.trim().toLowerCase())))
-                    .collect(Collectors.toList());
-            Log.d("SearchFragment", "Filtered list: " + filteredList);
-            // Check if the filtered list is empty and display a toast message if it is
-            if (filteredList.isEmpty()) {
-                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show();
-            }
-            // Keep this outside any if/else so that it clears the search results if there are none
-            updateSearchResultsCocktail(filteredList);
+            searchResultsAdapter = new BottleAdapter(new ArrayList<>(), allBottles, this::detailedView);
+            searchResultsRecyclerView.setAdapter(searchResultsAdapter);
         }
     }
-    @SuppressLint("NotifyDataSetChanged")
-    private void updateSearchResults(List<Bottle> filteredList) {
-        searchResultsAdapter.setBottles(filteredList);
-        searchResultsAdapter.notifyDataSetChanged();
-    }
-    @SuppressLint("NotifyDataSetChanged")
-    private void updateSearchResultsCocktail(List<Cocktail> filteredList) {
-        searchResultsAdapter2.setCocktails(filteredList);
-        searchResultsAdapter2.notifyDataSetChanged();
+
+    private void performBottleSearch(String selectedField, String query) {
+        List<Bottle> filteredBottles = new ArrayList<>();
+        query = query.toLowerCase();
+        Log.d("Search", "Performing bottle search for field: " + selectedField + " with query: " + query);
+        Log.d("Search", "Total bottles available: " + allBottles.size());
+
+        for (Bottle bottle : allBottles) {
+            switch (selectedField) {
+                case "Name":
+                    if (bottle.getName().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                        Log.d("Search", "Bottle matched: " + bottle.getName());
+                    }
+                    break;
+                case "Distillery":
+                    if (bottle.getDistillery().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Type":
+                    if (bottle.getType().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "ABV":
+                    if (bottle.getAbv().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Age":
+                    if (bottle.getAge().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Notes":
+                    if (bottle.getNotes().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Region":
+                    if (bottle.getRegion().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Rating":
+                    if (bottle.getRating().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+                case "Keywords":
+                    if (bottle.getKeywords().toLowerCase().contains(query)) {
+                        filteredBottles.add(bottle);
+                    }
+                    break;
+            }
+        }
+        Log.d("Search", "Bottle search results: " + filteredBottles.size() + " items found");
+        searchResultsAdapter.updateData(filteredBottles);
     }
 
-    public void filterSearch() {
-        //hide filter
-        FrameLayout filterFrame = findViewById(R.id.liquorSearchFrame);
-        filterFrame.setVisibility(View.GONE);
-        //hide regular cabinet
-        RecyclerView liquor = findViewById(R.id.liquorRecycler);
-        liquor.setVisibility(View.GONE);
-        //show filtered results
-        RecyclerView searchFilter = findViewById(R.id.search_results_recyclerview);
-        searchFilter.setVisibility(View.VISIBLE);
-        search();
-        performSearch();
-    }
+    private void performCocktailSearch(String selectedField, String query) {
+        List<Cocktail> filteredCocktails = new ArrayList<>();
+        query = query.toLowerCase();
 
-    public void cocktailCabinetSearch() {
-        EditText base = findViewById(R.id.search_distillery);
-        base.setHint("Base");
-        EditText mixer = findViewById(R.id.search_type);
-        mixer.setHint("Mixer");
-        EditText juice = findViewById(R.id.search_abv);
-        juice.setHint("Juice");
-        EditText liqueur = findViewById(R.id.search_age);
-        liqueur.setHint("Liqueur");
-        EditText garnish = findViewById(R.id.search_region);
-        garnish.setHint("Garnish");
+        for (Cocktail cocktail : allCocktails) {
+            switch (selectedField) {
+                case "Name":
+                    if (cocktail.getName().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Base":
+                    if (cocktail.getBase().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Mixer":
+                    if (cocktail.getMixer().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Juice":
+                    if (cocktail.getJuice().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Liqueur":
+                    if (cocktail.getLiqueur().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Garnish":
+                    if (cocktail.getGarnish().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Extra":
+                    if (cocktail.getExtra().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Notes":
+                    if (cocktail.getNotes().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Rating":
+                    if (cocktail.getRating().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+                case "Keywords":
+                    if (cocktail.getKeywords().toLowerCase().contains(query)) {
+                        filteredCocktails.add(cocktail);
+                    }
+                    break;
+            }
+        }
+
+        searchResultsAdapter2.updateData(filteredCocktails);
     }
     //endregion
 

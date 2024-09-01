@@ -91,6 +91,9 @@ public class Cocktail implements Parcelable {
     public String getRating() { return rating; }
     public void setRating(String rating) { this.rating = rating; }
 
+    public String getCocktailID() { return bottleID; }
+    public void setCocktailID(String bottleID) { this.bottleID = bottleID; }
+
     //endregion
 
     //region Create Bottle from Parcel Data

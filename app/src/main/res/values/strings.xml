@@ -21,7 +21,31 @@
     <string name="log_out">Log Out</string>
     <string name="not_signed_in">Not Signed In</string>
     <string name="erase_cloud_storage">Erase Cloud Storage</string>
-    // First one
+
+    // Search Fields
+    <string-array name="bottle_fields">
+        <item>Name</item>
+        <item>Distillery</item>
+        <item>Type</item>
+        <item>ABV</item>
+        <item>Age</item>
+        <item>Notes</item>
+        <item>Region</item>
+        <item>Rating</item>
+        <item>Keywords</item>
+    </string-array>
+    <string-array name="cocktail_fields">
+        <item>Name</item>
+        <item>Base</item>
+        <item>Mixer</item>
+        <item>Juice</item>
+        <item>Liqueur</item>
+        <item>Garnish</item>
+        <item>Extra</item>
+        <item>Notes</item>
+        <item>Rating</item>
+        <item>Keywords</item>
+    </string-array>
 
 
 </resources>
