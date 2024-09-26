@@ -179,9 +179,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             KeyboardVanish(view);
         } else if (id == R.id.addPhotoButtonCocktail) { //add photo button cocktail
             drinkFlag = false;
-            editor = 0;
-            addBottle();
-        } else if (id == R.id.addPhotoButton) { //add photo button
             if (checkCameraPermission()) { chooseImageSource(); } else { requestCameraPermission(); }
             KeyboardVanish(view);
         } else if (id == R.id.saveButton) { //save bottle button
