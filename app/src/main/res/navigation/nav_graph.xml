@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <!-- Home Screen -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.bottlr.ui.home.HomeFragment"
+        android:label="Bottlr"
+        tools:layout="@layout/homescreen">
+        <action
+            android:id="@+id/action_home_to_gallery"
+            app:destination="@id/bottleGalleryFragment" />
+        <action
+            android:id="@+id/action_home_to_cocktails"
+            app:destination="@id/cocktailGalleryFragment" />
+        <action
+            android:id="@+id/action_home_to_settings"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+
+    <!-- Bottle Gallery -->
+    <fragment
+        android:id="@+id/bottleGalleryFragment"
+        android:name="com.example.bottlr.ui.gallery.BottleGalleryFragment"
+        android:label="Liquor Cabinet"
+        tools:layout="@layout/fragment_gallery">
+        <action
+            android:id="@+id/action_gallery_to_details"
+            app:destination="@id/bottleDetailsFragment" />
+        <action
+            android:id="@+id/action_gallery_to_editor"
+            app:destination="@id/bottleEditorFragment" />
+        <action
+            android:id="@+id/action_gallery_to_search"
+            app:destination="@id/searchFragment" />
+    </fragment>
+
+    <!-- Cocktail Gallery -->
+    <fragment
+        android:id="@+id/cocktailGalleryFragment"
+        android:name="com.example.bottlr.ui.gallery.CocktailGalleryFragment"
+        android:label="Cocktail Maker"
+        tools:layout="@layout/fragment_gallery">
+        <action
+            android:id="@+id/action_cocktails_to_details"
+            app:destination="@id/cocktailDetailsFragment" />
+        <action
+            android:id="@+id/action_cocktails_to_editor"
+            app:destination="@id/cocktailEditorFragment" />
+    </fragment>
+
+    <!-- Bottle Details -->
+    <fragment
+        android:id="@+id/bottleDetailsFragment"
+        android:name="com.example.bottlr.ui.details.BottleDetailsFragment"
+        android:label="Bottle Details"
+        tools:layout="@layout/description_screen">
+        <argument
+            android:name="bottleId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_details_to_editor"
+            app:destination="@id/bottleEditorFragment" />
+    </fragment>
+
+    <!-- Cocktail Details -->
+    <fragment
+        android:id="@+id/cocktailDetailsFragment"
+        android:name="com.example.bottlr.ui.details.CocktailDetailsFragment"
+        android:label="Cocktail Details"
+        tools:layout="@layout/description_cocktails">
+        <argument
+            android:name="cocktailId"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Bottle Editor (Add/Edit) -->
+    <fragment
+        android:id="@+id/bottleEditorFragment"
+        android:name="com.example.bottlr.ui.editor.BottleEditorFragment"
+        android:label="Add Bottle"
+        tools:layout="@layout/addbottlewindow">
+        <argument
+            android:name="bottleId"
+            app:argType="long"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- Cocktail Editor -->
+    <fragment
+        android:id="@+id/cocktailEditorFragment"
+        android:name="com.example.bottlr.ui.editor.CocktailEditorFragment"
+        android:label="Add Cocktail"
+        tools:layout="@layout/addcocktailwindow">
+        <argument
+            android:name="cocktailId"
+            app:argType="long"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- Search Fragment -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.bottlr.ui.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" />
+
+    <!-- Settings Fragment -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.bottlr.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/activity_settings" />
+
+</navigation>
