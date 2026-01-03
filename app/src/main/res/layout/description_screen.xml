@@ -183,7 +183,7 @@
             app:layout_constraintVertical_bias="0.27"
             app:layout_constraintWidth_percent="1" />
 
-        <!--<ImageButton
+        <ImageButton
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -191,14 +191,13 @@
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/light_blue"
             android:contentDescription="Back"
-            android:onClick="onClick"
             android:src="@drawable/baseline_arrow_back_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.027"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.135" />-->
+            app:layout_constraintVertical_bias="0.135" />
 
         <TextView
             android:id="@+id/tvNotes"
@@ -270,24 +269,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--<ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/gold"
-        android:contentDescription="Back"
-        android:onClick="onClick"
-        android:src="@drawable/baseline_arrow_back_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.027"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />-->
 
-    <!--<ImageButton
+    <ImageButton
         android:id="@+id/nfcButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -295,7 +278,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="180dp"
         android:background="?attr/selectableItemBackground"
-        android:onClick="onClick"
+        android:contentDescription="NFC"
         android:src="@drawable/baseline_nfc_24"
         android:translationX="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -303,7 +286,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.632" />-->
+        app:layout_constraintVertical_bias="0.632" />
 
     <ImageButton
         android:id="@+id/editButton"

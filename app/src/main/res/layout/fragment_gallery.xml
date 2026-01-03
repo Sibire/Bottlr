@@ -98,7 +98,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/cloud_empty" />
 
-    <!--<ImageButton
+    <ImageButton
         android:id="@+id/search_liquor_button"
         android:layout_width="65dp"
         android:layout_height="48dp"
@@ -106,16 +106,16 @@
         android:layout_marginEnd="10dp"
         android:background="?attr/selectableItemBackground"
         android:elevation="3sp"
-        android:onClick="onClick"
         android:scaleX="1.7"
         android:scaleY="1.7"
+        android:contentDescription="Search"
         app:layout_constraintBottom_toTopOf="@+id/liquorRecycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.754"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.025"
-        app:srcCompat="@drawable/baseline_search_24" />-->
+        app:srcCompat="@drawable/baseline_search_24" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/liquorRecycler"

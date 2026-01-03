@@ -110,25 +110,24 @@
                     app:title="Add A Bottle"
                     app:titleTextColor="@android:color/white">
 
-                    <!--<ImageButton
+                    <ImageButton
                         android:id="@+id/backButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="Back"
-                        android:onClick="onClick"
-                        android:src="@android:drawable/ic_menu_revert" />-->
+                        android:src="@android:drawable/ic_menu_revert" />
 
-                    <!--<ImageButton
+                    <ImageButton
                         android:id="@+id/nfcButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:background="?attr/selectableItemBackground"
-                        android:onClick="onClick"
+                        android:contentDescription="NFC"
                         android:src="@drawable/baseline_nfc_24"
-                        android:translationX="60sp" />-->
+                        android:translationX="60sp" />
 
                     <ImageView
                         android:id="@+id/switchButtonImage"

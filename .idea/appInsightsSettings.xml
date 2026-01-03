@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AppInsightsSettings">
-    <option name="selectedTabId" value="Android Vitals" />
+    <option name="selectedTabId" value="Firebase Crashlytics" />
     <option name="tabSettings">
       <map>
         <entry key="Firebase Crashlytics">
@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.bottlr" />
-                  <option name="mobileSdkAppId" value="1:834964503352:android:d2a1e6c56514ed6b7c1fcd" />
-                  <option name="projectId" value="bottlr-aef74" />
-                  <option name="projectNumber" value="834964503352" />
+                  <option name="appId" value="com.bottlr.app" />
+                  <option name="mobileSdkAppId" value="1:542444555432:android:029974fbf3c6cbd513469d" />
+                  <option name="projectId" value="bottlr-b4861" />
+                  <option name="projectNumber" value="542444555432" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -8,7 +8,7 @@
     <!-- Home Screen -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.bottlr.ui.home.HomeFragment"
+        android:name="com.bottlr.app.ui.home.HomeFragment"
         android:label="Bottlr"
         tools:layout="@layout/homescreen">
         <action
@@ -25,7 +25,7 @@
     <!-- Bottle Gallery -->
     <fragment
         android:id="@+id/bottleGalleryFragment"
-        android:name="com.example.bottlr.ui.gallery.BottleGalleryFragment"
+        android:name="com.bottlr.app.ui.gallery.BottleGalleryFragment"
         android:label="Liquor Cabinet"
         tools:layout="@layout/fragment_gallery">
         <action
@@ -42,7 +42,7 @@
     <!-- Cocktail Gallery -->
     <fragment
         android:id="@+id/cocktailGalleryFragment"
-        android:name="com.example.bottlr.ui.gallery.CocktailGalleryFragment"
+        android:name="com.bottlr.app.ui.gallery.CocktailGalleryFragment"
         android:label="Cocktail Maker"
         tools:layout="@layout/fragment_gallery">
         <action
@@ -56,7 +56,7 @@
     <!-- Bottle Details -->
     <fragment
         android:id="@+id/bottleDetailsFragment"
-        android:name="com.example.bottlr.ui.details.BottleDetailsFragment"
+        android:name="com.bottlr.app.ui.details.BottleDetailsFragment"
         android:label="Bottle Details"
         tools:layout="@layout/description_screen">
         <argument
@@ -70,7 +70,7 @@
     <!-- Cocktail Details -->
     <fragment
         android:id="@+id/cocktailDetailsFragment"
-        android:name="com.example.bottlr.ui.details.CocktailDetailsFragment"
+        android:name="com.bottlr.app.ui.details.CocktailDetailsFragment"
         android:label="Cocktail Details"
         tools:layout="@layout/description_cocktails">
         <argument
@@ -81,38 +81,38 @@
     <!-- Bottle Editor (Add/Edit) -->
     <fragment
         android:id="@+id/bottleEditorFragment"
-        android:name="com.example.bottlr.ui.editor.BottleEditorFragment"
+        android:name="com.bottlr.app.ui.editor.BottleEditorFragment"
         android:label="Add Bottle"
         tools:layout="@layout/addbottlewindow">
         <argument
             android:name="bottleId"
             app:argType="long"
-            android:defaultValue="-1" />
+            android:defaultValue="-1L" />
     </fragment>
 
     <!-- Cocktail Editor -->
     <fragment
         android:id="@+id/cocktailEditorFragment"
-        android:name="com.example.bottlr.ui.editor.CocktailEditorFragment"
+        android:name="com.bottlr.app.ui.editor.CocktailEditorFragment"
         android:label="Add Cocktail"
         tools:layout="@layout/addcocktailwindow">
         <argument
             android:name="cocktailId"
             app:argType="long"
-            android:defaultValue="-1" />
+            android:defaultValue="-1L" />
     </fragment>
 
     <!-- Search Fragment -->
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.bottlr.ui.search.SearchFragment"
+        android:name="com.bottlr.app.ui.search.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" />
 
     <!-- Settings Fragment -->
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.bottlr.ui.settings.SettingsFragment"
+        android:name="com.bottlr.app.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/activity_settings" />
 

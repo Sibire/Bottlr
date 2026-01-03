@@ -119,7 +119,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--<Button
+    <Button
         android:id="@+id/upload_Button"
         android:layout_width="360dp"
         android:layout_height="65dp"
@@ -133,10 +133,10 @@
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.519" />-->
+        app:layout_constraintVertical_bias="0.519" />
 
 
-    <!--<Button
+    <Button
         android:id="@+id/sync_Button"
         android:layout_width="360dp"
         android:layout_height="65dp"
@@ -150,7 +150,7 @@
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.36" />-->
+        app:layout_constraintVertical_bias="0.36" />
 
     <Button
         android:id="@+id/erase_Button"
